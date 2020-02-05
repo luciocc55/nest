@@ -13,7 +13,16 @@ async function bootstrap() {
   .build();
   const document = SwaggerModule.createDocument(app, options);
   const routes = document.paths;
-  console.log(routes)
+  const keys = Object.keys(routes);
+  const permissions = []
+  keys.forEach(element => {
+
+    const keysElement = Object.keys(routes[element]);
+    keysElement.forEach(element2 => {
+      permissions.push({path: element + ':' + element2});
+    });
+  });
+  console.log(permissions)
   await app.listen(4300);
 }
 bootstrap()
