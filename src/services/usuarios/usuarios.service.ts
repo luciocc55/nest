@@ -29,7 +29,9 @@ export class UsuariosService {
       );
     }
   }
-
+  async findLogin(user, password): Promise<Usuarios> {
+    return await this.usuarioModel.findOne({ user }, { password }).exec();
+  }
   async findAny(user, email): Promise<Usuarios> {
     return await this.usuarioModel
       .findOne({
