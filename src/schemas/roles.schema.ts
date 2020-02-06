@@ -6,7 +6,7 @@ const auto = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  permissions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Permissions' }],
+  permissions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Permissions', autopopulate: true }],
 });
-
+auto.plugin(require('mongoose-autopopulate'));
 export const Roles = auto;

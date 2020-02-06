@@ -1,3 +1,4 @@
 export const environment = {
-  secretKey: 'Autorizador Kozaca Secret Key'
+  secretKey: 'Autorizador Kozaca Secret Key',
+  permissions: null,
 };

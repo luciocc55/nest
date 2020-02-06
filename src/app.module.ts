@@ -9,6 +9,7 @@ import { BullModule } from '@nestjs/bull';
 import { UsuariosModule } from './controllers/usuarios/usuarios.module';
 import { UsuariosServiceModule } from './services/usuarios/usuarios.module';
 import { RolesModule } from './services/roles/roles.module';
+import { TasksModule } from './services/tasks/tasks.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { RolesModule } from './services/roles/roles.module';
     UsuariosModule,
     UsuariosServiceModule,
     RolesModule,
+    TasksModule,
   ],
   controllers: [],
   providers: [

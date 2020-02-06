@@ -2,16 +2,12 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Logger } from 'src/schemas/logger.schema';
 import { LoggerService } from './logger.service';
-import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from '../auth/constants';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
   MongooseModule.forFeature([{ name: 'Logger', schema: Logger }]),
-    JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60h' },
-    }),
+  AuthModule,
   ],
   providers: [LoggerService],
   exports: [LoggerService],
