@@ -1,11 +1,11 @@
 FROM node:8
 
-RUN mkdir -p /prueba-error
-ADD . /prueba-error
+RUN mkdir -p /autorizador-nest
+ADD . /autorizador-nest
 
 ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 
-WORKDIR /prueba-error
+WORKDIR /autorizador-nest
 
 # optionally if you want to run npm global bin without specifying path
 # ENV PATH=$PATH:/home/node/.npm-global/bin
@@ -16,11 +16,11 @@ USER node
 RUN ls -la
 
 RUN npm i -g @nestjs/cli
-
+RUN npm install
 
 # Bundle app source
 COPY . .
 
-EXPOSE 3000
+EXPOSE 4300
 
 CMD [ "npm", "start" ]
