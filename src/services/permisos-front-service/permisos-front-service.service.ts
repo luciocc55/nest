@@ -4,14 +4,14 @@ import { Model } from 'mongoose';
 import { CreatePermissions } from 'src/validators/createPermissions.validator';
 
 @Injectable()
-export class PermissionsService {
+export class PermisosFrontServiceService {
   constructor(
-    @InjectModel('Permissions') private readonly permissionModel: Model<any>,
+    @InjectModel('PermissionsFront') private readonly permissionFrontModel: Model<any>,
   ) {}
   async createPermission(permission: CreatePermissions): Promise<any> {
     const exist = await this.find(permission.endpoint);
     if (!exist) {
-      const createPermission = new this.permissionModel({endpoint: permission.endpoint, descripcion: permission.descripcion});
+      const createPermission = new this.permissionFrontModel(permission);
       return await createPermission.save();
     } else {
       exist.descripcion = permission.descripcion;
@@ -19,6 +19,6 @@ export class PermissionsService {
     }
   }
   async find(endpoint): Promise<any> {
-    return await this.permissionModel.findOne({ endpoint });
+    return await this.permissionFrontModel.findOne({ endpoint });
   }
 }

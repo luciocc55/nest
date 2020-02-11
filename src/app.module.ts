@@ -10,6 +10,8 @@ import { UsuariosModule } from './controllers/usuarios/usuarios.module';
 import { UsuariosServiceModule } from './services/usuarios/usuarios.module';
 import { RolesModule } from './services/roles/roles.module';
 import { TasksModule } from './services/tasks/tasks.module';
+import { PermisosFrontModule } from './controllers/permisos-front/permisos-front.module';
+import { PermisosFrontServiceModule } from './services/permisos-front-service/permisos-front-service.module';
 
 @Module({
   imports: [
@@ -36,6 +38,8 @@ import { TasksModule } from './services/tasks/tasks.module';
     UsuariosServiceModule,
     RolesModule,
     TasksModule,
+    PermisosFrontModule,
+    PermisosFrontServiceModule,
   ],
   controllers: [],
   providers: [

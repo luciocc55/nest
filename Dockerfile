@@ -16,7 +16,6 @@ USER node
 RUN ls -la
 
 RUN npm i -g @nestjs/cli
-RUN npm install
 
 # Bundle app source
 COPY . .

@@ -13,8 +13,12 @@ export class TasksService {
   @Timeout(5000)
   createPermissions() {
     environment.permissions.forEach(element => {
+      let descripcion = '';
+      if (element.descripcion) {
+        descripcion = element.descripcion.toString();
+      }
       this.permissionService.createPermission({
-        descripcion: element.path,
+        descripcion,
         endpoint: element.path,
       });
     });

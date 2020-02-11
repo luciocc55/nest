@@ -11,4 +11,4 @@ const auto = new mongoose.Schema({
   },
 });
 
-export const Permissions = auto;
+export const PermissionsFront = auto;
