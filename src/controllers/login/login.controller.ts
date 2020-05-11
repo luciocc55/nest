@@ -1,14 +1,14 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from 'src/services/auth/auth.service';
-import { CreateUsuarios } from 'src/validators/createUsuarios.validator';
 import { ApiTags } from '@nestjs/swagger';
+import { LoginUsers } from 'src/validators/users/loginUsers.validator';
 
-@Controller('login')
+@Controller('')
 export class LoginController {
-    constructor(private authService: AuthService) {}
-    @ApiTags('Devuelve el token de acceso al ingresar password y usuario')
-    @Post()
-    async login(@Body() createdUsuario: CreateUsuarios) {
-      return this.authService.login(createdUsuario);
-    }
+  constructor(private authService: AuthService) {}
+  @ApiTags('Logueo basico que permite la autentificacion')
+  @Post('autentificacion')
+  async login(@Body() loginUser: LoginUsers) {
+    return this.authService.login(loginUser);
+  }
 }

@@ -1,31 +1,30 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LoginModule } from './controllers/login/login.module';
-import { LoggingInterceptor } from './interceptors/logger/logger.interceptor';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { LoggerModule } from './services/logger/logger.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { BullModule } from '@nestjs/bull';
-import { UsuariosModule } from './controllers/usuarios/usuarios.module';
-import { UsuariosServiceModule } from './services/usuarios/usuarios.module';
-import { RolesModule } from './services/roles/roles.module';
 import { TasksModule } from './services/tasks/tasks.module';
-import { PermisosFrontModule } from './controllers/permisos-front/permisos-front.module';
-import { PermisosFrontServiceModule } from './services/permisos-front-service/permisos-front-service.module';
+import { PermissionsFrontServiceModule } from './services/permission-front-service/permission-front-service.module';
+import { UsersServiceModule } from './services/users/users.module';
+import { PermissionsFrontModule } from './controllers/permission-front/permission-front.module';
+import { UsersModule } from './controllers/users/users.module';
+import { RolesModule } from './controllers/roles/roles.module';
+import { FederadaHttpModule } from './services/federada-http/federada-http.module';
+import { AtributosUserModule } from './services/atributos-user/atributos-user.module';
+import environment from './env';
+import { AtributosServiceModule } from './services/atributos/atributos.module';
+import { AtributosModule } from './controllers/atributos/atributos.module';
+import { PermisosModule } from './controllers/permission/permisos.module';
+import { PrestadoresModule } from './controllers/prestadores/prestadores.module';
+import { PrestadoresServiceModule } from './services/prestadores/prestadores.module';
+import { ElegibilidadModule } from './controllers/elegibilidad/elegibilidad.module';
+import { AtributosEstaticosModule } from './services/atributos-estaticos/atributos-estaticos.module';
+import { OrigenesContModule } from './controllers/origenes-cont/origenes-cont.module';
 
 @Module({
   imports: [
-    LoggerModule,
-    BullModule.registerQueue({
-      name: 'NestQueue',
-      redis: {
-        host: '127.0.0.1',
-        port: 6379,
-      },
-    }),
     ScheduleModule.forRoot(),
     MongooseModule.forRoot(
-      'mongodb://mongo:27017/obras_sociales?authSource=admin',
+      'mongodb://' + environment.mongo + '/' + environment.dataBase + '?authSource=admin',
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -34,19 +33,23 @@ import { PermisosFrontServiceModule } from './services/permisos-front-service/pe
       },
     ),
     LoginModule,
-    UsuariosModule,
-    UsuariosServiceModule,
+    UsersModule,
+    UsersServiceModule,
     RolesModule,
     TasksModule,
-    PermisosFrontModule,
-    PermisosFrontServiceModule,
+    PermissionsFrontModule,
+    PermissionsFrontServiceModule,
+    FederadaHttpModule,
+    AtributosUserModule,
+    AtributosModule,
+    AtributosServiceModule,
+    PermisosModule,
+    PrestadoresModule,
+    PrestadoresServiceModule,
+    ElegibilidadModule,
+    AtributosEstaticosModule,
+    OrigenesContModule,
   ],
   controllers: [],
-  providers: [
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: LoggingInterceptor,
-    },
-  ],
 })
 export class AppModule {}

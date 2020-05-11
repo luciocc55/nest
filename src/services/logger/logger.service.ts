@@ -5,9 +5,13 @@ import { InjectModel } from '@nestjs/mongoose';
 export class LoggerService {
   constructor(@InjectModel('Logger') private readonly loggerModel: Model<any>) {}
 
-  create(log: any) {
-    console.log(log)
-    //const createdLog = new this.loggerModel(log);
-    //createdLog.save();
+  async create(log: any) {
+    const createdLog = new this.loggerModel(log);
+    return await createdLog.save();
+  }
+  async writeResponse(response, id) {
+    const registro = await this.loggerModel.findById(id);
+    registro.response = response;
+    await registro.save();
   }
 }

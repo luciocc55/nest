@@ -1,4 +1,11 @@
-export const environment = {
-  secretKey: 'Autorizador Kozaca Secret Key',
-  permissions: null,
-};
+import { devEnvironment } from './devEnv';
+import { prodEnvironment } from './prodEnv';
+let environment = null;
+
+if (process.env.Production === 'true') {
+    environment = prodEnvironment;
+} else {
+    environment = devEnvironment;
+}
+
+export default environment;

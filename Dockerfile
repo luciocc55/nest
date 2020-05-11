@@ -1,4 +1,4 @@
-FROM node:8
+FROM node:12
 
 RUN mkdir -p /autorizador-nest
 ADD . /autorizador-nest
@@ -16,6 +16,7 @@ USER node
 RUN ls -la
 
 RUN npm i -g @nestjs/cli
+RUN npm i -g bcrypt@latest --save
 
 # Bundle app source
 COPY . .

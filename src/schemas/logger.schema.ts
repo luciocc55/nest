@@ -1,22 +1,27 @@
 import * as mongoose from 'mongoose';
 
 const auto = new mongoose.Schema({
-  request: {
+  body: {
     type: String,
-    required: true,
   },
-  resonse: {
+  params: {
     type: String,
-    required: true,
+  },
+  query: {
+    type: String,
+  },
+  response: {
+    type: String,
   },
   ip: {
     type: String,
+    required: true,
   },
-  cliente: {
+  client: {
     type: String,
     required: true,
   },
-  fecha: {
+  date: {
     type: String,
     required: true,
   },
@@ -24,10 +29,15 @@ const auto = new mongoose.Schema({
     type: String,
     required: true,
   },
-  usuario: {
+  method: {
     type: String,
     required: true,
   },
+  user: {
+    type: String,
+    required: true,
+  },
+
 });
 
 export const Logger = auto;

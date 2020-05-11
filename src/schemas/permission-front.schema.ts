@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 
 const auto = new mongoose.Schema({
-  descripcion: {
+  description: {
     type: String,
   },
   endpoint: {

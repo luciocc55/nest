@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 
 const auto = new mongoose.Schema({
-  usuario: {
+  user: {
     type: String,
     required: true,
   },

@@ -2,16 +2,16 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
-import { environment } from 'src/env';
-import { UsuariosServiceModule } from '../usuarios/usuarios.module';
+import environment from 'src/env';
+import { UsersServiceModule } from '../users/users.module';
 
 @Module({
   imports: [
     JwtModule.register({
       secret: environment.secretKey,
-      signOptions: { expiresIn: '60h' },
+      signOptions: { expiresIn: '60m' },
     }),
-    UsuariosServiceModule,
+    UsersServiceModule,
   ],
   providers: [AuthService, JwtStrategy],
   exports: [AuthService],
