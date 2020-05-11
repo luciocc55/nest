@@ -29,7 +29,7 @@ import { OrigenesContModule } from './controllers/origenes-cont/origenes-cont.mo
         useNewUrlParser: true,
         useUnifiedTopology: true,
         user: 'root',
-        pass: '515149lycc',
+        pass: '3x9VWSw',
       },
     ),
     LoginModule,
