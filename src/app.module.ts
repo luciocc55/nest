@@ -19,6 +19,8 @@ import { PrestadoresServiceModule } from './services/prestadores/prestadores.mod
 import { ElegibilidadModule } from './controllers/elegibilidad/elegibilidad.module';
 import { AtributosEstaticosModule } from './services/atributos-estaticos/atributos-estaticos.module';
 import { OrigenesContModule } from './controllers/origenes-cont/origenes-cont.module';
+import { SwissMedicalHttpModule } from './services/swiss-medical-http/swiss-medical-http.module';
+import { EsencialHttpModule } from './services/esencial-http/esencial-http.module';
 
 @Module({
   imports: [
@@ -28,8 +30,8 @@ import { OrigenesContModule } from './controllers/origenes-cont/origenes-cont.mo
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        user: 'root',
-        pass: '3x9VWSw',
+        user: environment.mongoUser,
+        pass: environment.mongoPassword,
       },
     ),
     LoginModule,
@@ -49,6 +51,8 @@ import { OrigenesContModule } from './controllers/origenes-cont/origenes-cont.mo
     ElegibilidadModule,
     AtributosEstaticosModule,
     OrigenesContModule,
+    SwissMedicalHttpModule,
+    EsencialHttpModule,
   ],
   controllers: [],
 })
