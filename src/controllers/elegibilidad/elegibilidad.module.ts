@@ -10,6 +10,7 @@ import { AtributosUserModule } from 'src/services/atributos-user/atributos-user.
 import { PrestadoresServiceModule } from 'src/services/prestadores/prestadores.module';
 import { UsersServiceModule } from 'src/services/users/users.module';
 import { FederadaHttpModule } from 'src/services/federada-http/federada-http.module';
+import { EsencialHttpModule } from 'src/services/esencial-http/esencial-http.module';
 
 @Module({
   controllers: [ElegibilidadController],
@@ -23,6 +24,7 @@ import { FederadaHttpModule } from 'src/services/federada-http/federada-http.mod
     PrestadoresServiceModule,
     UsersServiceModule,
     FederadaHttpModule,
+    EsencialHttpModule,
   ],
 })
 export class ElegibilidadModule {}

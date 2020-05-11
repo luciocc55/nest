@@ -18,6 +18,7 @@ import { AtributosUserService } from 'src/services/atributos-user/atributos-user
 import { PrestadoresService } from 'src/services/prestadores/prestadores.service';
 import { UsersService } from 'src/services/users/users.service';
 import { FederadaHttpService } from 'src/services/federada-http/federada-http.service';
+import { EsencialHttpService } from 'src/services/esencial-http/esencial-http.service';
 @Controller('elegibilidad')
 @UseGuards(RolesGuard)
 export class ElegibilidadController {
@@ -30,17 +31,19 @@ export class ElegibilidadController {
     private prestadoresService: PrestadoresService,
     private usuariosService: UsersService,
     private federadaService: FederadaHttpService,
+    private esencialService: EsencialHttpService,
   ) {}
   @ApiTags(
     'Permite identificar si una persona tiene permitido',
     'Federada:Nro de Prestador Federada:Nro de Sub Prestador Federada',
+    'Esencial:Codigo de Proveedor Esencial',
     // 'Swiss Medical:Cuit Swiss Medical',
   )
   // , separa los origenes permitidos en el service
   // : separa los atributos necesarios para ese origen
   @Post('consultar')
   async list(@Body() data: Elegibilidad, @Token() token: string): Promise<any> {
-    const path = '/autorizador/elegibilidad/list:post';
+    const path = '/autorizador/elegibilidad/consultar:post';
     const validate = await this.origenesService.validateOrigenService(
       data.origen,
       path,
@@ -111,6 +114,9 @@ export class ElegibilidadController {
         break;
       // case 'Swiss Medical':
       //   break;
+      case 'Esencial':
+        elegibilidad = await this.esencialService.getElegibilidad(arrayValues);
+        break;
     }
     return {elegibilidad};
   }
