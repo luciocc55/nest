@@ -19,6 +19,7 @@ import { PrestadoresServiceModule } from './services/prestadores/prestadores.mod
 import { ElegibilidadModule } from './controllers/elegibilidad/elegibilidad.module';
 import { AtributosEstaticosModule } from './services/atributos-estaticos/atributos-estaticos.module';
 import { OrigenesContModule } from './controllers/origenes-cont/origenes-cont.module';
+import { SwissMedicalHttpModule } from './services/swiss-medical-http/swiss-medical-http.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { OrigenesContModule } from './controllers/origenes-cont/origenes-cont.mo
     ElegibilidadModule,
     AtributosEstaticosModule,
     OrigenesContModule,
+    SwissMedicalHttpModule,
   ],
   controllers: [],
 })

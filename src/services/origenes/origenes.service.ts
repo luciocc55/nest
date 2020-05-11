@@ -36,6 +36,7 @@ export class OrigenesService {
         400,
       );
     }
+    return validateOrigen;
   }
   async findOne(id): Promise<any> {
     return await this.origenModel
@@ -54,7 +55,7 @@ export class OrigenesService {
       .exec();
     if (!exist) {
       const createOrigen = new this.origenModel({description});
-      exist.servicios.push({ path: servicio });
+      createOrigen.servicios.push({ path: servicio });
       exist = await createOrigen.save();
     } else {
       if (servicio) {

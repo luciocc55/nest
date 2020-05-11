@@ -17,7 +17,6 @@ import { FederadaHttpModule } from 'src/services/federada-http/federada-http.mod
   imports: [
     LoggerModule,
     AuthModule,
-    AtributosServiceModule,
     AtributosEstaticosModule,
     OrigenesModule,
     AtributosUserModule,

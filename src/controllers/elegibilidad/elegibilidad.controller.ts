@@ -11,7 +11,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { Elegibilidad } from 'src/validators/eligibilidad/consultar-elegibilidad.validator';
 import { Token } from 'src/decorators/token.decorator';
 import { AuthService } from 'src/services/auth/auth.service';
-import { AtributosService } from 'src/services/atributos/atributos.service';
 import { AtributosEstaticosService } from 'src/services/atributos-estaticos/atributos-estaticos.service';
 import { FunctionsService } from 'src/services/functions';
 import { OrigenesService } from 'src/services/origenes/origenes.service';
@@ -24,7 +23,6 @@ import { FederadaHttpService } from 'src/services/federada-http/federada-http.se
 export class ElegibilidadController {
   constructor(
     private authService: AuthService,
-    private atributosService: AtributosService,
     private atribustoEstaticosService: AtributosEstaticosService,
     private atributosUserService: AtributosUserService,
     private functionService: FunctionsService,
@@ -36,6 +34,7 @@ export class ElegibilidadController {
   @ApiTags(
     'Permite identificar si una persona tiene permitido',
     'Federada:Nro de Prestador Federada:Nro de Sub Prestador Federada',
+    // 'Swiss Medical:Cuit Swiss Medical',
   )
   // , separa los origenes permitidos en el service
   // : separa los atributos necesarios para ese origen
@@ -105,7 +104,14 @@ export class ElegibilidadController {
     }
     arrayValues.push(data.dni);
     arrayValues.push(data.afiliado);
-    const elegibilidad = await this.federadaService.getElegibilidad(arrayValues);
+    let elegibilidad;
+    switch (validate.description) {
+      case 'Federada':
+        elegibilidad = await this.federadaService.getElegibilidad(arrayValues);
+        break;
+      // case 'Swiss Medical':
+      //   break;
+    }
     return {elegibilidad};
   }
 }
