@@ -30,8 +30,8 @@ import { EsencialHttpModule } from './services/esencial-http/esencial-http.modul
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        user: 'root',
-        pass: '515149lycc',
+        user: environment.mongoUser,
+        pass: environment.mongoPassword,
       },
     ),
     LoginModule,
