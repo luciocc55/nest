@@ -10,24 +10,24 @@ export class SwissMedicalHttpService {
   usrLoginName = 'suap';
   password = 'suap2018';
   device = {
-    device: {
-      messagingid: '132H12312',
-      deviceid: '192.168.45.747',
-      devicename: 'DELL-2Y0-DG',
-      bloqueado: 0,
-      recordar: 0,
-    },
+    messagingid: '132H12312',
+    deviceid: '192.168.45.747',
+    devicename: 'DELL-2Y0-DG',
+    bloqueado: 0,
+    recordar: 0,
   };
   constructor(private readonly httpService: HttpService) {}
   async elegibilidad(arrayValues): Promise<Observable<any>> {
-    const headers = this.getSessionHeaders('30629621934');
+    const headers = await this.getSessionHeaders(arrayValues[0]);
+
+    console.log(headers)
     return this.httpService
       .post(
-        this.url + 'v0/auth-login/',
+        this.url + this.urlPlat + 'elegibilidad/',
         {
-          p_Prestador: arrayValues[0],
-          p_SubPrestador: arrayValues[1],
-          p_NroDoc: arrayValues[2],
+          creden: arrayValues[2],
+          alta: "20200512",
+          fecdif: "20200512",
         },
         { headers },
       )

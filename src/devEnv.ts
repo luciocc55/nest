@@ -6,7 +6,7 @@ export const devEnvironment = {
     urlBaseFederada: 'https://api-test.federada.com/validador/v1.5.3/',
     redis: 'localhost',
     mongo: 'localhost:27017',
-    mongoPassword: '3x9VWSw',
+    mongoPassword: '515149lycc',
     mongoUser: 'root',
     dataBase: 'autorizador',
     rootAdmin: {
