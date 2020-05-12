@@ -15,4 +15,4 @@ export const devEnvironment = {
       password: '515149lycc',
       user: 'ares',
     },
-  };
+  }; 
