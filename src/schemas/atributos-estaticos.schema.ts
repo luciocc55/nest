@@ -23,4 +23,10 @@ auto.virtual('atributos', {
   localField: '_id',
   justOne: false,
 });
+auto.virtual('endpoint', {
+  ref: 'Permissions',
+  foreignField: 'endpoint',
+  localField: 'servicios.path',
+  justOne: false,
+});
 export const AtributosEstaticos = auto;

@@ -13,6 +13,23 @@ export class OrigenesService {
       .lean()
       .exec();
   }
+  async findAllPopulated(): Promise<any> {
+    const origenes =  await this.origenModel
+      .find()
+      .lean()
+      .populate({path: 'atributos', populate: 'endpoint'})
+      .exec();
+    origenes.forEach((element, index) => {
+      const atr = [];
+      element.atributos.forEach((atributo) => {
+        if (!atr.find(x => (x._id === atributo._id))) {
+          atr.push(atributo);
+        }
+      });
+      origenes[index].atributos = atr;
+    });
+    return origenes;
+  }
   async validateOrigenService(origen, path) {
     let validateOrigen;
     try {

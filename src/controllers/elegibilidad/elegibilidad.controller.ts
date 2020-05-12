@@ -38,7 +38,7 @@ export class ElegibilidadController {
     private swissService: SwissMedicalHttpService,
   ) {}
   @ApiTags(
-    'Permite identificar si una persona tiene permitido',
+    'Permite identificar si una persona posee elegibilidad en un origen particular',
     'Federada:Nro de Prestador Federada:Nro de Sub Prestador Federada',
     'Esencial:Codigo de Proveedor Esencial',
     'IAPOS',
