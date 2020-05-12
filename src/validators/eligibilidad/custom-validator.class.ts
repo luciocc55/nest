@@ -8,6 +8,6 @@ export class AtLeast1 implements ValidatorConstraintInterface {
     }
 
     defaultMessage(args: ValidationArguments) {
-      return `Al menos se debe ingresar "${args.property}" o "${args.constraints[0]}".`;
+      return `Se debe ingresar ${args.property} o ${args.constraints[0]}`;
     }
 }

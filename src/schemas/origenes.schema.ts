@@ -13,5 +13,10 @@ const auto = new mongoose.Schema({
   },
   servicios: [Servicios],
 }, { timestamps: { updatedAt: 'cambio' }});
-
+auto.virtual('atributos', {
+  ref: 'AtributosEstaticos',
+  foreignField: 'servicios.origen',
+  localField: '_id',
+  justOne: false,
+});
 export const Origenes = auto;
