@@ -300,7 +300,7 @@ export class UsersService {
     const userLower = user.toLowerCase();
     return await this.usuarioModel
       .findOne({ user: userLower })
-      .populate('role')
+      .populate({path: 'role', populate: 'permissions'})
       .populate('prestadores.prestador')
       .populate({
         path: 'atributos',
