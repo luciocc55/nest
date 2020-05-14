@@ -12,6 +12,7 @@ import { FederadaHttpModule } from 'src/services/federada-http/federada-http.mod
 import { EsencialHttpModule } from 'src/services/esencial-http/esencial-http.module';
 import { IaposHttpModule } from 'src/services/iapos-http/iapos-http.module';
 import { SwissMedicalHttpModule } from 'src/services/swiss-medical-http/swiss-medical-http.module';
+import { AmrHttpModule } from 'src/services/amr-http/amr-http.module';
 
 @Module({
   controllers: [ElegibilidadController],
@@ -28,6 +29,7 @@ import { SwissMedicalHttpModule } from 'src/services/swiss-medical-http/swiss-me
     EsencialHttpModule,
     IaposHttpModule,
     SwissMedicalHttpModule,
+    AmrHttpModule,
   ],
 })
 export class ElegibilidadModule {}
