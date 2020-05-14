@@ -50,6 +50,7 @@ export class AmrHttpService {
       });
     });
   }
+  
   getElegibilidadAca(arrayValues): any {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
@@ -64,4 +65,67 @@ export class AmrHttpService {
       });
     });
   }
+  
+  getElegibilidadIapos(arrayValues): any {
+    const afiliado = arrayValues[3];
+    return new Promise(async (resolve) => {
+      (await this.elegibilidad(arrayValues, afiliado, 1)).subscribe((data) => {
+        let estatus;
+        if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
+          estatus = 1;
+        } else {
+          estatus = 0;
+        }
+        resolve({ data, estatus });
+      });
+    });
+  }
+
+  getElegibilidadAmrSalud(arrayValues): any {
+    const afiliado = arrayValues[2];
+    return new Promise(async (resolve) => {
+      (await this.elegibilidad(arrayValues, afiliado, 2)).subscribe((data) => {
+        let estatus;
+        if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
+          estatus = 1;
+        } else {
+          estatus = 0;
+        }
+        resolve({ data, estatus });
+      });
+    });
+  }
+
+  getElegibilidadOspat(arrayValues): any {
+    const afiliado = arrayValues[3];
+    return new Promise(async (resolve) => {
+      (await this.elegibilidad(arrayValues, afiliado, 3)).subscribe((data) => {
+        let estatus;
+        if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
+          estatus = 1;
+        } else {
+          estatus = 0;
+        }
+        resolve({ data, estatus });
+      });
+    });
+  }
+
+  getElegibilidadCajaForense(arrayValues): any {
+    const afiliado = arrayValues[3];
+    return new Promise(async (resolve) => {
+      (await this.elegibilidad(arrayValues, afiliado, 4)).subscribe((data) => {
+        let estatus;
+        if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
+          estatus = 1;
+        } else {
+          estatus = 0;
+        }
+        resolve({ data, estatus });
+      });
+    });
+  }
+
+  
+  
 }

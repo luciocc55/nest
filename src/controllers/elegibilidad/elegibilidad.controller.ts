@@ -46,6 +46,10 @@ export class ElegibilidadController {
     'IAPOS',
     'Swiss Medical (AMR):Matricula de Efector:Codigo de Profesion',
     'ACA Salud (AMR):Matricula de Efector:Codigo de Profesion',
+    'IAPOS (AMR):Matricula de Efector:Codigo de Profesion',
+    'AMR Salud:Matricula de Efector:Codigo de Profesion',
+    'OSPAT (AMR):Matricula de Efector:Codigo de Profesion',
+    'Caja Forense (AMR):Matricula de Efector:Codigo de Profesion'
     // 'Swiss Medical:Cuit Swiss Medical',
   )
   // , separa los origenes permitidos en el service
@@ -136,6 +140,18 @@ export class ElegibilidadController {
       case 'ACA Salud (AMR)':
         elegibilidad = await this.amrService.getElegibilidadAca(arrayValues);
         break;
+      case 'IAPOS (AMR)':
+          elegibilidad = await this.amrService.getElegibilidadIapos(arrayValues);
+          break;
+      case 'AMR Salud':
+          elegibilidad = await this.amrService.getElegibilidadAmrSalud(arrayValues);
+          break;
+      case 'OSPAT (AMR)':
+          elegibilidad = await this.amrService.getElegibilidadOspat(arrayValues);
+          break;
+      case 'Caja Forense (AMR)':
+          elegibilidad = await this.amrService.getElegibilidadCajaForense(arrayValues);
+          break;
     }
     return {elegibilidad};
   }
