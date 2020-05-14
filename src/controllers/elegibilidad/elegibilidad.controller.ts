@@ -21,6 +21,7 @@ import { FederadaHttpService } from 'src/services/federada-http/federada-http.se
 import { EsencialHttpService } from 'src/services/esencial-http/esencial-http.service';
 import { IaposHttpService } from 'src/services/iapos-http/iapos-http.service';
 import { SwissMedicalHttpService } from 'src/services/swiss-medical-http/swiss-medical-http.service';
+import { AmrHttpService } from 'src/services/amr-http/amr-http.service';
 @Controller('elegibilidad')
 @UseGuards(RolesGuard)
 export class ElegibilidadController {
@@ -36,12 +37,15 @@ export class ElegibilidadController {
     private esencialService: EsencialHttpService,
     private iaposService: IaposHttpService,
     private swissService: SwissMedicalHttpService,
+    private amrService: AmrHttpService,
   ) {}
   @ApiTags(
     'Permite identificar si una persona posee elegibilidad en un origen particular',
     'Federada:Nro de Prestador Federada:Nro de Sub Prestador Federada',
     'Esencial:Codigo de Proveedor Esencial',
     'IAPOS',
+    'Swiss Medical (AMR):Matricula de Efector:Codigo de Profesion',
+    'ACA Salud (AMR):Matricula de Efector:Codigo de Profesion',
     // 'Swiss Medical:Cuit Swiss Medical',
   )
   // , separa los origenes permitidos en el service
@@ -125,6 +129,12 @@ export class ElegibilidadController {
         break;
       case 'IAPOS':
         elegibilidad = await this.iaposService.getElegibilidad(arrayValues);
+        break;
+      case 'Swiss Medical (AMR)':
+        elegibilidad = await this.amrService.getElegibilidadSwiss(arrayValues);
+        break;
+      case 'ACA Salud (AMR)':
+        elegibilidad = await this.amrService.getElegibilidadAca(arrayValues);
         break;
     }
     return {elegibilidad};
