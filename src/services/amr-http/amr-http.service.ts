@@ -40,41 +40,47 @@ export class AmrHttpService {
     }
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 8)).subscribe((data) => {
-        let estatus;
-        if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
-          estatus = 1;
-        } else {
-          estatus = 0;
+        let estatus = 0;
+        try {
+          if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
+            estatus = 1;
+          }
+        } catch (error) {
+          console.log(error)
         }
         resolve({ data, estatus });
       });
     });
   }
-  
+
   getElegibilidadAca(arrayValues): any {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 5)).subscribe((data) => {
-        let estatus;
-        if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
-          estatus = 1;
-        } else {
-          estatus = 0;
+        let estatus = 0;
+        try {
+          if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
+            estatus = 1;
+          }
+        } catch (error) {
+          console.log(error)
         }
         resolve({ data, estatus });
       });
     });
   }
-  
+
   getElegibilidadIapos(arrayValues): any {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 1)).subscribe((data) => {
-        let estatus;
-        if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
-          estatus = 1;
-        } else {
-          estatus = 0;
+        let estatus = 0;
+        try {
+          if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
+            estatus = 1;
+          }
+        } catch (error) {
+          console.log(error)
         }
         resolve({ data, estatus });
       });
@@ -85,11 +91,13 @@ export class AmrHttpService {
     const afiliado = arrayValues[2];
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 2)).subscribe((data) => {
-        let estatus;
-        if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
-          estatus = 1;
-        } else {
-          estatus = 0;
+        let estatus = 0;
+        try {
+          if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
+            estatus = 1;
+          }
+        } catch (error) {
+          console.log(error)
         }
         resolve({ data, estatus });
       });
@@ -100,11 +108,13 @@ export class AmrHttpService {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 3)).subscribe((data) => {
-        let estatus;
-        if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
-          estatus = 1;
-        } else {
-          estatus = 0;
+        let estatus = 0;
+        try {
+          if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
+            estatus = 1;
+          }
+        } catch (error) {
+          console.log(error)
         }
         resolve({ data, estatus });
       });
@@ -115,17 +125,17 @@ export class AmrHttpService {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 4)).subscribe((data) => {
-        let estatus;
-        if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
-          estatus = 1;
-        } else {
-          estatus = 0;
+        let estatus = 0;
+        try {
+          if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
+            estatus = 1;
+          }
+        } catch (error) {
+          console.log(error)
         }
         resolve({ data, estatus });
       });
     });
   }
 
-  
-  
 }
