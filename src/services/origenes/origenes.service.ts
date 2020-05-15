@@ -10,12 +10,14 @@ export class OrigenesService {
   async findAll(): Promise<any> {
     return await this.origenModel
       .find()
+      .sort({description: 1})
       .lean()
       .exec();
   }
   async findAllPopulated(): Promise<any> {
     const origenes =  await this.origenModel
       .find()
+      .sort({description: 1})
       .lean()
       .populate({path: 'atributos', populate: 'endpoint'})
       .exec();
