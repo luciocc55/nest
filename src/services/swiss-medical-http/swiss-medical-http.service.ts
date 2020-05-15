@@ -1,6 +1,7 @@
 import { Injectable, HttpService } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { FunctionsService } from '../functions';
 
 @Injectable()
 export class SwissMedicalHttpService {
@@ -16,18 +17,17 @@ export class SwissMedicalHttpService {
     bloqueado: 0,
     recordar: 0,
   };
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly httpService: HttpService, private functionService: FunctionsService) {}
   async elegibilidad(arrayValues): Promise<Observable<any>> {
     const headers = await this.getSessionHeaders(arrayValues[0]);
-
-    console.log(headers)
+    const date = this.functionService.returnDateFormat3(new Date());
     return this.httpService
       .post(
         this.url + this.urlPlat + 'elegibilidad/',
         {
           creden: arrayValues[2],
-          alta: "20200512",
-          fecdif: "20200512",
+          alta: date,
+          fecdif: date,
         },
         { headers },
       )
@@ -66,7 +66,7 @@ export class SwissMedicalHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues)).subscribe((data) => {
         let estatus;
-        if (data.o_Status === 'SI') {
+        if (data.rechaCabecera !== 2) {
           estatus = 1;
         } else {
           estatus = 0;

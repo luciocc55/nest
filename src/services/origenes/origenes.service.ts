@@ -20,12 +20,23 @@ export class OrigenesService {
       .populate({path: 'atributos', populate: 'endpoint'})
       .exec();
     origenes.forEach((element, index) => {
+
       const atr = [];
       element.atributos.forEach((atributo) => {
         if (!atr.find(x => (x._id === atributo._id))) {
           atr.push(atributo);
         }
       });
+      atr.forEach((atriElement, indexAtr) => {
+        const serv = [];
+        atriElement.endpoint.forEach(endpoint => {
+          if (!serv.find(x => (x.path === endpoint.path))) {
+            serv.push(endpoint);
+          }
+        });
+        atr[indexAtr].endpoint = serv;
+      });
+
       origenes[index].atributos = atr;
     });
     return origenes;
