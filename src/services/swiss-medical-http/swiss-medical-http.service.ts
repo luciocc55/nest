@@ -1,6 +1,7 @@
 import { Injectable, HttpService } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { FunctionsService } from '../functions';
 
 @Injectable()
 export class SwissMedicalHttpService {
@@ -10,24 +11,23 @@ export class SwissMedicalHttpService {
   usrLoginName = 'suap';
   password = 'suap2018';
   device = {
-    device: {
-      messagingid: '132H12312',
-      deviceid: '192.168.45.747',
-      devicename: 'DELL-2Y0-DG',
-      bloqueado: 0,
-      recordar: 0,
-    },
+    messagingid: '132H12312',
+    deviceid: '192.168.45.747',
+    devicename: 'DELL-2Y0-DG',
+    bloqueado: 0,
+    recordar: 0,
   };
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly httpService: HttpService, private functionService: FunctionsService) {}
   async elegibilidad(arrayValues): Promise<Observable<any>> {
-    const headers = this.getSessionHeaders('30629621934');
+    const headers = await this.getSessionHeaders(arrayValues[0]);
+    const date = this.functionService.returnDateFormat3(new Date());
     return this.httpService
       .post(
-        this.url + 'v0/auth-login/',
+        this.url + this.urlPlat + 'elegibilidad/',
         {
-          p_Prestador: arrayValues[0],
-          p_SubPrestador: arrayValues[1],
-          p_NroDoc: arrayValues[2],
+          creden: arrayValues[2],
+          alta: date,
+          fecdif: date,
         },
         { headers },
       )
@@ -66,7 +66,7 @@ export class SwissMedicalHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues)).subscribe((data) => {
         let estatus;
-        if (data.o_Status === 'SI') {
+        if (data.rechaCabecera !== 2) {
           estatus = 1;
         } else {
           estatus = 0;

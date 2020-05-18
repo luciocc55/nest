@@ -56,6 +56,10 @@ export class FunctionsService {
     const returnUniques = [...new Set(array.map(item => item[object]))];
     return returnUniques;
   }
+  returnUniquesArray(array) {
+    const returnUniques = [...new Set(array.map(item => item))];
+    return returnUniques;
+  }
   titleCase(str) {
     return str
       .toLowerCase()
@@ -105,6 +109,12 @@ export class FunctionsService {
   }
   returnDate(fecha) {
     return moment(fecha).format('YYYY-MM-DD');
+  }
+  returnDateFormat2(fecha) {
+    return moment(fecha).format('YYYY/MM/DD');
+  }
+  returnDateFormat3(fecha) {
+    return moment(fecha).format('YYYYMMDD');
   }
   returnBoolean(value) {
     if (value === null) {

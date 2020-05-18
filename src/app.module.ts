@@ -21,6 +21,8 @@ import { AtributosEstaticosModule } from './services/atributos-estaticos/atribut
 import { OrigenesContModule } from './controllers/origenes-cont/origenes-cont.module';
 import { SwissMedicalHttpModule } from './services/swiss-medical-http/swiss-medical-http.module';
 import { EsencialHttpModule } from './services/esencial-http/esencial-http.module';
+import { AmrHttpModule } from './services/amr-http/amr-http.module';
+import { IaposHttpModule } from './services/iapos-http/iapos-http.module';
 
 @Module({
   imports: [
@@ -53,6 +55,8 @@ import { EsencialHttpModule } from './services/esencial-http/esencial-http.modul
     OrigenesContModule,
     SwissMedicalHttpModule,
     EsencialHttpModule,
+    IaposHttpModule,
+    AmrHttpModule,
   ],
   controllers: [],
 })

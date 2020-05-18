@@ -9,7 +9,7 @@ import { UsersServiceModule } from '../users/users.module';
   imports: [
     JwtModule.register({
       secret: environment.secretKey,
-      signOptions: { expiresIn: '60m' },
+      signOptions: { expiresIn: '180m' },
     }),
     UsersServiceModule,
   ],

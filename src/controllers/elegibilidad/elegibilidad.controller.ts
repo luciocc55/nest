@@ -19,6 +19,9 @@ import { PrestadoresService } from 'src/services/prestadores/prestadores.service
 import { UsersService } from 'src/services/users/users.service';
 import { FederadaHttpService } from 'src/services/federada-http/federada-http.service';
 import { EsencialHttpService } from 'src/services/esencial-http/esencial-http.service';
+import { IaposHttpService } from 'src/services/iapos-http/iapos-http.service';
+import { SwissMedicalHttpService } from 'src/services/swiss-medical-http/swiss-medical-http.service';
+import { AmrHttpService } from 'src/services/amr-http/amr-http.service';
 @Controller('elegibilidad')
 @UseGuards(RolesGuard)
 export class ElegibilidadController {
@@ -32,12 +35,22 @@ export class ElegibilidadController {
     private usuariosService: UsersService,
     private federadaService: FederadaHttpService,
     private esencialService: EsencialHttpService,
+    private iaposService: IaposHttpService,
+    private swissService: SwissMedicalHttpService,
+    private amrService: AmrHttpService,
   ) {}
   @ApiTags(
-    'Permite identificar si una persona tiene permitido',
+    'Permite identificar si una persona posee elegibilidad en un origen particular',
     'Federada:Nro de Prestador Federada:Nro de Sub Prestador Federada',
     'Esencial:Codigo de Proveedor Esencial',
-    // 'Swiss Medical:Cuit Swiss Medical',
+    'IAPOS',
+    'Swiss Medical (AMR):Matricula de Efector:Codigo de Profesion',
+    'ACA Salud (AMR):Matricula de Efector:Codigo de Profesion',
+    'IAPOS (AMR):Matricula de Efector:Codigo de Profesion',
+    'AMR Salud:Matricula de Efector:Codigo de Profesion',
+    'OSPAT (AMR):Matricula de Efector:Codigo de Profesion',
+    'Caja Forense (AMR):Matricula de Efector:Codigo de Profesion',
+    'Swiss Medical:Cuit Swiss Medical',
   )
   // , separa los origenes permitidos en el service
   // : separa los atributos necesarios para ese origen
@@ -112,11 +125,33 @@ export class ElegibilidadController {
       case 'Federada':
         elegibilidad = await this.federadaService.getElegibilidad(arrayValues);
         break;
-      // case 'Swiss Medical':
-      //   break;
+      case 'Swiss Medical':
+        elegibilidad = await this.swissService.getElegibilidad(arrayValues);
+        break;
       case 'Esencial':
         elegibilidad = await this.esencialService.getElegibilidad(arrayValues);
         break;
+      case 'IAPOS':
+        elegibilidad = await this.iaposService.getElegibilidad(arrayValues);
+        break;
+      case 'Swiss Medical (AMR)':
+        elegibilidad = await this.amrService.getElegibilidadSwiss(arrayValues);
+        break;
+      case 'ACA Salud (AMR)':
+        elegibilidad = await this.amrService.getElegibilidadAca(arrayValues);
+        break;
+      case 'IAPOS (AMR)':
+          elegibilidad = await this.amrService.getElegibilidadIapos(arrayValues);
+          break;
+      case 'AMR Salud':
+          elegibilidad = await this.amrService.getElegibilidadAmrSalud(arrayValues);
+          break;
+      case 'OSPAT (AMR)':
+          elegibilidad = await this.amrService.getElegibilidadOspat(arrayValues);
+          break;
+      case 'Caja Forense (AMR)':
+          elegibilidad = await this.amrService.getElegibilidadCajaForense(arrayValues);
+          break;
     }
     return {elegibilidad};
   }
