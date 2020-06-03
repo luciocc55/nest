@@ -6,11 +6,17 @@ import { DatosElegibilidad } from 'src/interfaces/datos-elegibilidad';
 
 @Injectable()
 export class EsencialHttpService {
-    url = 'http://ws.medicinaesencial.com.ar/GestosWS/';
+    url;
     headers = { 'Content-Type': 'text/xml' };
     constructor(
         private readonly httpService: HttpService,
-      ) {}
+      ) {
+        if (process.env.Production === 'true') {
+          this.url = 'http://ws.medicinaesencial.com.ar/GestosWS/';
+        } else {
+          this.url = 'http://ws.medicinaesencial.com.ar/GestOSWSTest/';
+        }
+      }
     async elegibilidad(arrayValues): Promise<Observable<any>> {
         const xml =
         `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ges="GestOS">
