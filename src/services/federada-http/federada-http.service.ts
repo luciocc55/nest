@@ -1,6 +1,7 @@
 import { Injectable, HttpService } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { DatosElegibilidad } from 'src/interfaces/datos-elegibilidad';
 
 @Injectable()
 export class FederadaHttpService {
@@ -30,12 +31,32 @@ export class FederadaHttpService {
         return new Promise(async resolve => {
           (await this.elegibilidad(arrayValues)).subscribe(data => {
             let estatus;
+            let datos: DatosElegibilidad;
             if (data.o_Status === 'SI') {
                 estatus = 1;
+                datos = {
+                  nroAfiliado: data.o_GruNro + '0' + data.o_IntNro,
+                  nroDocumento: data.o_NroDoc,
+                  estadoAfiliado: data.o_Status === 'SI' ? true : false,
+                  // tslint:disable-next-line: radix
+                  edad: parseInt(data.o_Status),
+                  voluntario: data.o_SitFiscal === 'O' ? true : false,
+                  fechaNac: data.o_FecNac,
+                  plan: data.o_PlanCod,
+                  planDescripcion: data.o_PlanDesc,
+                  genero: data.o_Sexo === 'M' ? 'Masculino' : 'Femenino',
+                  codigoPostal: data.o_CodPos,
+                  localidad: data.o_DescLocali,
+                  nombreApellido: data.o_Apellido + ',' + data.o_Nombres,
+                  servicio: data.o_Status === 'SI' ? true : false,
+                  tipoDocumento: data.o_TipDoc ,
+                  tipoDocumentoDescripcion: '',
+                  recupero: data.o_SitFiscal === 'O' ? true : false,
+                };
             } else {
               estatus = 0;
             }
-            resolve({data, estatus});
+            resolve({ data, estatus, datosFinales: datos });
           });
         });
       }
