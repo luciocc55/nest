@@ -22,6 +22,7 @@ import { EsencialHttpService } from 'src/services/esencial-http/esencial-http.se
 import { IaposHttpService } from 'src/services/iapos-http/iapos-http.service';
 import { SwissMedicalHttpService } from 'src/services/swiss-medical-http/swiss-medical-http.service';
 import { AmrHttpService } from 'src/services/amr-http/amr-http.service';
+import { RediHttpService } from 'src/services/redi-http/redi-http.service';
 @Controller('elegibilidad')
 @UseGuards(RolesGuard)
 export class ElegibilidadController {
@@ -38,6 +39,7 @@ export class ElegibilidadController {
     private iaposService: IaposHttpService,
     private swissService: SwissMedicalHttpService,
     private amrService: AmrHttpService,
+    private redIService: RediHttpService,
   ) {}
   @ApiTags(
     'Permite identificar si una persona posee elegibilidad en un origen particular',
@@ -51,6 +53,14 @@ export class ElegibilidadController {
     'OSPAT (AMR):Matricula de Efector:Codigo de Profesion',
     'Caja Forense (AMR):Matricula de Efector:Codigo de Profesion',
     'Swiss Medical:Cuit Swiss Medical',
+    'Esencial (Red-I)',
+    'Federada Salud (Red-I)',
+    'Galeno (Red-I)',
+    'OSSEG (Red-I)',
+    'OSPE (Red-I)',
+    'OSDOP (Red-I)',
+    'Demi Salud (Red-I)',
+    'Proapro (Red-I)',
   )
   // , separa los origenes permitidos en el service
   // : separa los atributos necesarios para ese origen
@@ -66,7 +76,10 @@ export class ElegibilidadController {
       this.atribustoEstaticosService.findEstaticosOrigen(path, data.origen),
     ]);
     const usuario = await this.usuariosService.findById(user);
-    const prestadores = await this.functionService.returnUniques(usuario['prestadores'], 'prestador');
+    const prestadores = await this.functionService.returnUniques(
+      usuario['prestadores'],
+      'prestador',
+    );
     const arrayValues = [];
     for (const atributo of atributos) {
       const lista = this.functionService.returnUniques(
@@ -77,22 +90,32 @@ export class ElegibilidadController {
         throw new HttpException(
           {
             status: HttpStatus.BAD_REQUEST,
-            error: 'Este atributo ' + atributo.description + ' no tiene ningun atributo asociado',
+            error:
+              'Este atributo ' +
+              atributo.description +
+              ' no tiene ningun atributo asociado',
           },
           400,
         );
       }
       let value;
       let from = 'prestador';
-      value = await this.prestadoresService.findOneSearchAtributos({atributo: lista , prestador: prestadores });
+      value = await this.prestadoresService.findOneSearchAtributos({
+        atributo: lista,
+        prestador: prestadores,
+      });
       if (!value) {
-        value = await this.atributosUserService.findSearch({atributo: lista});
+        value = await this.atributosUserService.findSearch({ atributo: lista });
         from = 'usuario';
         if (!value) {
           throw new HttpException(
             {
               status: HttpStatus.BAD_REQUEST,
-              error: 'Este atributo ' + value.atributo.description + ' no esta asociado al ' + from,
+              error:
+                'Este atributo ' +
+                value.atributo.description +
+                ' no esta asociado al ' +
+                from,
             },
             400,
           );
@@ -102,7 +125,11 @@ export class ElegibilidadController {
         throw new HttpException(
           {
             status: HttpStatus.BAD_REQUEST,
-            error: 'Este atributo ' + value.atributo.description + ' no esta habilitado para este ' + from,
+            error:
+              'Este atributo ' +
+              value.atributo.description +
+              ' no esta habilitado para este ' +
+              from,
           },
           400,
         );
@@ -111,7 +138,10 @@ export class ElegibilidadController {
         throw new HttpException(
           {
             status: HttpStatus.BAD_REQUEST,
-            error: 'Este atributo ' + value.atributo.description + ' no esta habilitado',
+            error:
+              'Este atributo ' +
+              value.atributo.description +
+              ' no esta habilitado',
           },
           400,
         );
@@ -141,18 +171,54 @@ export class ElegibilidadController {
         elegibilidad = await this.amrService.getElegibilidadAca(arrayValues);
         break;
       case 'IAPOS (AMR)':
-          elegibilidad = await this.amrService.getElegibilidadIapos(arrayValues);
-          break;
+        elegibilidad = await this.amrService.getElegibilidadIapos(arrayValues);
+        break;
       case 'AMR Salud':
-          elegibilidad = await this.amrService.getElegibilidadAmrSalud(arrayValues);
-          break;
+        elegibilidad = await this.amrService.getElegibilidadAmrSalud(
+          arrayValues,
+        );
+        break;
       case 'OSPAT (AMR)':
-          elegibilidad = await this.amrService.getElegibilidadOspat(arrayValues);
-          break;
+        elegibilidad = await this.amrService.getElegibilidadOspat(arrayValues);
+        break;
       case 'Caja Forense (AMR)':
-          elegibilidad = await this.amrService.getElegibilidadCajaForense(arrayValues);
-          break;
+        elegibilidad = await this.amrService.getElegibilidadCajaForense(
+          arrayValues,
+        );
+        break;
+      case 'Esencial (Red-I)':
+        elegibilidad = await this.redIService.getElegibilidadEsencial(
+          arrayValues,
+        );
+        break;
+      case 'Federada Salud (Red-I)':
+        elegibilidad = await this.redIService.getElegibilidadFederada(
+          arrayValues,
+        );
+        break;
+      case 'Galeno (Red-I)':
+        elegibilidad = await this.redIService.getElegibilidadGaleno(
+          arrayValues,
+        );
+        break;
+      case 'OSSEG (Red-I)':
+        elegibilidad = await this.redIService.getElegibilidadOsseg(arrayValues);
+        break;
+      case 'OSPE (Red-I)':
+        elegibilidad = await this.redIService.getElegibilidadOspe(arrayValues);
+        break;
+      case 'OSDOP (Red-I)':
+        elegibilidad = await this.redIService.getElegibilidadOsdop(arrayValues);
+        break;
+      case 'Demi Salud (Red-I)':
+        elegibilidad = await this.redIService.getElegibilidadDemi(arrayValues);
+        break;
+      case 'Proapro (Red-I)':
+        elegibilidad = await this.redIService.getElegibilidadProapro(
+          arrayValues,
+        );
+        break;
     }
-    return {elegibilidad};
+    return { elegibilidad };
   }
 }
