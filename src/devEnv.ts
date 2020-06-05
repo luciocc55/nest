@@ -6,8 +6,8 @@ export const devEnvironment = {
     urlBaseFederada: 'https://api-test.federada.com/validador/v1.5.3/',
     redis: 'redis',
     mongo: 'mongo:27017',
-    mongoPassword: '3x9VWSw',
-    mongoUser: 'root',
+    mongoPassword: process.env.MONGO_INITDB_ROOT_USERNAME,
+    mongoUser: process.env.MONGO_INITDB_ROOT_PASSWORD,
     dataBase: 'autorizador',
     rootAdmin: {
       name: 'Lucio',
