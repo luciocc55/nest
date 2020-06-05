@@ -13,6 +13,7 @@ import { EsencialHttpModule } from 'src/services/esencial-http/esencial-http.mod
 import { IaposHttpModule } from 'src/services/iapos-http/iapos-http.module';
 import { SwissMedicalHttpModule } from 'src/services/swiss-medical-http/swiss-medical-http.module';
 import { AmrHttpModule } from 'src/services/amr-http/amr-http.module';
+import { RediHttpModule } from 'src/services/redi-http/redi-http.module';
 
 @Module({
   controllers: [ElegibilidadController],
@@ -30,6 +31,7 @@ import { AmrHttpModule } from 'src/services/amr-http/amr-http.module';
     IaposHttpModule,
     SwissMedicalHttpModule,
     AmrHttpModule,
+    RediHttpModule,
   ],
 })
 export class ElegibilidadModule {}

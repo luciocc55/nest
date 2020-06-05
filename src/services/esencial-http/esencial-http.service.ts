@@ -2,14 +2,21 @@ import { Injectable, HttpService } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import xmlParser = require('xml2json');
+import { DatosElegibilidad } from 'src/interfaces/datos-elegibilidad';
 
 @Injectable()
 export class EsencialHttpService {
-    url = 'http://ws.medicinaesencial.com.ar/GestosWSTest/';
+    url;
     headers = { 'Content-Type': 'text/xml' };
     constructor(
         private readonly httpService: HttpService,
-      ) {}
+      ) {
+        if (process.env.Production === 'true') {
+          this.url = 'http://ws.medicinaesencial.com.ar/GestosWS/';
+        } else {
+          this.url = 'http://ws.medicinaesencial.com.ar/GestOSWSTest/';
+        }
+      }
     async elegibilidad(arrayValues): Promise<Observable<any>> {
         const xml =
         `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ges="GestOS">
@@ -52,16 +59,37 @@ export class EsencialHttpService {
         return new Promise(async resolve => {
           (await this.elegibilidad(arrayValues)).subscribe(data => {
             let estatus;
+            let datos: DatosElegibilidad;
             try {
-              if (data['SOAP-ENV:Envelope']['SOAP-ENV:Body']['PSOC063.ExecuteResponse']['Sdtvalidacionsocio']['SINEdo'] === 'AC') {
+              const info = data['SOAP-ENV:Envelope']['SOAP-ENV:Body']['PSOC063.ExecuteResponse']['Sdtvalidacionsocio'];
+              if (info['SINEdo'] === 'AC') {
                 estatus = 1;
+                datos = {
+                  nroAfiliado: info['SocCodSINCod'],
+                  nroDocumento: info['SINNroDoc'],
+                  estadoAfiliado: info['SINEdo'] === 'AC' ? true : false,
+                  // tslint:disable-next-line: radix
+                  edad: 0,
+                  voluntario: info['TSODsc'] === 'Voluntario' ? true : false,
+                  fechaNac: '',
+                  plan: info['GRPCod'],
+                  planDescripcion: info['GRPNom'],
+                  genero: '',
+                  codigoPostal: '',
+                  localidad: '',
+                  nombreApellido: info['SINAyN'],
+                  servicio: null,
+                  tipoDocumento: '',
+                  tipoDocumentoDescripcion: '',
+                  recupero: null,
+                };
               } else {
                 estatus = 0;
               }
             } catch (error) {
               estatus = 0;
             }
-            resolve({data, estatus});
+            resolve({ data, estatus, datosFinales: datos });
           });
         });
       }

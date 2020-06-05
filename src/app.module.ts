@@ -23,6 +23,7 @@ import { SwissMedicalHttpModule } from './services/swiss-medical-http/swiss-medi
 import { EsencialHttpModule } from './services/esencial-http/esencial-http.module';
 import { AmrHttpModule } from './services/amr-http/amr-http.module';
 import { IaposHttpModule } from './services/iapos-http/iapos-http.module';
+import { RediHttpModule } from './services/redi-http/redi-http.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { IaposHttpModule } from './services/iapos-http/iapos-http.module';
     EsencialHttpModule,
     IaposHttpModule,
     AmrHttpModule,
+    RediHttpModule,
   ],
   controllers: [],
 })
