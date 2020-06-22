@@ -8,8 +8,15 @@ export class AmrHttpService {
   url =
     'https://www.amr.org.ar/gestion/webServices/autorizador/v9/ambulatorio/';
   headers = { Authorization: 'Basic  OTgwMTI6TllEVURIQ0s=' };
-  constructor(private httpService: HttpService, private functionService: FunctionsService) {}
-  async elegibilidad(arrayValues, afiliado, codigoConvenio): Promise<Observable<any>> {
+  constructor(
+    private httpService: HttpService,
+    private functionService: FunctionsService,
+  ) {}
+  async elegibilidad(
+    arrayValues,
+    afiliado,
+    codigoConvenio,
+  ): Promise<Observable<any>> {
     const params: any = {};
     params.codigoProfesionEfector = arrayValues[1];
     params.matriculaEfector = arrayValues[0];
@@ -21,10 +28,10 @@ export class AmrHttpService {
     params.fecha = date;
     params.codigoDelegacion = 1;
     return this.httpService
-      .get(
-        this.url + 'elegibilidad/afiliado',
-        { headers: this.headers, params},
-      )
+      .get(this.url + 'elegibilidad/afiliado', {
+        headers: this.headers,
+        params,
+      })
       .pipe(
         map((res) => res.data),
         catchError((e) => {
@@ -33,71 +40,39 @@ export class AmrHttpService {
       );
   }
 
-  getElegibilidadSwiss(arrayValues): any {
-    let afiliado = arrayValues[3];
-    if (afiliado.startsWith('800006')) {
-        afiliado = afiliado.replace('800006', '');
-    }
-    return new Promise(async (resolve) => {
-      (await this.elegibilidad(arrayValues, afiliado, 8)).subscribe((data) => {
-        let estatus = 0;
-        try {
-          if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
-            estatus = 1;
-          }
-        } catch (error) {
-          console.log(error)
-        }
-        resolve({ data, estatus });
-      });
-    });
-  }
-
-  getElegibilidadAca(arrayValues): any {
-    const afiliado = arrayValues[3];
-    return new Promise(async (resolve) => {
-      (await this.elegibilidad(arrayValues, afiliado, 5)).subscribe((data) => {
-        let estatus = 0;
-        try {
-          if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
-            estatus = 1;
-          }
-        } catch (error) {
-          console.log(error)
-        }
-        resolve({ data, estatus });
-      });
-    });
-  }
-
   getElegibilidadIapos(arrayValues): any {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 1)).subscribe((data) => {
         let estatus = 0;
         try {
-          if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
+          if (
+            data.respuestaElegibilidadAfiliado.estadoGeneral
+              .tiposRespuestaValidacion !== 'ERROR'
+          ) {
             estatus = 1;
           }
         } catch (error) {
-          console.log(error)
+          console.log(error);
         }
         resolve({ data, estatus });
       });
     });
   }
-
   getElegibilidadAmrSalud(arrayValues): any {
     const afiliado = arrayValues[2];
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 2)).subscribe((data) => {
         let estatus = 0;
         try {
-          if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
+          if (
+            data.respuestaElegibilidadAfiliado.estadoGeneral
+              .tiposRespuestaValidacion !== 'ERROR'
+          ) {
             estatus = 1;
           }
         } catch (error) {
-          console.log(error)
+          console.log(error);
         }
         resolve({ data, estatus });
       });
@@ -110,11 +85,14 @@ export class AmrHttpService {
       (await this.elegibilidad(arrayValues, afiliado, 3)).subscribe((data) => {
         let estatus = 0;
         try {
-          if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
+          if (
+            data.respuestaElegibilidadAfiliado.estadoGeneral
+              .tiposRespuestaValidacion !== 'ERROR'
+          ) {
             estatus = 1;
           }
         } catch (error) {
-          console.log(error)
+          console.log(error);
         }
         resolve({ data, estatus });
       });
@@ -127,15 +105,174 @@ export class AmrHttpService {
       (await this.elegibilidad(arrayValues, afiliado, 4)).subscribe((data) => {
         let estatus = 0;
         try {
-          if (data.respuestaElegibilidadAfiliado.estadoGeneral.tiposRespuestaValidacion !== 'ERROR') {
+          if (
+            data.respuestaElegibilidadAfiliado.estadoGeneral
+              .tiposRespuestaValidacion !== 'ERROR'
+          ) {
             estatus = 1;
           }
         } catch (error) {
-          console.log(error)
+          console.log(error);
         }
         resolve({ data, estatus });
       });
     });
   }
 
+  getElegibilidadAca(arrayValues): any {
+    const afiliado = arrayValues[3];
+    return new Promise(async (resolve) => {
+      (await this.elegibilidad(arrayValues, afiliado, 5)).subscribe((data) => {
+        let estatus = 0;
+        try {
+          if (
+            data.respuestaElegibilidadAfiliado.estadoGeneral
+              .tiposRespuestaValidacion !== 'ERROR'
+          ) {
+            estatus = 1;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        resolve({ data, estatus });
+      });
+    });
+  }
+  getElegibilidadCienciasEco2(arrayValues): any {
+    const afiliado = arrayValues[3];
+    return new Promise(async (resolve) => {
+      (await this.elegibilidad(arrayValues, afiliado, 7)).subscribe((data) => {
+        let estatus = 0;
+        try {
+          if (
+            data.respuestaElegibilidadAfiliado.estadoGeneral
+              .tiposRespuestaValidacion !== 'ERROR'
+          ) {
+            estatus = 1;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        resolve({ data, estatus });
+      });
+    });
+  }
+  getElegibilidadSwiss(arrayValues): any {
+    let afiliado = arrayValues[3];
+    if (afiliado.startsWith('800006')) {
+      afiliado = afiliado.replace('800006', '');
+    }
+    return new Promise(async (resolve) => {
+      (await this.elegibilidad(arrayValues, afiliado, 8)).subscribe((data) => {
+        let estatus = 0;
+        try {
+          if (
+            data.respuestaElegibilidadAfiliado.estadoGeneral
+              .tiposRespuestaValidacion !== 'ERROR'
+          ) {
+            estatus = 1;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        resolve({ data, estatus });
+      });
+    });
+  }
+  getElegibilidadOsde(arrayValues): any {
+    const afiliado = arrayValues[3];
+    return new Promise(async (resolve) => {
+      (await this.elegibilidad(arrayValues, afiliado, 10)).subscribe((data) => {
+        let estatus = 0;
+        try {
+          if (
+            data.respuestaElegibilidadAfiliado.estadoGeneral
+              .tiposRespuestaValidacion !== 'ERROR'
+          ) {
+            estatus = 1;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        resolve({ data, estatus });
+      });
+    });
+  }
+  getElegibilidadUniversidad(arrayValues): any {
+    const afiliado = arrayValues[3];
+    return new Promise(async (resolve) => {
+      (await this.elegibilidad(arrayValues, afiliado, 11)).subscribe((data) => {
+        let estatus = 0;
+        try {
+          if (
+            data.respuestaElegibilidadAfiliado.estadoGeneral
+              .tiposRespuestaValidacion !== 'ERROR'
+          ) {
+            estatus = 1;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        resolve({ data, estatus });
+      });
+    });
+  }
+
+  getElegibilidadArqEIngen(arrayValues): any {
+    const afiliado = arrayValues[3];
+    return new Promise(async (resolve) => {
+      (await this.elegibilidad(arrayValues, afiliado, 22)).subscribe((data) => {
+        let estatus = 0;
+        try {
+          if (
+            data.respuestaElegibilidadAfiliado.estadoGeneral
+              .tiposRespuestaValidacion !== 'ERROR'
+          ) {
+            estatus = 1;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        resolve({ data, estatus });
+      });
+    });
+  }
+  getElegibilidadSmaiEpe(arrayValues): any {
+    const afiliado = arrayValues[2];
+    return new Promise(async (resolve) => {
+      (await this.elegibilidad(arrayValues, afiliado, 24)).subscribe((data) => {
+        let estatus = 0;
+        try {
+          if (
+            data.respuestaElegibilidadAfiliado.estadoGeneral
+              .tiposRespuestaValidacion !== 'ERROR'
+          ) {
+            estatus = 1;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        resolve({ data, estatus });
+      });
+    });
+  }
+  getElegibilidadPrevencion(arrayValues): any {
+    const afiliado = arrayValues[3];
+    return new Promise(async (resolve) => {
+      (await this.elegibilidad(arrayValues, afiliado, 41)).subscribe((data) => {
+        let estatus = 0;
+        try {
+          if (
+            data.respuestaElegibilidadAfiliado.estadoGeneral
+              .tiposRespuestaValidacion !== 'ERROR'
+          ) {
+            estatus = 1;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        resolve({ data, estatus });
+      });
+    });
+  }
 }

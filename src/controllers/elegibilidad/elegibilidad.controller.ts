@@ -51,7 +51,13 @@ export class ElegibilidadController {
     'IAPOS (AMR):Matricula de Efector:Codigo de Profesion',
     'AMR Salud:Matricula de Efector:Codigo de Profesion',
     'OSPAT (AMR):Matricula de Efector:Codigo de Profesion',
+    'Ciencias Economicas CA II (AMR):Matricula de Efector:Codigo de Profesion',
     'Caja Forense (AMR):Matricula de Efector:Codigo de Profesion',
+    'OSDE (AMR):Matricula de Efector:Codigo de Profesion',
+    'Universidad (AMR):Matricula de Efector:Codigo de Profesion',
+    'Arquitectura E Ingenieria Salud (AMR):Matricula de Efector:Codigo de Profesion',
+    'SMAI - EPE (AMR):Matricula de Efector:Codigo de Profesion',
+    'Prevencion Salud (AMR):Matricula de Efector:Codigo de Profesion',
     'Swiss Medical:Cuit Swiss Medical',
     'Esencial (Red-I)',
     'Federada Salud (Red-I)',
@@ -181,11 +187,40 @@ export class ElegibilidadController {
       case 'OSPAT (AMR)':
         elegibilidad = await this.amrService.getElegibilidadOspat(arrayValues);
         break;
+      case 'Ciencias Economicas CA II (AMR)':
+        elegibilidad = await this.amrService.getElegibilidadCienciasEco2(
+          arrayValues,
+        );
+        break;
       case 'Caja Forense (AMR)':
         elegibilidad = await this.amrService.getElegibilidadCajaForense(
           arrayValues,
         );
         break;
+      case 'OSDE (AMR)':
+        elegibilidad = await this.amrService.getElegibilidadOsde(arrayValues);
+        break;
+      case 'Universidad (AMR)':
+        elegibilidad = await this.amrService.getElegibilidadUniversidad(
+          arrayValues,
+        );
+        break;
+      case 'Arquitectura E Ingenieria Salud (AMR)':
+        elegibilidad = await this.amrService.getElegibilidadArqEIngen(
+          arrayValues,
+        );
+        break;
+      case 'SMAI - EPE (AMR)':
+        elegibilidad = await this.amrService.getElegibilidadSmaiEpe(
+          arrayValues,
+        );
+        break;
+      case 'Prevencion Salud (AMR)':
+        elegibilidad = await this.amrService.getElegibilidadPrevencion(
+          arrayValues,
+        );
+        break;
+
       case 'Esencial (Red-I)':
         elegibilidad = await this.redIService.getElegibilidadEsencial(
           arrayValues,
