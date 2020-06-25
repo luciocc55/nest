@@ -91,7 +91,7 @@ export class UsersService {
           }
         } else {
           if (element === 'atributos') {
-            await this.usuariosAtributosModel.deleteMany({user: id});
+            const del = await this.usuariosAtributosModel.deleteMany({user: id});
             const creates = await this.createBulkAtributos(id, usuario[element]);
           } else {
             user[element] = usuario[element];
@@ -132,7 +132,7 @@ export class UsersService {
           value: element.value,
           habilitado: element.habilitado,
         });
-        await createdUsuarioAtributo.save();
+        const saved = await createdUsuarioAtributo.save();
         creados = creados + 1;
         // tslint:disable-next-line: no-empty
       } catch (error) {}
