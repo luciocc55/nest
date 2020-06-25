@@ -297,9 +297,8 @@ export class UsersService {
     return await this.usuarioModel.find().exec();
   }
   async findUsuario(user): Promise<Users> {
-    const userLower = user.toLowerCase();
     return await this.usuarioModel
-      .findOne({ user: userLower })
+      .findOne({ user })
       .populate({path: 'role', populate: 'permissions'})
       .populate('prestadores.prestador')
       .populate({
