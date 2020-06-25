@@ -10,9 +10,9 @@ export const prodEnvironment = {
   mongoUser: process.env.MONGO_INITDB_ROOT_USERNAME,
   dataBase: 'autorizador',
   rootAdmin: {
-    name: 'Lucio',
-    lastName: 'Cesolari',
-    password: '515149lycc',
-    user: 'ares',
+    name: 'Admin',
+    lastName: 'Kozaca',
+    password: 'patricio1234',
+    user: 'adminPat',
   },
 };
