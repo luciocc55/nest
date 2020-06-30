@@ -111,7 +111,7 @@ export class ElegibilidadController {
         prestador: prestadores,
       });
       if (!value) {
-        value = await this.atributosUserService.findSearch({ atributo: lista });
+        value = await this.atributosUserService.findSearch({ atributo: lista, user: usuario._id });
         from = 'usuario';
         if (!value) {
           throw new HttpException(
@@ -119,7 +119,7 @@ export class ElegibilidadController {
               status: HttpStatus.BAD_REQUEST,
               error:
                 'Este atributo ' +
-                value.atributo.description +
+                atributo.description +
                 ' no esta asociado al ' +
                 from,
             },
@@ -133,7 +133,7 @@ export class ElegibilidadController {
             status: HttpStatus.BAD_REQUEST,
             error:
               'Este atributo ' +
-              value.atributo.description +
+              atributo.description +
               ' no esta habilitado para este ' +
               from,
           },
@@ -146,7 +146,7 @@ export class ElegibilidadController {
             status: HttpStatus.BAD_REQUEST,
             error:
               'Este atributo ' +
-              value.atributo.description +
+              atributo.description +
               ' no esta habilitado',
           },
           400,
