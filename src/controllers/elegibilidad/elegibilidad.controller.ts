@@ -5,6 +5,7 @@ import {
   Body,
   HttpStatus,
   HttpException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { RolesGuard } from 'src/guards/role/role.guard';
 import { ApiTags } from '@nestjs/swagger';
@@ -23,6 +24,7 @@ import { IaposHttpService } from 'src/services/iapos-http/iapos-http.service';
 import { SwissMedicalHttpService } from 'src/services/swiss-medical-http/swiss-medical-http.service';
 import { AmrHttpService } from 'src/services/amr-http/amr-http.service';
 import { RediHttpService } from 'src/services/redi-http/redi-http.service';
+import { LoggingInterceptor } from 'src/interceptors/logger/logger.interceptor';
 @Controller('elegibilidad')
 @UseGuards(RolesGuard)
 export class ElegibilidadController {
@@ -70,6 +72,7 @@ export class ElegibilidadController {
   )
   // , separa los origenes permitidos en el service
   // : separa los atributos necesarios para ese origen
+  @UseInterceptors(LoggingInterceptor)
   @Post('consultar')
   async list(@Body() data: Elegibilidad, @Token() token: string): Promise<any> {
     const path = '/autorizador/elegibilidad/consultar:post';
