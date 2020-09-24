@@ -24,6 +24,7 @@ import { EsencialHttpModule } from './services/esencial-http/esencial-http.modul
 import { AmrHttpModule } from './services/amr-http/amr-http.module';
 import { IaposHttpModule } from './services/iapos-http/iapos-http.module';
 import { RediHttpModule } from './services/redi-http/redi-http.module';
+import { AutorizacionModule } from './controllers/autorizacion/autorizacion.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { RediHttpModule } from './services/redi-http/redi-http.module';
     IaposHttpModule,
     AmrHttpModule,
     RediHttpModule,
+    AutorizacionModule,
   ],
   controllers: [],
 })

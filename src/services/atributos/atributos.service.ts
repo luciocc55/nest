@@ -71,6 +71,7 @@ export class AtributosService {
       .findOne(search, this.serializerBusquedas)
       .exec();
   }
+
   async update(id, newAtri): Promise<any> {
     const atributo = await this.findId(id);
     const dicc = Object.keys(newAtri);

@@ -25,11 +25,16 @@ async function bootstrap() {
   keys.forEach(element => {
     const keysElement = Object.keys(routes[element]);
     keysElement.forEach(element2 => {
-      const description = routes[element][element2]['tags'].toString().split(',')
+      const description = routes[element][element2]['tags'].toString().split(',');
       if (description.length > 1) {
         description.slice(1).forEach(atributosElement => {
-          const atributos = atributosElement.split(':')
-          orignesPermissions.push({path: element + ':' + element2, origen: atributos[0] , atributos: atributos.slice(1) });
+          const atributos = atributosElement.split(':');
+          const atributosParsed = [];
+          atributos.slice(1).forEach(atr => {
+            const tipo = atr.split('/');
+            atributosParsed.push({atributo: tipo[0], isEntry: tipo[1] ? tipo[1] : false});
+          });
+          orignesPermissions.push({path: element + ':' + element2, origen: atributos[0] , atributos: atributosParsed });
         });
       }
       permissions.push({path: element + ':' + element2, description: description[0]});

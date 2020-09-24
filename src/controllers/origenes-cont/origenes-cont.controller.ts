@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { OrigenesService } from 'src/services/origenes/origenes.service';
 import { ApiTags } from '@nestjs/swagger';
 import { RolesGuard } from 'src/guards/role/role.guard';

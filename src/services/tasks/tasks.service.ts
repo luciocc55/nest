@@ -67,7 +67,7 @@ export class TasksService {
     for (const service of environment.orignesPermissions) {
       const origen = await this.origenesService.create(service.origen, service.path);
       service.atributos.forEach((atributo, index) => {
-        this.atributosEstaticosService.updateServicios(atributo, service.path, origen._id, index);
+        this.atributosEstaticosService.updateServicios(atributo.atributo, atributo.isEntry, service.path, origen._id, index);
       });
     }
   }
