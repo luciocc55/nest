@@ -7,15 +7,22 @@ import { SinonimosService } from 'src/services/sinonimos/sinonimos.service';
 @Controller('extras')
 @UseGuards(RolesGuard)
 export class ExtrasControllerController {
-    constructor(private extrasService: ExtrasService, private sinonimosService: SinonimosService) {}
-    @ApiTags('Lista los tipos de extras existentes')
-    @Get('list')
-    async listado(): Promise<any> {
-      return await this.extrasService.find({});
+  constructor(
+    private extrasService: ExtrasService,
+    private sinonimosService: SinonimosService
+  ) {}
+  @ApiTags('Lista los tipos de extras existentes')
+  @Get('list')
+  async listado(): Promise<any> {
+    return await this.extrasService.find({});
+  }
+  @ApiTags('Lista los sinonimos existentes con la opcion de filtrar por tipo')
+  @Get('sinonimos')
+  async listarSinonimos(@Query() params): Promise<any> {
+    const filter: any = {};
+    if (params.tipo) {
+      filter.tipo = params.tipo;
     }
-    @ApiTags('Lista los sinonimos existentes con la opcion de filtrar por tipo')
-    @Get('sinonimos')
-    async listarSinonimos(@Query() params): Promise<any> {
-      return await this.sinonimosService.find({tipo: params.tipo});
-    }
+    return await this.sinonimosService.find(filter);
+  }
 }
