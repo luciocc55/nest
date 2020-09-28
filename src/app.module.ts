@@ -25,6 +25,9 @@ import { AmrHttpModule } from './services/amr-http/amr-http.module';
 import { IaposHttpModule } from './services/iapos-http/iapos-http.module';
 import { RediHttpModule } from './services/redi-http/redi-http.module';
 import { AutorizacionModule } from './controllers/autorizacion/autorizacion.module';
+import { ExtrasModule } from './services/extras/extras.module';
+import { SinonimosModule } from './services/sinonimos/sinonimos.module';
+import { ExtrasControllerModule } from './controllers/extras-controller/extras-controller.module';
 
 @Module({
   imports: [
@@ -61,6 +64,9 @@ import { AutorizacionModule } from './controllers/autorizacion/autorizacion.modu
     AmrHttpModule,
     RediHttpModule,
     AutorizacionModule,
+    ExtrasModule,
+    SinonimosModule,
+    ExtrasControllerModule,
   ],
   controllers: [],
 })

@@ -12,6 +12,8 @@ import { ConsumerService } from '../consummer/consummer.service';
 import { RedIHttpModule } from '../red-i-http/red-i-http.module';
 import { OrigenesModule } from '../origenes/origenes.module';
 import { AtributosEstaticosModule } from '../atributos-estaticos/atributos-estaticos.module';
+import { SinonimosModule } from '../sinonimos/sinonimos.module';
+import { ExtrasModule } from '../extras/extras.module';
 
 @Module({
   providers: [TasksService, ConsumerService],
@@ -22,6 +24,8 @@ import { AtributosEstaticosModule } from '../atributos-estaticos/atributos-estat
     PermissionsModule,
     RolesServiceModule,
     UsersServiceModule,
+    SinonimosModule,
+    ExtrasModule,
     RedIHttpModule,
     OrigenesModule,
     AtributosEstaticosModule,
