@@ -42,18 +42,24 @@ export class OrigenesService {
     });
     return origenes;
   }
+  nExist() {
+    throw new HttpException(
+      {
+        status: HttpStatus.BAD_REQUEST,
+        error: 'Este origen no existe',
+      },
+      400,
+    );
+  }
   async validateOrigenService(origen, path) {
     let validateOrigen;
     try {
       validateOrigen = await this.findOneSearch({ _id: origen});
+      if (!validateOrigen) {
+        this.nExist();
+      }
     } catch (error) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Este origen no existe',
-        },
-        400,
-      );
+      this.nExist();
     }
     const atr = validateOrigen.servicios.find(x => (x.path === path));
     if (!atr) {
