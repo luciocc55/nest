@@ -73,7 +73,7 @@ export class SwissMedicalHttpService {
       .post(
         this.url + this.urlPlat + 'registracion/',
         {
-          creden: arrayValues[3] + '|' + arrayValues[4],
+          creden: arrayValues[2] + '|' + arrayValues[3],
           alta: dateToday,
           fecdif: date,
           manual: 0,
@@ -86,7 +86,7 @@ export class SwissMedicalHttpService {
           param3: null,
           tipoEfector: 'CUIT',
           tipoPrescr: 'CUIT',
-          idEfector: arrayValues[2],
+          idEfector: arrayValues[0],
           idPrescr: arrayValues[1],
         },
         { headers },
