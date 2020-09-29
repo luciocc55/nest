@@ -48,7 +48,7 @@ export class SwissMedicalHttpService {
     return new Promise(async (resolve) => {
       (await this.autorizacion(arrayValues)).subscribe((data) => {
         let estatus;
-        if (data.cabecera.rechaCabecera === 0) {
+        if (data.cabecera?.rechaCabecera === 0) {
           estatus = 1;
         } else {
           estatus = 0;
@@ -60,9 +60,9 @@ export class SwissMedicalHttpService {
   async autorizacion(arrayValues): Promise<Observable<any>> {
     const headers = await this.getSessionHeaders(arrayValues[0]);
     const dateToday = this.functionService.returnDateFormat3(new Date());
-    const date = this.functionService.returnDateFormat3(arrayValues[6]);
-    const sumTotal = arrayValues[5].reduce((sum, current) => sum + current.cantidad, 0);
-    const prestaciones = arrayValues[5].reduce((cont, current) => {
+    const date = this.functionService.returnDateFormatFrom(arrayValues[5]);
+    const sumTotal = arrayValues[4].reduce((sum, current) => sum + current.cantidad, 0);
+    const prestaciones = arrayValues[4].reduce((cont, current) => {
       let i = '';
       if (cont) {
         i = '|*';

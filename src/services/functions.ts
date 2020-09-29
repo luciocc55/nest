@@ -116,6 +116,9 @@ export class FunctionsService {
   returnDateFormat3(fecha) {
     return moment(fecha).format('YYYYMMDD');
   }
+  returnDateFormatFrom(fecha) {
+    return moment(fecha, 'YYYY-MM-DD HH:mm:ss').format('YYYYMMDD');
+  }
   returnBoolean(value) {
     if (value === null) {
       return false;
