@@ -26,9 +26,6 @@ export class AtributosEstaticosService {
       }
     }
   }
-  async deleteAll(): Promise<any> {
-    return await this.atributosEstaticosModel.deleteMany({});
-  }
   async findEstaticosOrigen(path, origen, isEntry = false): Promise<any> {
     return await this.atributosEstaticosModel
       .find({ 'servicios.origen': origen , 'servicios.path': path, 'servicios.isEntry': isEntry})
