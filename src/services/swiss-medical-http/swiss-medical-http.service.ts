@@ -73,7 +73,7 @@ export class SwissMedicalHttpService {
       .post(
         this.url + this.urlPlat + 'registracion/',
         {
-          creden: arrayValues[2] + '|' + arrayValues[3],
+          creden: arrayValues[3]  + '|' + arrayValues[2] ,
           alta: dateToday,
           fecdif: date,
           manual: 0,
