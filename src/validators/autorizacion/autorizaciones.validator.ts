@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsBoolean, IsNumber, IsISO8601, IsArray } from 'class-validator';
+import { IsNotEmpty, IsBoolean, IsNumber, IsISO8601, IsArray, ValidateNested } from 'class-validator';
 
 class Prestaciones {
   @IsNotEmpty({
@@ -12,11 +12,12 @@ class Prestaciones {
   cantidad: number;
 }
 // tslint:disable-next-line: max-classes-per-file
-export class AtributosUsuarios {
+export class Autorizar {
   @IsNotEmpty({
     message: 'Origen es un campo requerido (origen)',
   })
   origen: string;
+  @ValidateNested({ each: true })
   @IsArray()
   prestaciones: Prestaciones[];
   @IsNotEmpty({

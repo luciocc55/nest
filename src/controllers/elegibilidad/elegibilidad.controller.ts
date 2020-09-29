@@ -3,8 +3,6 @@ import {
   UseGuards,
   Post,
   Body,
-  HttpStatus,
-  HttpException,
   UseInterceptors,
 } from '@nestjs/common';
 import { RolesGuard } from 'src/guards/role/role.guard';
@@ -13,10 +11,8 @@ import { Elegibilidad } from 'src/validators/eligibilidad/consultar-elegibilidad
 import { Token } from 'src/decorators/token.decorator';
 import { AuthService } from 'src/services/auth/auth.service';
 import { AtributosEstaticosService } from 'src/services/atributos-estaticos/atributos-estaticos.service';
-import { FunctionsService } from 'src/services/functions';
 import { OrigenesService } from 'src/services/origenes/origenes.service';
 import { AtributosUserService } from 'src/services/atributos-user/atributos-user.service';
-import { PrestadoresService } from 'src/services/prestadores/prestadores.service';
 import { UsersService } from 'src/services/users/users.service';
 import { FederadaHttpService } from 'src/services/federada-http/federada-http.service';
 import { EsencialHttpService } from 'src/services/esencial-http/esencial-http.service';
@@ -32,9 +28,7 @@ export class ElegibilidadController {
     private authService: AuthService,
     private atribustoEstaticosService: AtributosEstaticosService,
     private atributosUserService: AtributosUserService,
-    private functionService: FunctionsService,
     private origenesService: OrigenesService,
-    private prestadoresService: PrestadoresService,
     private usuariosService: UsersService,
     private federadaService: FederadaHttpService,
     private esencialService: EsencialHttpService,
@@ -85,78 +79,7 @@ export class ElegibilidadController {
       this.atribustoEstaticosService.findEstaticosOrigen(path, data.origen),
     ]);
     const usuario = await this.usuariosService.findById(user);
-    const prestadores = await this.functionService.returnUniques(
-      usuario['prestadores'],
-      'prestador',
-    );
-    const arrayValues = [];
-    for (const atributo of atributos) {
-      const lista = this.functionService.returnUniques(
-        atributo.atributos,
-        '_id',
-      );
-      if (lista.length === 0) {
-        throw new HttpException(
-          {
-            status: HttpStatus.BAD_REQUEST,
-            error:
-              'Este atributo ' +
-              atributo.description +
-              ' no tiene ningun atributo asociado',
-          },
-          400,
-        );
-      }
-      let value;
-      let from = 'prestador';
-      value = await this.prestadoresService.findOneSearchAtributos({
-        atributo: lista,
-        prestador: prestadores,
-      });
-      if (!value) {
-        value = await this.atributosUserService.findSearch({ atributo: lista, user: usuario._id });
-        from = 'usuario';
-        if (!value) {
-          throw new HttpException(
-            {
-              status: HttpStatus.BAD_REQUEST,
-              error:
-                'Este atributo ' +
-                atributo.description +
-                ' no esta asociado al ' +
-                from,
-            },
-            400,
-          );
-        }
-      }
-      if (!value.habilitado) {
-        throw new HttpException(
-          {
-            status: HttpStatus.BAD_REQUEST,
-            error:
-              'Este atributo ' +
-              atributo.description +
-              ' no esta habilitado para este ' +
-              from,
-          },
-          400,
-        );
-      }
-      if (!value.atributo.habilitado) {
-        throw new HttpException(
-          {
-            status: HttpStatus.BAD_REQUEST,
-            error:
-              'Este atributo ' +
-              atributo.description +
-              ' no esta habilitado',
-          },
-          400,
-        );
-      }
-      arrayValues.push(value.value);
-    }
+    const arrayValues = await this.atributosUserService.getAtributosService(usuario, atributos);
     arrayValues.push(data.dni);
     arrayValues.push(data.afiliado);
     let elegibilidad;

@@ -5,7 +5,7 @@ import { FunctionsService } from '../functions';
 
 @Injectable()
 export class SwissMedicalHttpService {
-  url = 'https://mobileint.swissmedical.com.ar/pre/api-smg/';
+  url;
   urlPlat = 'V1.0/prestadores/hl7/';
   apiKey = '81ba7db467d68def9a81';
   usrLoginName = 'suap';
@@ -17,7 +17,13 @@ export class SwissMedicalHttpService {
     bloqueado: 0,
     recordar: 0,
   };
-  constructor(private readonly httpService: HttpService, private functionService: FunctionsService) {}
+  constructor(private readonly httpService: HttpService, private functionService: FunctionsService) {
+    if (process.env.Production === 'true') {
+      this.url = 'https://mobile.swissmedical.com.ar/pre/api-smg/';
+    } else {
+      this.url = 'https://mobileint.swissmedical.com.ar/pre/api-smg/';
+    }
+  }
   async elegibilidad(arrayValues): Promise<Observable<any>> {
     const headers = await this.getSessionHeaders(arrayValues[0]);
     const date = this.functionService.returnDateFormat3(new Date());
@@ -28,6 +34,60 @@ export class SwissMedicalHttpService {
           creden: arrayValues[2],
           alta: date,
           fecdif: date,
+        },
+        { headers },
+      )
+      .pipe(
+        map((res) => res.data),
+        catchError((e) => {
+          return of({ e });
+        }),
+      );
+  }
+  getAutorizacion(arrayValues): any {
+    return new Promise(async (resolve) => {
+      (await this.autorizacion(arrayValues)).subscribe((data) => {
+        let estatus;
+        if (data.cabecera.rechaCabecera === 0) {
+          estatus = 1;
+        } else {
+          estatus = 0;
+        }
+        resolve({ data, estatus });
+      });
+    });
+  }
+  async autorizacion(arrayValues): Promise<Observable<any>> {
+    const headers = await this.getSessionHeaders(arrayValues[0]);
+    const dateToday = this.functionService.returnDateFormat3(new Date());
+    const date = this.functionService.returnDateFormat3(arrayValues[6]);
+    const sumTotal = arrayValues[5].reduce((sum, current) => sum + current.cantidad, 0);
+    const prestaciones = arrayValues[5].reduce((cont, current) => {
+      let i = '';
+      if (cont) {
+        i = '|*';
+      }
+      return cont + i + current.codigoPrestacion + '*' + current.cantidad + '**';
+    }, '');
+    return this.httpService
+      .post(
+        this.url + this.urlPlat + 'registracion/',
+        {
+          creden: arrayValues[3] + '|' + arrayValues[4],
+          alta: dateToday,
+          fecdif: date,
+          manual: 0,
+          ticketExt: 0,
+          interNro: 2,
+          autoriz: 0,
+          rechaExt: 0,
+          param1: sumTotal + '^*' + prestaciones,
+          param2: null,
+          param3: null,
+          tipoEfector: 'CUIT',
+          tipoPrescr: 'CUIT',
+          idEfector: arrayValues[2],
+          idPrescr: arrayValues[1],
         },
         { headers },
       )
