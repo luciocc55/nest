@@ -80,6 +80,7 @@ export class TasksService {
   }
   @Timeout(5000)
   async createOrigenes() {
+    this.atributosEstaticosService.deleteAll();
     for (const service of environment.orignesPermissions) {
       const origen = await this.origenesService.create(
         service.origen,
