@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsArray, ValidateNested, IsDateString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsArray, ValidateNested, IsISO8601 } from 'class-validator';
 
 class Prestaciones {
   @IsNotEmpty({
@@ -50,13 +50,13 @@ export class Autorizar {
     message:
       'La fecha y hora del sistema "cliente" es un campo requerido (timeStampCliente)',
   })
-  @IsDateString()
+  @IsISO8601()
   timeStampCliente: string;
   @IsNotEmpty({
     message:
       'La fecha de la prestacion es un campo requerido (fechaPrestacion)',
   })
-  @IsDateString()
+  @IsISO8601()
   fechaPrestacion: string;
   @IsArray()
   atributosAdicionales: [];
