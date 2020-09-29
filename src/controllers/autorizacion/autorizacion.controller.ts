@@ -25,7 +25,7 @@ export class AutorizacionController {
 
     @ApiTags(
         'Permite autorizar practicas contra los servicios habilitados',
-        'Swiss Medical:Cuit Swiss Medical:Cuit de Efector Swiss/true:Codigo de seguridad Swiss/true: Nro de afiliado Swiss/true',
+        'Swiss Medical:Cuit Swiss Medical:Cuit de Prescriptor Swiss/true:Codigo de seguridad Swiss/true: Nro de afiliado Swiss/true',
       )
       // , separa los origenes permitidos en el service
       // : separa los atributos necesarios para ese origen

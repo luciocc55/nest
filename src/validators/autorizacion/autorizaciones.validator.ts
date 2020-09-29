@@ -34,11 +34,6 @@ export class Autorizar {
   medioPago: string;
   @IsNotEmpty({
     message:
-      'Profesional solicitante es un campo requerido (profesionalSolicitante)',
-  })
-  profesionalSolicitante: string;
-  @IsNotEmpty({
-    message:
       'Matricula del Profesional solicitante es un campo requerido (matriculaProfesionalSolicitante)',
   })
   matriculaProfesionalSolicitante: string;
