@@ -25,13 +25,12 @@ export class AutorizacionController {
 
     @ApiTags(
         'Permite autorizar practicas contra los servicios habilitados',
-        'Swiss Medical:Cuit Swiss Medical:Cuit de Prescriptor Swiss/true:Codigo de seguridad Swiss/true: Nro de afiliado Swiss/true',
+        'Swiss Medical:Cuit Swiss Medical:Cuit de Prescriptor Swiss/true/true:Codigo de seguridad Swiss/true: Nro de afiliado Swiss/true',
       )
       // , separa los origenes permitidos en el service
       // : separa los atributos necesarios para ese origen
 
-      // / separa los atributos del valor que indica si
-      // son previamente seteados o se esperan en el body de entrada
+      // / separa los atributos booleanos de la coleccion de atributos estaticos
       @UseInterceptors(LoggingInterceptor)
       @Post('autorizar')
       async list(@Body() data: Autorizar, @Token() token: string): Promise<any> {
@@ -47,8 +46,8 @@ export class AutorizacionController {
         ]);
         const usuario = await this.usuariosService.findById(user);
         const arrayValues = [];
-        arrayValues.push(...await this.atributosUserService.getAtributosService(usuario, atributos));
-        arrayValues.push(...await this.atributosUserService.getAtributosEntry(data.atributosAdicionales, atributosEntradas));
+        arrayValues.push(...await this.atributosUserService.getAtributosService(usuario, atributos, path));
+        arrayValues.push(...await this.atributosUserService.getAtributosEntry(data.atributosAdicionales, atributosEntradas, path));
         arrayValues.push(data.prestaciones);
         arrayValues.push(data.fechaPrestacion);
         let autorizacion;

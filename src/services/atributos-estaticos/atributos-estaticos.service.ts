@@ -10,17 +10,31 @@ export class AtributosEstaticosService {
     private readonly atributosEstaticosModel: Model<any>,
     private functionService: FunctionsService,
   ) {}
-  async updateServicios(description, isEntry, path, origen, orden): Promise<any> {
+  async updateServicios(
+    description,
+    isEntry,
+    isOptional,
+    path,
+    origen,
+    orden,
+  ): Promise<any> {
     const atributo = await this.create(description);
     if (atributo.servicios) {
-      const atr = atributo.servicios.findIndex(x => (x.path === path && x.origen.equals(origen)));
+      const atr = atributo.servicios.findIndex(
+        (x) => x.path === path && x.origen.equals(origen),
+      );
       if (atr === -1) {
-        atributo.servicios.push({ path, orden, origen, isEntry });
+        atributo.servicios.push({ path, orden, origen, isEntry, isOptional });
         atributo.save();
       } else {
-        if (atributo.servicios[atr].orden !== orden || atributo.servicios[atr].isEntry !== isEntry) {
+        if (
+          atributo.servicios[atr].orden !== orden ||
+          atributo.servicios[atr].isEntry !== isEntry ||
+          atributo.servicios[atr].isOptional !== isOptional
+        ) {
           atributo.servicios[atr].orden = orden;
-          atributo.servicios[atr].isEntr = isEntry;
+          atributo.servicios[atr].isEntry = isEntry;
+          atributo.servicios[atr].isOptional = isOptional;
           atributo.save();
         }
       }
@@ -28,9 +42,13 @@ export class AtributosEstaticosService {
   }
   async findEstaticosOrigen(path, origen, isEntry = false): Promise<any> {
     return await this.atributosEstaticosModel
-      .find({ 'servicios.origen': origen , 'servicios.path': path, 'servicios.isEntry': isEntry})
+      .find({
+        'servicios.origen': origen,
+        'servicios.path': path,
+        'servicios.isEntry': isEntry,
+      })
       .populate('atributos')
-      .sort({'servicios.orden': 1})
+      .sort({ 'servicios.orden': 1 })
       .lean()
       .exec();
   }
@@ -53,7 +71,8 @@ export class AtributosEstaticosService {
   }
   async findAllSearch(search): Promise<any> {
     return await this.atributosEstaticosModel
-      .find(search, {servicios: 0}).sort('servicios.orden')
+      .find(search, { servicios: 0 })
+      .sort('servicios.orden')
       .exec();
   }
 }

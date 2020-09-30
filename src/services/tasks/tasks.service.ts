@@ -89,6 +89,7 @@ export class TasksService {
         this.atributosEstaticosService.updateServicios(
           atributo.atributo,
           atributo.isEntry,
+          atributo.isOptional,
           service.path,
           origen._id,
           index,

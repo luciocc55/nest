@@ -13,6 +13,11 @@ const PathAtributos = new mongoose.Schema({
       required: true,
       default: false,
     },
+    isOptional: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     origen: { type: mongoose.Schema.Types.ObjectId, ref: 'Origenes', autopopulate: true },
   });
 const auto = new mongoose.Schema({

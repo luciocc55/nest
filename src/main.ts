@@ -32,7 +32,7 @@ async function bootstrap() {
           const atributosParsed = [];
           atributos.slice(1).forEach(atr => {
             const tipo = atr.split('/');
-            atributosParsed.push({atributo: tipo[0], isEntry: tipo[1] ? tipo[1] : false});
+            atributosParsed.push({atributo: tipo[0], isEntry: tipo[1] ? tipo[1] : false, isOptional: tipo[2] ? tipo[2] : false});
           });
           orignesPermissions.push({path: element + ':' + element2, origen: atributos[0] , atributos: atributosParsed });
         });

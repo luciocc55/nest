@@ -18,10 +18,11 @@ export class AtributosUserService {
           .populate('atributo')
           .exec();
       }
-      async getAtributosEntry(data, atributos) {
+      async getAtributosEntry(data, atributos, service) {
         const arrayValues = [];
         for (const [index, atributo] of atributos.entries()) {
-          if (!data[index]) {
+          const opciones = atributo.servicios.find(serv => serv.path === service);
+          if (!opciones?.isOptional  && !data[index] ) {
             throw new HttpException(
               {
                 status: HttpStatus.BAD_REQUEST,
@@ -33,83 +34,92 @@ export class AtributosUserService {
               400,
             );
           } else {
-            arrayValues.push(data[index]);
+            if (opciones?.isOptional && !data[index]) {
+              arrayValues.push('');
+            } else {
+              arrayValues.push(data[index]);
+            }
           }
         }
         return arrayValues;
       }
-      async getAtributosService(usuario, atributos) {
+      async getAtributosService(usuario, atributos, service) {
         const prestadores = await this.functionService.returnUniques(
           usuario['prestadores'],
           'prestador',
         );
         const arrayValues = [];
         for (const atributo of atributos) {
-          const lista = this.functionService.returnUniques(
-            atributo.atributos,
-            '_id',
-          );
-          if (lista.length === 0) {
-            throw new HttpException(
-              {
-                status: HttpStatus.BAD_REQUEST,
-                error:
-                  'Este atributo ' +
-                  atributo.description +
-                  ' no tiene ningun atributo asociado',
-              },
-              400,
+          const opciones = atributo.servicios.find(serv => serv.path === service);
+          if (!opciones?.isOptional) {
+            const lista = this.functionService.returnUniques(
+              atributo.atributos,
+              '_id',
             );
-          }
-          let value;
-          let from = 'prestador';
-          value = await this.prestadoresService.findOneSearchAtributos({
-            atributo: lista,
-            prestador: prestadores,
-          });
-          if (!value) {
-            value = await this.findSearch({ atributo: lista, user: usuario._id });
-            from = 'usuario';
-            if (!value) {
+            if (lista.length === 0) {
               throw new HttpException(
                 {
                   status: HttpStatus.BAD_REQUEST,
                   error:
                     'Este atributo ' +
                     atributo.description +
-                    ' no esta asociado al ' +
+                    ' no tiene ningun atributo asociado',
+                },
+                400,
+              );
+            }
+            let value;
+            let from = 'prestador';
+            value = await this.prestadoresService.findOneSearchAtributos({
+              atributo: lista,
+              prestador: prestadores,
+            });
+            if (!value) {
+              value = await this.findSearch({ atributo: lista, user: usuario._id });
+              from = 'usuario';
+              if (!value) {
+                throw new HttpException(
+                  {
+                    status: HttpStatus.BAD_REQUEST,
+                    error:
+                      'Este atributo ' +
+                      atributo.description +
+                      ' no esta asociado al ' +
+                      from,
+                  },
+                  400,
+                );
+              }
+            }
+            if (!value.habilitado) {
+              throw new HttpException(
+                {
+                  status: HttpStatus.BAD_REQUEST,
+                  error:
+                    'Este atributo ' +
+                    atributo.description +
+                    ' no esta habilitado para este ' +
                     from,
                 },
                 400,
               );
             }
+            if (!value.atributo.habilitado) {
+              throw new HttpException(
+                {
+                  status: HttpStatus.BAD_REQUEST,
+                  error:
+                    'Este atributo ' +
+                    atributo.description +
+                    ' no esta habilitado',
+                },
+                400,
+              );
+            }
+            arrayValues.push(value.value);
+          } else {
+            arrayValues.push('');
           }
-          if (!value.habilitado) {
-            throw new HttpException(
-              {
-                status: HttpStatus.BAD_REQUEST,
-                error:
-                  'Este atributo ' +
-                  atributo.description +
-                  ' no esta habilitado para este ' +
-                  from,
-              },
-              400,
-            );
-          }
-          if (!value.atributo.habilitado) {
-            throw new HttpException(
-              {
-                status: HttpStatus.BAD_REQUEST,
-                error:
-                  'Este atributo ' +
-                  atributo.description +
-                  ' no esta habilitado',
-              },
-              400,
-            );
-          }
-          arrayValues.push(value.value);
         }
         return arrayValues;
       }
