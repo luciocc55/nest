@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsArray, ValidateNested, IsISO8601 } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsArray, ValidateNested, IsISO8601, IsOptional } from 'class-validator';
 
 class Prestaciones {
   @IsNotEmpty({
@@ -29,15 +29,10 @@ export class Autorizar {
       'Matricula del Profesional solicitante es un campo requerido (matriculaProfesionalSolicitante)',
   })
   matriculaProfesionalSolicitante: string;
-  @IsNotEmpty({
-    message: 'Diagnostico de la prestacion es un campo requerido (diagnostico)',
-  })
-  diagnostico: string;
-  @IsNotEmpty({
-    message:
-      'Referencia de atencion de la prestacion es un campo requerido (referenciaAtencion)',
-  })
-  referenciaAtencion: string;
+  @IsOptional()
+  diagnostico: string = '';
+  @IsOptional()
+  referenciaAtencion: string = '';
   @IsNotEmpty({
     message:
       'La fecha y hora del sistema "cliente" es un campo requerido (timeStampCliente)',
