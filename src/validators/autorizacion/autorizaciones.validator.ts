@@ -25,14 +25,6 @@ export class Autorizar {
   })
   ambitoPrestacion: string;
   @IsNotEmpty({
-    message: 'Region de la prestacion es un campo requerido (region)',
-  })
-  region: string;
-  @IsNotEmpty({
-    message: 'Medio de pago de la prestacion es un campo requerido (medioPago)',
-  })
-  medioPago: string;
-  @IsNotEmpty({
     message:
       'Matricula del Profesional solicitante es un campo requerido (matriculaProfesionalSolicitante)',
   })
