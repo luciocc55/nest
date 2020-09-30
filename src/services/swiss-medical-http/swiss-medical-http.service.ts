@@ -48,12 +48,30 @@ export class SwissMedicalHttpService {
     return new Promise(async (resolve) => {
       (await this.autorizacion(arrayValues)).subscribe((data) => {
         let estatus;
-        if (data.cabecera?.rechaCabecera === 0) {
-          estatus = 1;
+        let resultados = [];
+        let error;
+        if (data.cabecera) {
+          if (data.cabecera.rechaCabecera === 0) {
+            estatus = 1;
+            resultados = data.detalle.map((data, index)=> {
+              let estado;
+              if (data.recha === 0) {
+                estado = true;
+              } else {
+                estado = false;
+              }
+              return {prestación: arrayValues[4][index].codigoPrestacion, transaccion: data.transac, mensaje: data.denoItem, estado}
+            });
+          } else {
+            estatus = 0;
+            error = data.cabecera.rechaCabeDeno;
+          }
         } else {
           estatus = 0;
+          error = 'Por favor, intente nuevamente';
         }
-        resolve({ data, estatus });
+
+        resolve({ data, resultado: {estatus, error, resultados} });
       });
     });
   }
