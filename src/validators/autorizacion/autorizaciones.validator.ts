@@ -24,10 +24,7 @@ export class Autorizar {
     message: 'Ambito de la prestacion es un campo requerido (ambitoPrestacion)',
   })
   ambitoPrestacion: string;
-  @IsNotEmpty({
-    message:
-      'Matricula del Profesional solicitante es un campo requerido (matriculaProfesionalSolicitante)',
-  })
+  @IsOptional()
   matriculaProfesionalSolicitante: string;
   @IsOptional()
   diagnostico: string = '';
