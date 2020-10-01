@@ -1,6 +1,7 @@
 import { Injectable, HttpService } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { ErroresService } from '../errores/errores.service';
 import { FunctionsService } from '../functions';
 
 @Injectable()
@@ -17,7 +18,7 @@ export class SwissMedicalHttpService {
     bloqueado: 0,
     recordar: 0,
   };
-  constructor(private readonly httpService: HttpService, private functionService: FunctionsService) {
+  constructor(private readonly httpService: HttpService, private functionService: FunctionsService, private erroresService: ErroresService) {
     if (process.env.Production === 'true') {
       this.url = 'https://mobile.swissmedical.com.ar/pre/api-smg/';
     } else {
@@ -46,14 +47,16 @@ export class SwissMedicalHttpService {
   }
   getAutorizacion(arrayValues): any {
     return new Promise(async (resolve) => {
-      (await this.autorizacion(arrayValues)).subscribe((data) => {
+      (await this.autorizacion(arrayValues)).subscribe(async (data) => {
         let estatus;
         let resultados = [];
         let error;
+        let errorEstandarizado = null;
+        let errorEstandarizadoCodigo = null;
         if (data.cabecera) {
           if (data.cabecera.rechaCabecera === 0) {
             estatus = 1;
-            resultados = data.detalle.map((data, index)=> {
+            resultados = data.detalle.map((data, index) => {
               let estado;
               if (data.recha === 0) {
                 estado = true;
@@ -63,6 +66,11 @@ export class SwissMedicalHttpService {
               return {prestación: arrayValues[4][index].codigoPrestacion, transaccion: data.transac, mensaje: data.denoItem, estado}
             });
           } else {
+            const err = await this.erroresService.findOne({'values.value': data.cabecera.rechaCabecera.toString()});
+            if (err) {
+              errorEstandarizado = err.description;
+              errorEstandarizadoCodigo = err.valueStandard;
+            }
             estatus = 0;
             error = data.cabecera.rechaCabeDeno;
           }
@@ -70,8 +78,7 @@ export class SwissMedicalHttpService {
           estatus = 0;
           error = 'Por favor, intente nuevamente';
         }
-
-        resolve({ data, resultado: {estatus, error, resultados} });
+        resolve({ data, resultado: {estatus, error, errorEstandarizado, errorEstandarizadoCodigo, resultados} });
       });
     });
   }

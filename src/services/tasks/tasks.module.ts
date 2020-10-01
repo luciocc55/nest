@@ -14,6 +14,7 @@ import { OrigenesModule } from '../origenes/origenes.module';
 import { AtributosEstaticosModule } from '../atributos-estaticos/atributos-estaticos.module';
 import { SinonimosModule } from '../sinonimos/sinonimos.module';
 import { ExtrasModule } from '../extras/extras.module';
+import { ErroresModule } from '../errores/errores.module';
 
 @Module({
   providers: [TasksService, ConsumerService],
@@ -27,6 +28,7 @@ import { ExtrasModule } from '../extras/extras.module';
     SinonimosModule,
     ExtrasModule,
     RedIHttpModule,
+    ErroresModule,
     OrigenesModule,
     AtributosEstaticosModule,
     BullModule.registerQueue({

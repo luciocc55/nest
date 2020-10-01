@@ -28,6 +28,7 @@ import { AutorizacionModule } from './controllers/autorizacion/autorizacion.modu
 import { ExtrasModule } from './services/extras/extras.module';
 import { SinonimosModule } from './services/sinonimos/sinonimos.module';
 import { ExtrasControllerModule } from './controllers/extras-controller/extras-controller.module';
+import { ErroresModule } from './services/errores/errores.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { ExtrasControllerModule } from './controllers/extras-controller/extras-c
     ExtrasModule,
     SinonimosModule,
     ExtrasControllerModule,
+    ErroresModule,
   ],
   controllers: [],
 })

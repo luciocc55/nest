@@ -12,16 +12,12 @@ import { OrigenesService } from '../origenes/origenes.service';
 import { AtributosEstaticosService } from '../atributos-estaticos/atributos-estaticos.service';
 import { ExtrasService } from '../extras/extras.service';
 import { SinonimosService } from '../sinonimos/sinonimos.service';
+import { ErroresService } from '../errores/errores.service';
 
 @Injectable()
 export class TasksService {
-  extras = ['Regiones', 'Medios de Pago', 'Ambitos de Prestaciones'];
+  extras = ['Ambitos de Prestaciones'];
   sinonimos = [
-    [{ description: 'Region de argentina', defaultValue: 'AR' }],
-    [
-      { description: 'Efectivo', defaultValue: 'E' },
-      { description: 'Debito', defaultValue: 'D' },
-    ],
     [
       { description: 'Ambulatorio', defaultValue: 'A' },
       { description: 'Internacion', defaultValue: 'I' },
@@ -38,6 +34,7 @@ export class TasksService {
     private extrasService: ExtrasService,
     private sinonimosService: SinonimosService,
     private atributosEstaticosService: AtributosEstaticosService,
+    private erroresService: ErroresService,
   ) {}
   //@Cron(CronExpression.EVERY_MINUTE)
   //@Timeout(600)
@@ -98,11 +95,18 @@ export class TasksService {
     }
   }
   @Timeout(5000)
+  async createErroresSwiss() {
+    const origen = await this.origenesService.findOneSearch({description: 'Swiss Medical'});
+    const err = await Promise.all([this.erroresService.getOrCreate('1', 'La autorización requiere token'), this.erroresService.getOrCreate('2', 'La autorización requiere token')]);
+    const values = await Promise.all([this.erroresService.pushValue('1', '148', origen._id), this.erroresService.pushValue('2', '149', origen._id)]);
+  }
+  @Timeout(5000)
   async createExtras() {
     for (const extra of this.extras) {
       await this.extrasService.getOrCreate(extra);
     }
   }
+
   @Timeout(7000)
   async createSinonimos() {
     for (const [index, extra] of this.extras.entries()) {
