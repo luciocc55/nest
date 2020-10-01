@@ -32,6 +32,11 @@ export class ErroresService {
     if (!exist) {
       const createOrigen = new this.errorModel({valueStandard, description });
       exist = await createOrigen.save();
+    } else {
+        if (exist.description !== description) {
+            exist.description = description;
+            exist.save();
+        }
     }
     return exist;
   }
