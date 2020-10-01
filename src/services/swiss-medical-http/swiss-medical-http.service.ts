@@ -66,7 +66,6 @@ export class SwissMedicalHttpService {
               return {prestación: arrayValues[4][index].codigoPrestacion, transaccion: data.transac, mensaje: data.denoItem, estado};
             });
           } else {
-            data.cabecera.rechaCabecera = 148;
             const err = await this.erroresService.findOne({'values.value': data.cabecera.rechaCabecera.toString(), 'values.origen': origen});
             if (err) {
               errorEstandarizado = err.description;
