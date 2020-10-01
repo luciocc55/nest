@@ -53,7 +53,7 @@ export class AutorizacionController {
         let autorizacion;
         switch (validate.description) {
           case 'Swiss Medical':
-            autorizacion = await this.swissService.getAutorizacion(arrayValues);
+            autorizacion = await this.swissService.getAutorizacion(arrayValues, data.origen);
         }
         return {autorizacion};
       }

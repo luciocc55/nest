@@ -45,7 +45,7 @@ export class SwissMedicalHttpService {
         }),
       );
   }
-  getAutorizacion(arrayValues): any {
+  getAutorizacion(arrayValues, origen): any {
     return new Promise(async (resolve) => {
       (await this.autorizacion(arrayValues)).subscribe(async (data) => {
         let estatus;
@@ -63,10 +63,11 @@ export class SwissMedicalHttpService {
               } else {
                 estado = false;
               }
-              return {prestación: arrayValues[4][index].codigoPrestacion, transaccion: data.transac, mensaje: data.denoItem, estado}
+              return {prestación: arrayValues[4][index].codigoPrestacion, transaccion: data.transac, mensaje: data.denoItem, estado};
             });
           } else {
-            const err = await this.erroresService.findOne({'values.value': data.cabecera.rechaCabecera.toString()});
+            data.cabecera.rechaCabecera = 148;
+            const err = await this.erroresService.findOne({'values.value': data.cabecera.rechaCabecera.toString(), 'values.origen': origen});
             if (err) {
               errorEstandarizado = err.description;
               errorEstandarizadoCodigo = err.valueStandard;
