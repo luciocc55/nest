@@ -97,7 +97,7 @@ export class TasksService {
   @Timeout(5000)
   async createErroresSwiss() {
     const origen = await this.origenesService.findOneSearch({description: 'Swiss Medical'});
-    const err = await Promise.all([this.erroresService.getOrCreate('1', 'La autorización requiere token'), this.erroresService.getOrCreate('2', 'La autorización requiere token')]);
+    const err = await Promise.all([this.erroresService.getOrCreate('1', 'La autorización requiere token'), this.erroresService.getOrCreate('2', 'El token es incorrecto')]);
     const values = await Promise.all([this.erroresService.pushValue('1', '148', origen._id), this.erroresService.pushValue('2', '149', origen._id)]);
   }
   @Timeout(5000)
