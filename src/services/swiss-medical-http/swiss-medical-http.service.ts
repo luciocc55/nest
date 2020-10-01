@@ -1,6 +1,7 @@
 import { Injectable, HttpService } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { DatosElegibilidad } from 'src/interfaces/datos-elegibilidad';
 import { ErroresService } from '../errores/errores.service';
 import { FunctionsService } from '../functions';
 
@@ -151,12 +152,32 @@ export class SwissMedicalHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues)).subscribe((data) => {
         let estatus;
+        let datos: DatosElegibilidad;
         if (data.rechaCabecera === 0) {
           estatus = 1;
+          datos = {
+            nroAfiliado: arrayValues[3],
+            nroDocumento: null,
+            estadoAfiliado: data.rechaCabecera === 0 ? true : false,
+            // tslint:disable-next-line: radix
+            edad: parseInt(data.edad),
+            voluntario: null,
+            fechaNac: null,
+            plan: data.planCodi,
+            planDescripcion: '',
+            genero: data.sexo === 'M' ? 'Masculino' : 'Femenino',
+            codigoPostal: null,
+            localidad: '',
+            nombreApellido: data.apeNom,
+            servicio: null,
+            tipoDocumento: '',
+            tipoDocumentoDescripcion: '',
+            recupero: null,
+          };
         } else {
           estatus = 0;
         }
-        resolve({ data, estatus });
+        resolve({ data, estatus, datosFinales: datos });
       });
     });
   }
