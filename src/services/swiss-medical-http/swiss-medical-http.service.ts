@@ -113,7 +113,7 @@ export class SwissMedicalHttpService {
           tipoEfector: 'CUIT',
           tipoPrescr: 'CUIT',
           idEfector: arrayValues[0],
-          idPrescr: arrayValues[1],
+          idPrescr: arrayValues[1] ? arrayValues[1] : null,
         },
         { headers },
       )
