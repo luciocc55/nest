@@ -3,7 +3,7 @@ import {
   UseGuards,
   Post,
   Body,
-  UseInterceptors,
+  UseInterceptors, HttpException, HttpStatus
 } from '@nestjs/common';
 import { RolesGuard } from 'src/guards/role/role.guard';
 import { ApiTags } from '@nestjs/swagger';
@@ -21,6 +21,8 @@ import { SwissMedicalHttpService } from 'src/services/swiss-medical-http/swiss-m
 import { AmrHttpService } from 'src/services/amr-http/amr-http.service';
 import { RediHttpService } from 'src/services/redi-http/redi-http.service';
 import { LoggingInterceptor } from 'src/interceptors/logger/logger.interceptor';
+import { FunctionsService } from 'src/services/functions';
+import { PrestadoresService } from 'src/services/prestadores/prestadores.service';
 @Controller('elegibilidad')
 @UseGuards(RolesGuard)
 export class ElegibilidadController {
@@ -35,6 +37,8 @@ export class ElegibilidadController {
     private iaposService: IaposHttpService,
     private swissService: SwissMedicalHttpService,
     private amrService: AmrHttpService,
+    private functionService: FunctionsService,
+    private prestadoresService: PrestadoresService,
     private redIService: RediHttpService,
   ) {}
   @ApiTags(
@@ -79,7 +83,78 @@ export class ElegibilidadController {
       this.atribustoEstaticosService.findEstaticosOrigen(path, data.origen),
     ]);
     const usuario = await this.usuariosService.findById(user);
-    const arrayValues = await this.atributosUserService.getAtributosService(usuario, atributos, path);
+    const prestadores = await this.functionService.returnUniques(
+      usuario['prestadores'],
+      'prestador',
+    );
+    const arrayValues = [];
+    for (const atributo of atributos) {
+      const lista = this.functionService.returnUniques(
+        atributo.atributos,
+        '_id',
+      );
+      if (lista.length === 0) {
+        throw new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            error:
+              'Este atributo ' +
+              atributo.description +
+              ' no tiene ningun atributo asociado',
+          },
+          400,
+        );
+      }
+      let value;
+      let from = 'prestador';
+      value = await this.prestadoresService.findOneSearchAtributos({
+        atributo: lista,
+        prestador: prestadores,
+      });
+      if (!value) {
+        value = await this.atributosUserService.findSearch({ atributo: lista, user: usuario._id });
+        from = 'usuario';
+        if (!value) {
+          throw new HttpException(
+            {
+              status: HttpStatus.BAD_REQUEST,
+              error:
+                'Este atributo ' +
+                atributo.description +
+                ' no esta asociado al ' +
+                from,
+            },
+            400,
+          );
+        }
+      }
+      if (!value.habilitado) {
+        throw new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            error:
+              'Este atributo ' +
+              atributo.description +
+              ' no esta habilitado para este ' +
+              from,
+          },
+          400,
+        );
+      }
+      if (!value.atributo.habilitado) {
+        throw new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            error:
+              'Este atributo ' +
+              atributo.description +
+              ' no esta habilitado',
+          },
+          400,
+        );
+      }
+      arrayValues.push(value.value);
+    }
     arrayValues.push(data.dni);
     arrayValues.push(data.afiliado);
     let elegibilidad;
