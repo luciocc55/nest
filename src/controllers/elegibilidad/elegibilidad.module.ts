@@ -12,10 +12,11 @@ import { IaposHttpModule } from 'src/services/iapos-http/iapos-http.module';
 import { SwissMedicalHttpModule } from 'src/services/swiss-medical-http/swiss-medical-http.module';
 import { AmrHttpModule } from 'src/services/amr-http/amr-http.module';
 import { RediHttpModule } from 'src/services/redi-http/redi-http.module';
-
+import { PrestadoresServiceModule } from 'src/services/prestadores/prestadores.module';
+import { FunctionsService } from 'src/services/functions';
 @Module({
   controllers: [ElegibilidadController],
-  providers: [],
+  providers: [FunctionsService],
   imports: [
     LoggerModule,
     AuthModule,
@@ -28,6 +29,7 @@ import { RediHttpModule } from 'src/services/redi-http/redi-http.module';
     IaposHttpModule,
     SwissMedicalHttpModule,
     AmrHttpModule,
+    PrestadoresServiceModule,
     RediHttpModule,
   ],
 })
