@@ -11,13 +11,11 @@ export class EsencialHttpService {
     constructor(
         private readonly httpService: HttpService,
       ) {
-        console.log(process.env.Production, process.env.Production === 'true')
-        if (process.env.Production === 'true') {
+        if (process.env.Production !== 'true') {
           this.url = 'http://ws.medicinaesencial.com.ar/GestosWS/';
         } else {
           this.url = 'http://ws.medicinaesencial.com.ar/GestOSWSTest/';
         }
-        console.log(this.url)
       }
     async elegibilidad(arrayValues): Promise<Observable<any>> {
         const xml =
@@ -48,7 +46,6 @@ export class EsencialHttpService {
            </ges:PSOC063.Execute>
         </soapenv:Body>
         </soapenv:Envelope>`;
-        console.log(this.url ,xml)
         return this.httpService
           .post(this.url + 'apsoc063.aspx?wsdl/', xml, {headers: this.headers})
           .pipe(

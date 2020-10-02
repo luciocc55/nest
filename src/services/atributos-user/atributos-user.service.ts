@@ -51,7 +51,8 @@ export class AtributosUserService {
         const arrayValues = [];
         for (const atributo of atributos) {
           const opciones = atributo.servicios.find(serv => serv.path === service);
-          if (!opciones?.isOptional) {
+          console.log(!opciones.isOptional)
+          if (!opciones.isOptional) {
             const lista = this.functionService.returnUniques(
               atributo.atributos,
               '_id',
