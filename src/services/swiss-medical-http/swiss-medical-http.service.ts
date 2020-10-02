@@ -102,7 +102,7 @@ export class SwissMedicalHttpService {
           creden: arrayValues[3]  + '|' + arrayValues[2] ,
           alta: dateToday,
           fecdif: date,
-          manual: 0,
+          manual: '0',
           ticketExt: 0,
           interNro: 2,
           autoriz: 0,
