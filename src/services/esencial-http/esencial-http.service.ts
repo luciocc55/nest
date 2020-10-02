@@ -17,6 +17,7 @@ export class EsencialHttpService {
         } else {
           this.url = 'http://ws.medicinaesencial.com.ar/GestOSWSTest/';
         }
+        console.log(this.url)
       }
     async elegibilidad(arrayValues): Promise<Observable<any>> {
         const xml =
