@@ -48,6 +48,7 @@ export class EsencialHttpService {
            </ges:PSOC063.Execute>
         </soapenv:Body>
         </soapenv:Envelope>`;
+        console.log(this.url)
         return this.httpService
           .post(this.url + 'apsoc063.aspx?wsdl/', xml, {headers: this.headers})
           .pipe(
