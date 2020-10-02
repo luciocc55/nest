@@ -11,7 +11,7 @@ export class EsencialHttpService {
     constructor(
         private readonly httpService: HttpService,
       ) {
-        console.log(process.env.Production)
+        console.log(process.env.Production, process.env.Production === 'true')
         if (process.env.Production === 'true') {
           this.url = 'http://ws.medicinaesencial.com.ar/GestosWS/';
         } else {
