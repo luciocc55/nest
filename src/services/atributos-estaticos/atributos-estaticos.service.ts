@@ -25,18 +25,12 @@ export class AtributosEstaticosService {
       );
       if (atr === -1) {
         atributo.servicios.push({ path, orden, origen, isEntry, isOptional });
-        atributo.save();
+        await atributo.save();
       } else {
-        if (
-          atributo.servicios[atr].orden !== orden ||
-          atributo.servicios[atr].isEntry !== isEntry ||
-          atributo.servicios[atr].isOptional !== isOptional
-        ) {
-          atributo.servicios[atr].orden = orden;
-          atributo.servicios[atr].isEntry = isEntry;
-          atributo.servicios[atr].isOptional = isOptional;
-          atributo.save();
-        }
+        atributo.servicios[atr].orden = orden;
+        atributo.servicios[atr].isEntry = isEntry;
+        atributo.servicios[atr].isOptional = isOptional;
+        await atributo.save();
       }
     }
   }
