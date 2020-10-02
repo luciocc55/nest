@@ -82,8 +82,8 @@ export class TasksService {
         service.origen,
         service.path,
       );
-      service.atributos.forEach((atributo, index) => {
-        this.atributosEstaticosService.updateServicios(
+      service.atributos.forEach(async (atributo, index) => {
+        await this.atributosEstaticosService.updateServicios(
           atributo.atributo,
           atributo.isEntry,
           atributo.isOptional,
