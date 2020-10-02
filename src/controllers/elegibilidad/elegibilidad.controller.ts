@@ -78,7 +78,6 @@ export class ElegibilidadController {
       this.authService.getUser(token),
       this.atribustoEstaticosService.findEstaticosOrigen(path, data.origen),
     ]);
-    console.log(atributos)
     const usuario = await this.usuariosService.findById(user);
     const arrayValues = await this.atributosUserService.getAtributosService(usuario, atributos, path);
     arrayValues.push(data.dni);
