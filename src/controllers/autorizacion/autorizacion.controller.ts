@@ -84,11 +84,11 @@ export class AutorizacionController {
         arrayValues.push(...await this.atributosUserService.getAtributosService(usuario, atributos, path));
         arrayValues.push(...await this.atributosUserService.getAtributosEntry(data.atributosAdicionales, atributosEntradas, path));
         arrayValues.push(data.numeroTransaccion);
-        let autorizacion;
+        let cancelacion;
         switch (validate.description) {
           case 'Swiss Medical':
-            autorizacion = await this.swissService.getCancelarAutorizacion(arrayValues, data.origen);
+            cancelacion = await this.swissService.getCancelarAutorizacion(arrayValues, data.origen);
         }
-        return {autorizacion};
+        return {cancelacion};
       }
 }
