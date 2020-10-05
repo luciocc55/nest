@@ -10,6 +10,7 @@ import { OrigenesService } from 'src/services/origenes/origenes.service';
 import { SwissMedicalHttpService } from 'src/services/swiss-medical-http/swiss-medical-http.service';
 import { UsersService } from 'src/services/users/users.service';
 import { Autorizar } from 'src/validators/autorizacion/autorizaciones.validator';
+import { CancelarAutorizacion } from 'src/validators/autorizacion/cancelarAutorizacion.validator';
 
 @Controller('autorizacion')
 @UseGuards(RolesGuard)
@@ -54,6 +55,39 @@ export class AutorizacionController {
         switch (validate.description) {
           case 'Swiss Medical':
             autorizacion = await this.swissService.getAutorizacion(arrayValues, data.origen);
+        }
+        return {autorizacion};
+      }
+      @ApiTags(
+        'Permite cancelar autorizaciones de practicas contra los servicios habilitados',
+        'Swiss Medical:Cuit Swiss Medical: Nro de afiliado Swiss/true',
+      )
+      // , separa los origenes permitidos en el service
+      // : separa los atributos necesarios para ese origen
+
+      // / separa los atributos booleanos de la coleccion de atributos estaticos
+      @UseInterceptors(LoggingInterceptor)
+      @Post('cancelarAutorizacion')
+      async cancelar(@Body() data: CancelarAutorizacion, @Token() token: string): Promise<any> {
+        const path = '/autorizador/autorizacion/cancelarAutorizacion:post';
+        const validate = await this.origenesService.validateOrigenService(
+          data.origen,
+          path,
+        );
+        const [user, atributos, atributosEntradas] = await Promise.all([
+          this.authService.getUser(token),
+          this.atribustoEstaticosService.findEstaticosOrigen(path, data.origen),
+          this.atribustoEstaticosService.findEstaticosOrigen(path, data.origen, true),
+        ]);
+        const usuario = await this.usuariosService.findById(user);
+        const arrayValues = [];
+        arrayValues.push(...await this.atributosUserService.getAtributosService(usuario, atributos, path));
+        arrayValues.push(...await this.atributosUserService.getAtributosEntry(data.atributosAdicionales, atributosEntradas, path));
+        arrayValues.push(data.numeroTransaccion);
+        let autorizacion;
+        switch (validate.description) {
+          case 'Swiss Medical':
+            autorizacion = await this.swissService.getCancelarAutorizacion(arrayValues, data.origen);
         }
         return {autorizacion};
       }

@@ -19,7 +19,11 @@ export class SwissMedicalHttpService {
     bloqueado: 0,
     recordar: 0,
   };
-  constructor(private readonly httpService: HttpService, private functionService: FunctionsService, private erroresService: ErroresService) {
+  constructor(
+    private readonly httpService: HttpService,
+    private functionService: FunctionsService,
+    private erroresService: ErroresService,
+  ) {
     if (process.env.Production === 'true') {
       this.url = 'https://mobile.swissmedical.com.ar/pre/api-smg/';
     } else {
@@ -36,6 +40,68 @@ export class SwissMedicalHttpService {
           creden: arrayValues[2],
           alta: date,
           fecdif: date,
+        },
+        { headers },
+      )
+      .pipe(
+        map((res) => res.data),
+        catchError((e) => {
+          return of({ e });
+        }),
+      );
+  }
+  getCancelarAutorizacion(arrayValues, origen): any {
+    return new Promise(async (resolve) => {
+      (await this.cancelarAutorizacion(arrayValues)).subscribe(async (data) => {
+        let estatus;
+        let error;
+        let numeroTransaccion = null;
+        let errorEstandarizado = null;
+        let errorEstandarizadoCodigo = null;
+        if (data.cabecera) {
+          if (data.cabecera.rechaCabecera === 0) {
+            estatus = 1;
+            numeroTransaccion = data.cabecera.transac;
+          } else {
+            const err = await this.erroresService.findOne({
+              'values.value': data.cabecera.rechaCabecera.toString(),
+              'values.origen': origen,
+            });
+            if (err) {
+              errorEstandarizado = err.description;
+              errorEstandarizadoCodigo = err.valueStandard;
+            }
+            estatus = 0;
+            error = data.cabecera.rechaCabeDeno;
+          }
+        } else {
+          estatus = 0;
+          error = 'Por favor, intente nuevamente';
+        }
+        resolve({
+          data,
+          resultado: {
+            estatus,
+            errorEstandarizado,
+            numeroTransaccion,
+            errorEstandarizadoCodigo,
+            error,
+          },
+        });
+      });
+    });
+  }
+  async cancelarAutorizacion(arrayValues): Promise<Observable<any>> {
+    const headers = await this.getSessionHeaders(arrayValues[0]);
+    const dateToday = this.functionService.returnDateFormat3(new Date());
+    return this.httpService
+      .post(
+        this.url + this.urlPlat + 'cancela-prestacion/',
+        {
+          creden: arrayValues[1],
+          alta: dateToday,
+          ticketExt: arrayValues[2],
+          param1: '0',
         },
         { headers },
       )
@@ -65,11 +131,19 @@ export class SwissMedicalHttpService {
               } else {
                 estado = false;
               }
-              return {prestación: arrayValues[4][index].codigoPrestacion, transaccion: data.transac, mensaje: data.denoItem, estado};
+              return {
+                prestación: arrayValues[4][index].codigoPrestacion,
+                transaccion: data.transac,
+                mensaje: data.denoItem,
+                estado,
+              };
             });
             numeroTransaccion = data.cabecera.transac;
           } else {
-            const err = await this.erroresService.findOne({'values.value': data.cabecera.rechaCabecera.toString(), 'values.origen': origen});
+            const err = await this.erroresService.findOne({
+              'values.value': data.cabecera.rechaCabecera.toString(),
+              'values.origen': origen,
+            });
             if (err) {
               errorEstandarizado = err.description;
               errorEstandarizadoCodigo = err.valueStandard;
@@ -81,7 +155,17 @@ export class SwissMedicalHttpService {
           estatus = 0;
           error = 'Por favor, intente nuevamente';
         }
-        resolve({ data, resultado: {estatus, error, errorEstandarizado, errorEstandarizadoCodigo, resultados} });
+        resolve({
+          data,
+          resultado: {
+            estatus,
+            error,
+            errorEstandarizado,
+            numeroTransaccion,
+            errorEstandarizadoCodigo,
+            resultados,
+          },
+        });
       });
     });
   }
@@ -89,19 +173,24 @@ export class SwissMedicalHttpService {
     const headers = await this.getSessionHeaders(arrayValues[0]);
     const dateToday = this.functionService.returnDateFormat3(new Date());
     const date = this.functionService.returnDateFormatFrom(arrayValues[5]);
-    const sumTotal = arrayValues[4].reduce((sum, current) => sum + current.cantidad, 0);
+    const sumTotal = arrayValues[4].reduce(
+      (sum, current) => sum + current.cantidad,
+      0,
+    );
     const prestaciones = arrayValues[4].reduce((cont, current) => {
       let i = '';
       if (cont) {
         i = '|*';
       }
-      return cont + i + current.codigoPrestacion + '*' + current.cantidad + '**';
+      return (
+        cont + i + current.codigoPrestacion + '*' + current.cantidad + '**'
+      );
     }, '');
     return this.httpService
       .post(
         this.url + this.urlPlat + 'registracion/',
         {
-          creden: arrayValues[3]  + '|' + arrayValues[2] ,
+          creden: arrayValues[3] + '|' + arrayValues[2],
           alta: dateToday,
           fecdif: date,
           manual: '0',
