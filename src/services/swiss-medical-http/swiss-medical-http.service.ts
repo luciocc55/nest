@@ -52,6 +52,7 @@ export class SwissMedicalHttpService {
         let estatus;
         let resultados = [];
         let error;
+        let numeroTransaccion = null;
         let errorEstandarizado = null;
         let errorEstandarizadoCodigo = null;
         if (data.cabecera) {
@@ -66,6 +67,7 @@ export class SwissMedicalHttpService {
               }
               return {prestación: arrayValues[4][index].codigoPrestacion, transaccion: data.transac, mensaje: data.denoItem, estado};
             });
+            numeroTransaccion = data.cabecera.transac;
           } else {
             const err = await this.erroresService.findOne({'values.value': data.cabecera.rechaCabecera.toString(), 'values.origen': origen});
             if (err) {
