@@ -2,13 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { FunctionsService } from '../functions';
-
+// tslint:disable-next-line: no-var-requires
+const ObjectId = require('mongoose').Types.ObjectId;
 @Injectable()
 export class AtributosEstaticosService {
   constructor(
     @InjectModel('AtributosEstaticos')
     private readonly atributosEstaticosModel: Model<any>,
-    private functionService: FunctionsService,
+    private functionService: FunctionsService
   ) {}
   async updateServicios(
     description,
@@ -16,12 +17,12 @@ export class AtributosEstaticosService {
     isOptional,
     path,
     origen,
-    orden,
+    orden
   ): Promise<any> {
     const atributo = await this.create(description);
     if (atributo.servicios) {
       const atr = atributo.servicios.findIndex(
-        (x) => x.path === path && x.origen.equals(origen),
+        (x) => x.path === path && x.origen.equals(origen)
       );
       if (atr === -1) {
         atributo.servicios.push({ path, orden, origen, isEntry, isOptional });
@@ -34,17 +35,48 @@ export class AtributosEstaticosService {
       }
     }
   }
+
   async findEstaticosOrigen(path, origen, isEntry = false): Promise<any> {
-    return await this.atributosEstaticosModel
-      .find({
-        'servicios.origen': origen,
-        'servicios.path': path,
-        'servicios.isEntry': isEntry,
-      })
-      .populate('atributos')
-      .sort({ 'servicios.orden': 1 })
-      .lean()
-      .exec();
+    return await this.atributosEstaticosModel.aggregate([
+      {
+        $match: {
+          servicios: {
+            $elemMatch: {
+              $and: [{ origen: new ObjectId(origen) }, { path }, { isEntry }],
+            },
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: 'atributos',
+          localField: '_id',
+          foreignField: 'atributosEstaticos',
+          as: 'atributos',
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          description: 1,
+          atributos: 1,
+          servicios: {
+            $filter: {
+              input: '$servicios',
+              as: 'servicios',
+              cond: {
+                $and: [
+                  { $eq: ['$$servicios.origen', new ObjectId(origen)] },
+                  { $eq: ['$$servicios.path', path] },
+                  { $eq: ['$$servicios.isEntry', isEntry] },
+                ],
+              },
+            },
+          },
+        },
+      },
+      { $sort: { 'servicios.order': 1 } },
+    ]);
   }
   async create(description): Promise<any> {
     let exist = await this.atributosEstaticosModel
