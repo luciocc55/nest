@@ -47,8 +47,8 @@ export class AutorizacionController {
         ]);
         const usuario = await this.usuariosService.findById(user);
         const arrayValues = [];
-        arrayValues.push(...await this.atributosUserService.getAtributosService(usuario, atributos, path));
-        arrayValues.push(...await this.atributosUserService.getAtributosEntry(data.atributosAdicionales, atributosEntradas, path));
+        arrayValues.push(...await this.atributosUserService.getAtributosService(usuario, atributos));
+        arrayValues.push(...await this.atributosUserService.getAtributosEntry(data.atributosAdicionales, atributosEntradas));
         arrayValues.push(data.prestaciones);
         arrayValues.push(data.fechaPrestacion);
         let autorizacion;
@@ -81,8 +81,8 @@ export class AutorizacionController {
         ]);
         const usuario = await this.usuariosService.findById(user);
         const arrayValues = [];
-        arrayValues.push(...await this.atributosUserService.getAtributosService(usuario, atributos, path));
-        arrayValues.push(...await this.atributosUserService.getAtributosEntry(data.atributosAdicionales, atributosEntradas, path));
+        arrayValues.push(...await this.atributosUserService.getAtributosService(usuario, atributos));
+        arrayValues.push(...await this.atributosUserService.getAtributosEntry(data.atributosAdicionales, atributosEntradas));
         arrayValues.push(data.numeroTransaccion);
         let cancelacion;
         switch (validate.description) {

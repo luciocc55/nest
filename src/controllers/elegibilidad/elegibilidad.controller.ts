@@ -79,7 +79,7 @@ export class ElegibilidadController {
       this.atribustoEstaticosService.findEstaticosOrigen(path, data.origen),
     ]);
     const usuario = await this.usuariosService.findById(user);
-    const arrayValues = await this.atributosUserService.getAtributosService(usuario, atributos, path);
+    const arrayValues = await this.atributosUserService.getAtributosService(usuario, atributos);
     arrayValues.push(data.dni);
     arrayValues.push(data.afiliado);
     let elegibilidad;

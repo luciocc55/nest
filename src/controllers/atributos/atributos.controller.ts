@@ -58,10 +58,6 @@ export class AtributosController {
   @ApiTags('Lista los atributos necesarios para consumir un service')
   @Get('consumir/necesarios')
   async necesarioAtr(@Query() params: AtributosNecesarios): Promise<any> {
-    return await this.atributosEstaticosService.findAllSearch({
-      'servicios.isEntry': params.isEntry.valueOf(),
-      'servicios.path': params.path,
-      'servicios.origen': params.origen,
-    });
+    return await this.atributosEstaticosService.findEstaticosOrigen(params.path, params.origen, Boolean(JSON.parse(params.isEntry)));
   }
 }

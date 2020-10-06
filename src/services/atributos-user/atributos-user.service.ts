@@ -18,11 +18,11 @@ export class AtributosUserService {
           .populate('atributo')
           .exec();
       }
-      async getAtributosEntry(data, atributos, service) {
+      async getAtributosEntry(data, atributos) {
         const arrayValues = [];
         for (const [index, atributo] of atributos.entries()) {
-          const opciones = atributo.servicios.find(serv => serv.path === service);
-          if (!opciones?.isOptional  && !data[index] ) {
+          const opciones = atributo.servicios;
+          if (!opciones.isOptional  && !data[index] ) {
             throw new HttpException(
               {
                 status: HttpStatus.BAD_REQUEST,
@@ -43,14 +43,14 @@ export class AtributosUserService {
         }
         return arrayValues;
       }
-      async getAtributosService(usuario, atributos, service) {
+      async getAtributosService(usuario, atributos) {
         const prestadores = await this.functionService.returnUniques(
           usuario['prestadores'],
           'prestador',
         );
         const arrayValues = [];
         for (const atributo of atributos) {
-          const opciones = atributo.servicios.find(serv => serv.path === service);
+          const opciones = atributo.servicios;
           if (!opciones?.isOptional) {
             const lista = this.functionService.returnUniques(
               atributo.atributos,

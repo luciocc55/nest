@@ -9,7 +9,7 @@ export class AtributosEstaticosService {
   constructor(
     @InjectModel('AtributosEstaticos')
     private readonly atributosEstaticosModel: Model<any>,
-    private functionService: FunctionsService
+    private functionService: FunctionsService,
   ) {}
   async updateServicios(
     description,
@@ -17,12 +17,12 @@ export class AtributosEstaticosService {
     isOptional,
     path,
     origen,
-    orden
+    orden,
   ): Promise<any> {
     const atributo = await this.create(description);
     if (atributo.servicios) {
       const atr = atributo.servicios.findIndex(
-        (x) => x.path === path && x.origen.equals(origen)
+        (x) => x.path === path && x.origen.equals(origen),
       );
       if (atr === -1) {
         atributo.servicios.push({ path, orden, origen, isEntry, isOptional });
@@ -61,7 +61,7 @@ export class AtributosEstaticosService {
           description: 1,
           atributos: 1,
           servicios: {
-            $filter: {
+            $first: {$filter: {
               input: '$servicios',
               as: 'servicios',
               cond: {
@@ -74,8 +74,9 @@ export class AtributosEstaticosService {
             },
           },
         },
+        },
       },
-      { $sort: { 'servicios.order': 1 } },
+      { $sort: { 'servicios.orden': 1 } },
     ]);
   }
   async create(description): Promise<any> {

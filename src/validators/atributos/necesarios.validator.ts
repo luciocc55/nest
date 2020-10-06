@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsBoolean } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class AtributosNecesarios {
   @IsNotEmpty({
@@ -8,7 +8,7 @@ export class AtributosNecesarios {
   @IsNotEmpty({
     message: 'isEntry es un campo requerido',
   })
-  isEntry: boolean;
+  isEntry: string;
   @IsNotEmpty({
     message: 'Path es un campo requerido',
   })
