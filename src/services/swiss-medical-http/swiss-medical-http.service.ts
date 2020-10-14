@@ -8,7 +8,7 @@ import { FunctionsService } from '../functions';
 @Injectable()
 export class SwissMedicalHttpService {
   url;
-  urlPlat = 'V1.0/prestadores/hl7/';
+  urlPlat = 'V1.1/prestadores/hl7/';
   apiKey = '81ba7db467d68def9a81';
   usrLoginName = 'suap';
   password = 'suap2018';
