@@ -8,10 +8,11 @@ import { FunctionsService } from '../functions';
 @Injectable()
 export class SwissMedicalHttpService {
   url;
-  urlPlat = 'V1.1/prestadores/hl7/';
+  urlPlat = 'V1.0/prestadores/hl7/';
   apiKey = '81ba7db467d68def9a81';
   usrLoginName = 'suap';
   password = 'suap2018';
+  urlPlatV11 = 'V1.1/prestadores/hl7/';
   device = {
     messagingid: '132H12312',
     deviceid: '192.168.45.747',
@@ -96,7 +97,7 @@ export class SwissMedicalHttpService {
     const dateToday = this.functionService.returnDateFormat3(new Date());
     return this.httpService
       .post(
-        this.url + this.urlPlat + 'cancela-prestacion/',
+        this.url + this.urlPlatV11 + 'cancela-prestacion/',
         {
           creden: arrayValues[1],
           alta: dateToday,
