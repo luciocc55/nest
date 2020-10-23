@@ -136,6 +136,8 @@ export class SwissMedicalHttpService {
                 prestación: arrayValues[4][index].codigoPrestacion,
                 transaccion: data.transac,
                 mensaje: data.denoItem,
+                cantidad: data.canti,
+                copago: data.valorCopa,
                 estado,
               };
             });
