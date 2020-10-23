@@ -253,7 +253,7 @@ export class SwissMedicalHttpService {
             estadoAfiliado: data.rechaCabecera === 0 ? true : false,
             // tslint:disable-next-line: radix
             edad: parseInt(data.edad),
-            voluntario: null,
+            voluntario: data.gravado === '1' ? true : false,
             fechaNac: null,
             plan: data.planCodi,
             planDescripcion: '',
@@ -264,7 +264,7 @@ export class SwissMedicalHttpService {
             servicio: null,
             tipoDocumento: '',
             tipoDocumentoDescripcion: '',
-            recupero: null,
+            recupero: data.gravado === '1' ? true : false,
           };
         } else {
           estatus = 0;
