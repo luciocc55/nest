@@ -137,6 +137,7 @@ export class SwissMedicalHttpService {
                 transaccion: data.transac,
                 mensaje: data.denoItem,
                 cantidad: data.canti,
+                rechazadas: data.recha,
                 copago: data.valorCopa,
                 estado,
               };
