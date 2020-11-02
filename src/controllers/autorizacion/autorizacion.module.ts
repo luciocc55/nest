@@ -9,6 +9,7 @@ import { OrigenesModule } from 'src/services/origenes/origenes.module';
 import { AtributosEstaticosModule } from 'src/services/atributos-estaticos/atributos-estaticos.module';
 import { AtributosUserModule } from 'src/services/atributos-user/atributos-user.module';
 import { UsersServiceModule } from 'src/services/users/users.module';
+import { SinonimosModule } from 'src/services/sinonimos/sinonimos.module';
 
 @Module({
   controllers: [AutorizacionController],
@@ -21,6 +22,7 @@ import { UsersServiceModule } from 'src/services/users/users.module';
     AtributosEstaticosModule,
     AtributosUserModule,
     UsersServiceModule,
+    SinonimosModule,
   ],
 })
 export class AutorizacionModule {}

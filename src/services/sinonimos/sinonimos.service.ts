@@ -11,6 +11,15 @@ export class SinonimosService {
     const searched = await this.sinonimosModel.find(search);
     return searched;
   }
+  async getValue(origen, id): Promise<any> {
+    const searched = await this.sinonimosModel.findById(id);
+    const exist = searched.sinonimos.find(s => s.origen === origen);
+    if (exist) {
+      return exist.value;
+    } else {
+      return searched.defaultValue;
+    }
+  }
   async getOrCreate(description, defaultValue, tipo): Promise<any> {
     let exist = await this.sinonimosModel.findOne({ description }).exec();
     if (!exist) {
