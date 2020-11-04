@@ -10,6 +10,7 @@ import { AtributosEstaticosModule } from 'src/services/atributos-estaticos/atrib
 import { AtributosUserModule } from 'src/services/atributos-user/atributos-user.module';
 import { UsersServiceModule } from 'src/services/users/users.module';
 import { SinonimosModule } from 'src/services/sinonimos/sinonimos.module';
+import { EsencialHttpModule } from 'src/services/esencial-http/esencial-http.module';
 
 @Module({
   controllers: [AutorizacionController],
@@ -23,6 +24,7 @@ import { SinonimosModule } from 'src/services/sinonimos/sinonimos.module';
     AtributosUserModule,
     UsersServiceModule,
     SinonimosModule,
+    EsencialHttpModule,
   ],
 })
 export class AutorizacionModule {}

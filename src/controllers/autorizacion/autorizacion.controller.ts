@@ -6,6 +6,7 @@ import { LoggingInterceptor } from 'src/interceptors/logger/logger.interceptor';
 import { AtributosEstaticosService } from 'src/services/atributos-estaticos/atributos-estaticos.service';
 import { AtributosUserService } from 'src/services/atributos-user/atributos-user.service';
 import { AuthService } from 'src/services/auth/auth.service';
+import { EsencialHttpService } from 'src/services/esencial-http/esencial-http.service';
 import { OrigenesService } from 'src/services/origenes/origenes.service';
 import { SinonimosService } from 'src/services/sinonimos/sinonimos.service';
 import { SwissMedicalHttpService } from 'src/services/swiss-medical-http/swiss-medical-http.service';
@@ -24,12 +25,13 @@ export class AutorizacionController {
       private usuariosService: UsersService,
       private atributosUserService: AtributosUserService,
       private sinonimosService: SinonimosService,
+      private esencialService: EsencialHttpService,
     ) {}
 
     @ApiTags(
         'Permite autorizar practicas contra los servicios habilitados',
         'Swiss Medical:Cuit Swiss Medical:Cuit de Prescriptor Swiss/true/true:Codigo de seguridad Swiss/true/true: Nro de afiliado Swiss/true',
-        'Esencial:Codigo de Proveedor Esencial:Codigo de prestador/true:Codigo de Socio + Credencial/true/true:Nro. de documento/true/true:Matricula de efector/true/true:Matricula de solicitante/true/true',
+        'Esencial:Codigo de Proveedor Esencial:Codigo de Socio + Credencial/true/true:Nro. de documento/true/true:Matricula de efector/true/true:Matricula de solicitante/true/true',
       )
       // , separa los origenes permitidos en el service
       // : separa los atributos necesarios para ese origen
@@ -59,6 +61,8 @@ export class AutorizacionController {
         switch (validate.description) {
           case 'Swiss Medical':
             autorizacion = await this.swissService.getAutorizacion(arrayValues, data.origen);
+            case 'Esencial':
+              autorizacion = await this.esencialService.getAutorizacion(arrayValues, data.origen);
         }
         return {autorizacion};
       }
