@@ -13,6 +13,9 @@ export class SinonimosService {
   }
   async getValue(origen, id): Promise<any> {
     const searched = await this.sinonimosModel.findById(id);
+    if (!searched) {
+      return '';
+    }
     const exist = searched.sinonimos.find(s => s.origen === origen);
     if (exist) {
       return exist.value;
