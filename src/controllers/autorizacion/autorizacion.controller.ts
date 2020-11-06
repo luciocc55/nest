@@ -56,13 +56,15 @@ export class AutorizacionController {
         arrayValues.push(...await this.atributosUserService.getAtributosEntry(data.atributosAdicionales, atributosEntradas));
         arrayValues.push(data.prestaciones);
         arrayValues.push(data.fechaPrestacion);
-        // arrayValues.push(await this.sinonimosService.getValue(data.origen, data.ambitoPrestacion));
+        arrayValues.push(await this.sinonimosService.getValue(data.origen, data.ambitoPrestacion));
         let autorizacion;
         switch (validate.description) {
           case 'Swiss Medical':
             autorizacion = await this.swissService.getAutorizacion(arrayValues, data.origen);
-            case 'Esencial':
-              autorizacion = await this.esencialService.getAutorizacion(arrayValues, data.origen);
+            break;
+          case 'Esencial':
+            autorizacion = await this.esencialService.getAutorizacion(arrayValues, data.origen);
+            break;
         }
         return {autorizacion};
       }

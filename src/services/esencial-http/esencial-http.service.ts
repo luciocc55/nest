@@ -122,12 +122,17 @@ export class EsencialHttpService {
       getAutorizacion(arrayValues, origen): any {
         return new Promise(async resolve => {
           const subscriptions = [];
-          arrayValues[5].forEach(async element => {
-            subscriptions.push(await this.autorizar(arrayValues, element.codigoPrestacion, element.cantidad));
-          });
-          forkJoin(subscriptions).subscribe(data => {
-            resolve(data);
-          });
+          if (arrayValues[5]) {
+            arrayValues[5].forEach(async element => {
+              subscriptions.push(await this.autorizar(arrayValues, element.codigoPrestacion, element.cantidad));
+            });
+            forkJoin(subscriptions).subscribe(data => {
+              resolve(data);
+            });
+          } else {
+            return {};
+          }
+
         });
       }
       getElegibilidad(arrayValues): any {
