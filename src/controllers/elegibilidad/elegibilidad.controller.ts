@@ -21,6 +21,7 @@ import { SwissMedicalHttpService } from 'src/services/swiss-medical-http/swiss-m
 import { AmrHttpService } from 'src/services/amr-http/amr-http.service';
 import { RediHttpService } from 'src/services/redi-http/redi-http.service';
 import { LoggingInterceptor } from 'src/interceptors/logger/logger.interceptor';
+import { AcaHttpService } from 'src/services/aca-http/aca-http.service';
 @Controller('elegibilidad')
 @UseGuards(RolesGuard)
 export class ElegibilidadController {
@@ -36,11 +37,13 @@ export class ElegibilidadController {
     private swissService: SwissMedicalHttpService,
     private amrService: AmrHttpService,
     private redIService: RediHttpService,
+    private acaService: AcaHttpService,
   ) {}
   @ApiTags(
     'Permite identificar si una persona posee elegibilidad en un origen particular',
     'Federada:Nro de Prestador Federada:Nro de Sub Prestador Federada',
     'Esencial:Codigo de Proveedor Esencial',
+    'ACA Salud:Codigo de Prestado ACA Salud',
     'IAPOS',
     'Swiss Medical (AMR):Matricula de Efector:Codigo de Profesion',
     'ACA Salud (AMR):Matricula de Efector:Codigo de Profesion',
@@ -179,6 +182,11 @@ export class ElegibilidadController {
           arrayValues,
         );
         break;
+        case 'ACA Salud':
+          elegibilidad = await this.acaService.getElegibilidad(
+            arrayValues,
+          );
+          break;
     }
     return { elegibilidad };
   }

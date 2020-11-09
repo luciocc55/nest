@@ -29,6 +29,7 @@ import { ExtrasModule } from './services/extras/extras.module';
 import { SinonimosModule } from './services/sinonimos/sinonimos.module';
 import { ExtrasControllerModule } from './controllers/extras-controller/extras-controller.module';
 import { ErroresModule } from './services/errores/errores.module';
+import { AcaHttpModule } from './services/aca-http/aca-http.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { ErroresModule } from './services/errores/errores.module';
     SinonimosModule,
     ExtrasControllerModule,
     ErroresModule,
+    AcaHttpModule,
   ],
   controllers: [],
 })

@@ -12,12 +12,13 @@ export class EsencialHttpService {
         private readonly httpService: HttpService,
       ) {
         if (process.env.Production === 'true') {
-          this.url = 'http://ws.medicinaesencial.com.ar/GestosWS/';
+          this.url = 'http://ws.medicinaesencial.com.ar/GestOSWSTest/';
         } else {
           this.url = 'http://ws.medicinaesencial.com.ar/GestOSWSTest/';
         }
       }
       async autorizar(arrayValues, prestacion, cantidadPrestacion): Promise<Observable<any>> {
+        console.log(prestacion)
         const xml =
         `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ges="GestOS">
         <soapenv:Header/>
@@ -122,15 +123,16 @@ export class EsencialHttpService {
       getAutorizacion(arrayValues, origen): any {
         return new Promise(async resolve => {
           const subscriptions = [];
+          console.log(arrayValues[5])
           if (arrayValues[5]) {
-            arrayValues[5].forEach(async element => {
+            for (const element of arrayValues[5]) {
               subscriptions.push(await this.autorizar(arrayValues, element.codigoPrestacion, element.cantidad));
-            });
+            }
             forkJoin(subscriptions).subscribe(data => {
               resolve(data);
             });
           } else {
-            return {};
+            resolve({});
           }
 
         });

@@ -12,6 +12,7 @@ import { IaposHttpModule } from 'src/services/iapos-http/iapos-http.module';
 import { SwissMedicalHttpModule } from 'src/services/swiss-medical-http/swiss-medical-http.module';
 import { AmrHttpModule } from 'src/services/amr-http/amr-http.module';
 import { RediHttpModule } from 'src/services/redi-http/redi-http.module';
+import { AcaHttpModule } from 'src/services/aca-http/aca-http.module';
 
 @Module({
   controllers: [ElegibilidadController],
@@ -29,6 +30,7 @@ import { RediHttpModule } from 'src/services/redi-http/redi-http.module';
     SwissMedicalHttpModule,
     AmrHttpModule,
     RediHttpModule,
+    AcaHttpModule,
   ],
 })
 export class ElegibilidadModule {}
