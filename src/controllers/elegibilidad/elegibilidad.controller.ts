@@ -43,7 +43,7 @@ export class ElegibilidadController {
     'Permite identificar si una persona posee elegibilidad en un origen particular',
     'Federada:Nro de Prestador Federada:Nro de Sub Prestador Federada',
     'Esencial:Codigo de Proveedor Esencial',
-    'ACA Salud:Codigo de Prestado ACA Salud',
+    'ACA Salud:Codigo de Prestador ACA Salud',
     'IAPOS',
     'Swiss Medical (AMR):Matricula de Efector:Codigo de Profesion',
     'ACA Salud (AMR):Matricula de Efector:Codigo de Profesion',
