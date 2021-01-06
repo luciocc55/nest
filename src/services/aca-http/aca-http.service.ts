@@ -51,7 +51,7 @@ export class AcaHttpService {
         <PID>
             <TIPOID>CODIGO</TIPOID>
             <ID>` +
-      arrayValues[3] +
+      arrayValues[2] +
       `</ID>
             <VERIFID>MANUAL</VERIFID>
         </PID>
