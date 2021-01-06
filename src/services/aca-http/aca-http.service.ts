@@ -86,7 +86,7 @@ export class AcaHttpService {
         } catch (error) {
           console.log(error);
         }
-        resolve({ datosParseados, estatus });
+        resolve({ data: datosParseados, estatus });
       });
     });
   }
