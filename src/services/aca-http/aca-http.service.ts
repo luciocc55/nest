@@ -1,21 +1,21 @@
-import { HttpService, Injectable } from '@nestjs/common';
-import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import { DatosElegibilidad } from 'src/interfaces/datos-elegibilidad';
-import xmlParser = require('xml2json');
+import { HttpService, Injectable } from "@nestjs/common";
+import { Observable, of } from "rxjs";
+import { map, catchError } from "rxjs/operators";
+import xmlParser = require("xml2json");
 @Injectable()
 export class AcaHttpService {
-    url = 'https://cauat.acasalud.com.ar:443/SSCaws/Servicios.wsdl';
-    headers = { 'Content-Type': 'text/xml'};
-    constructor(private readonly httpService: HttpService) {}
-    async elegibilidad(arrayValues): Promise<Observable<any>> {
-      const usuario = '7021871';
-      const password = 'DAT_MGR';
-      if (!arrayValues[1]) {
-        arrayValues[1] = '?';
-      }
-      const xml =
-        `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://caws/Servicios.wsdl">
+  url = "https://cauat.acasalud.com.ar:443/SSCaws/Servicios";
+  headers = { "Content-Type": "text/xml" };
+  constructor(private readonly httpService: HttpService) {}
+  async elegibilidad(arrayValues): Promise<Observable<any>> {
+    process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
+    const usuario = "5092071";
+    const password = "DAT_MGR";
+    if (!arrayValues[1]) {
+      arrayValues[1] = "?";
+    }
+    const xml =
+      `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://caws/Servicios.wsdl">
         <soapenv:Header/>
         <soapenv:Body>
            <ser:transaccionstr>
@@ -33,18 +33,26 @@ export class AcaHttpService {
         <SEGURIDAD>
             <TIPOAUT>U</TIPOAUT>
             <TIPOCON>PRES</TIPOCON>
-            <USRID>` + usuario + `</USRID>
-            <USRPASS>` + password + `</USRPASS>
+            <USRID>` +
+      usuario +
+      `</USRID>
+            <USRPASS>` +
+      password +
+      `</USRPASS>
         </SEGURIDAD>
         <OPER>
             <TIPO>ELG</TIPO>
             <IDASEG>ACA_SALUD</IDASEG>
-            <IDPRESTADOR>` + arrayValues[0] + `</IDPRESTADOR>
+            <IDPRESTADOR>` +
+      arrayValues[0] +
+      `</IDPRESTADOR>
             <FECHA>2020-11-05</FECHA>
         </OPER>
         <PID>
             <TIPOID>CODIGO</TIPOID>
-            <ID>` + arrayValues[2] + `</ID>
+            <ID>` +
+      arrayValues[3] +
+      `</ID>
             <VERIFID>MANUAL</VERIFID>
         </PID>
         <CONTEXTO>
@@ -55,22 +63,31 @@ export class AcaHttpService {
             </ser:transaccionstr>
             </soapenv:Body>
         </soapenv:Envelope>`;
-      return this.httpService
-        .post(this.url , xml, { headers: this.headers })
-        .pipe(
-          map((res) => xmlParser.toJson(res.data, { object: true })),
-          catchError((e) => {
-            return of({ e });
-          }),
+    return this.httpService.post(this.url, xml, { headers: this.headers }).pipe(
+      map((res) => xmlParser.toJson(res.data, { object: true })),
+      catchError((e) => {
+        return of({ e });
+      })
+    );
+  }
+  getElegibilidad(arrayValues): any {
+    return new Promise(async (resolve) => {
+      (await this.elegibilidad(arrayValues)).subscribe((data) => {
+        process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = null;
+        const datosParseados = xmlParser.toJson(
+          data["S:Envelope"]["S:Body"]["ns0:transaccionstrResponse"]["return"],
+          { object: true }
         );
-    }
-    getElegibilidad(arrayValues): any {
-      return new Promise(async (resolve) => {
-        (await this.elegibilidad(arrayValues)).subscribe((data) => {
-          console.log(data)
-          
-          resolve({ data});
-        });
+        let estatus = 0;
+        try {
+          if (!datosParseados.RESPUESTA.RSPMSGGADIC) {
+            estatus = 1;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        resolve({ datosParseados, estatus });
       });
-    }
+    });
+  }
 }
