@@ -191,7 +191,7 @@ export class ElegibilidadController {
           );
           break;
           case 'Medife (Traditum)':
-            elegibilidad = this.traditumService.returnXmlMedife(arrayValues)
+            elegibilidad = await this.traditumService.returnXmlMedife(arrayValues)
             break;
 
     }
