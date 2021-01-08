@@ -22,6 +22,7 @@ import { AmrHttpService } from 'src/services/amr-http/amr-http.service';
 import { RediHttpService } from 'src/services/redi-http/redi-http.service';
 import { LoggingInterceptor } from 'src/interceptors/logger/logger.interceptor';
 import { AcaHttpService } from 'src/services/aca-http/aca-http.service';
+import { TraditumHttpService } from 'src/services/traditum-http/traditum-http.service';
 @Controller('elegibilidad')
 @UseGuards(RolesGuard)
 export class ElegibilidadController {
@@ -38,6 +39,7 @@ export class ElegibilidadController {
     private amrService: AmrHttpService,
     private redIService: RediHttpService,
     private acaService: AcaHttpService,
+    private traditumService: TraditumHttpService
   ) {}
   @ApiTags(
     'Permite identificar si una persona posee elegibilidad en un origen particular',
@@ -66,6 +68,7 @@ export class ElegibilidadController {
     'OSDOP (Red-I)',
     'Demi Salud (Red-I)',
     'Proapro (Red-I)',
+    'Medife (Traditum):Codigo de Provincia:Numero de Prestador:Tipo de identificador:Descripción de prestador',
   )
   // , separa los origenes permitidos en el service
   // : separa los atributos necesarios para ese origen
@@ -187,6 +190,10 @@ export class ElegibilidadController {
             arrayValues,
           );
           break;
+          case 'Medife (Traditum)':
+            elegibilidad = this.traditumService.returnXmlMedife(arrayValues)
+            break;
+
     }
     return { elegibilidad };
   }

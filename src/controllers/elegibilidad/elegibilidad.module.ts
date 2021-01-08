@@ -13,6 +13,7 @@ import { SwissMedicalHttpModule } from 'src/services/swiss-medical-http/swiss-me
 import { AmrHttpModule } from 'src/services/amr-http/amr-http.module';
 import { RediHttpModule } from 'src/services/redi-http/redi-http.module';
 import { AcaHttpModule } from 'src/services/aca-http/aca-http.module';
+import { TraditumHttpModule } from 'src/services/traditum-http/traditum-http.module';
 
 @Module({
   controllers: [ElegibilidadController],
@@ -31,6 +32,7 @@ import { AcaHttpModule } from 'src/services/aca-http/aca-http.module';
     AmrHttpModule,
     RediHttpModule,
     AcaHttpModule,
+    TraditumHttpModule,
   ],
 })
 export class ElegibilidadModule {}
