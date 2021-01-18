@@ -1,8 +1,7 @@
 import { HttpService, Injectable } from "@nestjs/common";
 import { Observable, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
-import { DatosElegibilidad } from "src/interfaces/datos-elegibilidad";
-
+import xmlParser = require("xml2json");
 @Injectable()
 export class ActiviaHttpService {
   url;
@@ -21,7 +20,7 @@ export class ActiviaHttpService {
         headers: this.headers,
       })
       .pipe(
-        map((res) => res.data),
+        map((res) => xmlParser.toJson(res.data, { object: true })),
         catchError((e) => {
           return of({ e });
         })
@@ -30,11 +29,13 @@ export class ActiviaHttpService {
   getElegibilidadOSPDC(arrayValues): any {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, "PATCAB")).subscribe((data) => {
+        const datosParseados = xmlParser.toJson(
+          data["soap:Envelope"]["soap:Body"]['ExecuteFileTransactionSLResponse']['ExecuteFileTransactionSLResult'],
+          { object: true }
+        );
         let estatus;
-        let datos: DatosElegibilidad;
         try {
-          const info = {};
-          if (info["SINEdo"] === "AC") {
+          if (datosParseados.Mensaje?.EncabezadoMensaje?.Rta.CodRtaGeneral === '00') {
             estatus = 1;
           } else {
             estatus = 0;
@@ -42,7 +43,7 @@ export class ActiviaHttpService {
         } catch (error) {
           estatus = 0;
         }
-        resolve({ data, estatus, datosFinales: datos });
+        resolve({ data: datosParseados, estatus });
       });
     });
   }
@@ -55,43 +56,7 @@ export class ActiviaHttpService {
                 <!--Optional:-->
                 <tem:pos></tem:pos>
                 <!--Optional:-->
-                <tem:fileContent><![CDATA[
-                    <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
-                    <Mensaje>
-                    <EncabezadoMensaje>
-                        <VersionMsj>ACT20</VersionMsj>
-                        <TipoMsj>OL</TipoMsj>
-                        <TipoTransaccion>01A</TipoTransaccion>
-                        <IdMsj>123456789</IdMsj>
-                        <InicioTrx>
-                            <FechaTrx>20210115</FechaTrx>
-                        </InicioTrx>
-                        <Terminal>
-                            <TipoTerminal>PC</TipoTerminal>
-                            <NumeroTerminal>` +
-      arrayValues[1] +
-      `</NumeroTerminal>
-                        </Terminal>
-                        <Financiador>
-                            <CodigoFinanciador>` +
-      os +
-      `</CodigoFinanciador>
-                        </Financiador>
-                        <Prestador>
-                            <CuitPrestador>` +
-      arrayValues[0] +
-      `</CuitPrestador>
-                            <RazonSocial>?</RazonSocial>
-                        </Prestador>
-                    </EncabezadoMensaje>
-                    <EncabezadoAtencion>
-                        <Credencial>
-                            <NumeroCredencial>0100002205</NumeroCredencial>
-                            <ModoIngreso>M</ModoIngreso>
-                        </Credencial>
-                    </EncabezadoAtencion>
-                    </Mensaje>]]></tem:fileContent>
-             </tem:ExecuteFileTransactionSL>
+                <tem:fileContent><![CDATA[<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?><Mensaje><EncabezadoMensaje><VersionMsj>ACT20</VersionMsj><TipoMsj>OL</TipoMsj><TipoTransaccion>01A</TipoTransaccion><IdMsj>123456789</IdMsj><InicioTrx><FechaTrx>20210115</FechaTrx></InicioTrx><Terminal><TipoTerminal>PC</TipoTerminal><NumeroTerminal>` +arrayValues[1] +`</NumeroTerminal></Terminal><Financiador><CodigoFinanciador>` +os +`</CodigoFinanciador></Financiador><Prestador><CuitPrestador>` +arrayValues[0] +`</CuitPrestador><RazonSocial>?</RazonSocial></Prestador></EncabezadoMensaje><EncabezadoAtencion><Credencial><NumeroCredencial>0100002205</NumeroCredencial><ModoIngreso>M</ModoIngreso></Credencial></EncabezadoAtencion></Mensaje>]]></tem:fileContent></tem:ExecuteFileTransactionSL>
           </soap:Body>
          </soap:Envelope>`;
     return xml;
