@@ -14,6 +14,7 @@ import { AmrHttpModule } from 'src/services/amr-http/amr-http.module';
 import { RediHttpModule } from 'src/services/redi-http/redi-http.module';
 import { AcaHttpModule } from 'src/services/aca-http/aca-http.module';
 import { TraditumHttpModule } from 'src/services/traditum-http/traditum-http.module';
+import { ActiviaHttpModule } from 'src/services/activia-http/activia-http.module';
 
 @Module({
   controllers: [ElegibilidadController],
@@ -33,6 +34,7 @@ import { TraditumHttpModule } from 'src/services/traditum-http/traditum-http.mod
     RediHttpModule,
     AcaHttpModule,
     TraditumHttpModule,
+    ActiviaHttpModule,
   ],
 })
 export class ElegibilidadModule {}
