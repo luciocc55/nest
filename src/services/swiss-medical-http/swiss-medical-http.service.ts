@@ -159,16 +159,18 @@ export class SwissMedicalHttpService {
           estatus = 0;
           error = 'Por favor, intente nuevamente';
         }
+        const datos = {
+          estatus,
+          error,
+          errorEstandarizado,
+          numeroTransaccion,
+          errorEstandarizadoCodigo,
+          resultados,
+        }
         resolve({
           data,
-          resultado: {
-            estatus,
-            error,
-            errorEstandarizado,
-            numeroTransaccion,
-            errorEstandarizadoCodigo,
-            resultados,
-          },
+          resultado: datos,
+          datosFinales: datos
         });
       });
     });
