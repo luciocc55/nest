@@ -57,6 +57,7 @@ export class AutorizacionController {
         arrayValues.push(data.prestaciones);
         arrayValues.push(data.fechaPrestacion);
         arrayValues.push(await this.sinonimosService.getValue(data.origen, data.ambitoPrestacion));
+        arrayValues.push(data.matriculaProfesionalSolicitante);
         let autorizacion;
         switch (validate.description) {
           case 'Swiss Medical':
