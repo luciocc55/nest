@@ -202,7 +202,7 @@ export class SwissMedicalHttpService {
           manual: '0',
           ticketExt: 0,
           interNro: 2,
-          autoriz: arrayValues[4] ? arrayValues[4] : 0,
+          autoriz: arrayValues[4] ? parseInt(arrayValues[4]) : 0,
           rechaExt: 0,
           param1: sumTotal + '^*' + prestaciones,
           param2: '',
