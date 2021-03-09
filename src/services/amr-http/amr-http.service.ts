@@ -176,13 +176,12 @@ export class AmrHttpService {
             estatus = 1;
           } else {
             if (data.respuestaElegibilidadAfiliado.estadoGeneral
-              .mensaje !== 'timeout') {
+              .mensaje === 'timeout') {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
               });
               datosFinales.errorEstandarizado=err.description;
               datosFinales.errorEstandarizadoCodigo=err.valueStandard;
-              console.log('entro ERROR', err)
             }
           }
         } catch (error) {
