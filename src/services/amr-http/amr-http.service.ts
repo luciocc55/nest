@@ -1,6 +1,8 @@
 import { Injectable, HttpService } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { DatosElegibilidad } from 'src/interfaces/datos-elegibilidad';
+import { ErroresService } from '../errores/errores.service';
 import { FunctionsService } from '../functions';
 
 @Injectable()
@@ -11,6 +13,7 @@ export class AmrHttpService {
   constructor(
     private httpService: HttpService,
     private functionService: FunctionsService,
+    private erroresService: ErroresService,
   ) {}
   async elegibilidad(
     arrayValues,
@@ -43,38 +46,58 @@ export class AmrHttpService {
   getElegibilidadIapos(arrayValues): any {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
-      (await this.elegibilidad(arrayValues, afiliado, 1)).subscribe((data) => {
+      (await this.elegibilidad(arrayValues, afiliado, 1)).subscribe(async (data) => {
         let estatus = 0;
+        let datos: DatosElegibilidad;
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
+          } else {
+            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+              .mensaje === 'timeout') {
+              const err = await this.erroresService.findOne({
+                valueStandard: 3
+              });
+              datos.errorEstandarizado=err.description;
+              datos.errorEstandarizadoCodigo=err.valueStandard;
+            }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus });
+        resolve({ data, estatus, datos });
       });
     });
   }
   getElegibilidadAmrSalud(arrayValues): any {
     const afiliado = arrayValues[2];
     return new Promise(async (resolve) => {
-      (await this.elegibilidad(arrayValues, afiliado, 2)).subscribe((data) => {
+      (await this.elegibilidad(arrayValues, afiliado, 2)).subscribe(async (data) => {
         let estatus = 0;
+        let datos: DatosElegibilidad;
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
+          } else {
+            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+              .mensaje === 'timeout') {
+              const err = await this.erroresService.findOne({
+                valueStandard: 3
+              });
+              datos.errorEstandarizado=err.description;
+              datos.errorEstandarizadoCodigo=err.valueStandard;
+            }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus });
+        resolve({ data, estatus, datos });
       });
     });
   }
@@ -82,19 +105,29 @@ export class AmrHttpService {
   getElegibilidadOspat(arrayValues): any {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
-      (await this.elegibilidad(arrayValues, afiliado, 3)).subscribe((data) => {
+      (await this.elegibilidad(arrayValues, afiliado, 3)).subscribe(async (data) => {
         let estatus = 0;
+        let datos: DatosElegibilidad;
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
+          } else {
+            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+              .mensaje === 'timeout') {
+              const err = await this.erroresService.findOne({
+                valueStandard: 3
+              });
+              datos.errorEstandarizado=err.description;
+              datos.errorEstandarizadoCodigo=err.valueStandard;
+            }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus });
+        resolve({ data, estatus, datos });
       });
     });
   }
@@ -102,19 +135,29 @@ export class AmrHttpService {
   getElegibilidadCajaForense(arrayValues): any {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
-      (await this.elegibilidad(arrayValues, afiliado, 4)).subscribe((data) => {
+      (await this.elegibilidad(arrayValues, afiliado, 4)).subscribe(async (data) => {
         let estatus = 0;
+        let datos: DatosElegibilidad;
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
+          } else {
+            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+              .mensaje === 'timeout') {
+              const err = await this.erroresService.findOne({
+                valueStandard: 3
+              });
+              datos.errorEstandarizado=err.description;
+              datos.errorEstandarizadoCodigo=err.valueStandard;
+            }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus });
+        resolve({ data, estatus, datos });
       });
     });
   }
@@ -122,38 +165,58 @@ export class AmrHttpService {
   getElegibilidadAca(arrayValues): any {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
-      (await this.elegibilidad(arrayValues, afiliado, 5)).subscribe((data) => {
+      (await this.elegibilidad(arrayValues, afiliado, 5)).subscribe(async (data) => {
         let estatus = 0;
+        let datos: DatosElegibilidad;
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
+          } else {
+            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+              .mensaje === 'timeout') {
+              const err = await this.erroresService.findOne({
+                valueStandard: 3
+              });
+              datos.errorEstandarizado=err.description;
+              datos.errorEstandarizadoCodigo=err.valueStandard;
+            }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus });
+        resolve({ data, estatus, datos });
       });
     });
   }
   getElegibilidadCienciasEco2(arrayValues): any {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
-      (await this.elegibilidad(arrayValues, afiliado, 7)).subscribe((data) => {
+      (await this.elegibilidad(arrayValues, afiliado, 7)).subscribe(async (data) => {
         let estatus = 0;
+        let datos: DatosElegibilidad;
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
+          } else {
+            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+              .mensaje === 'timeout') {
+              const err = await this.erroresService.findOne({
+                valueStandard: 3
+              });
+              datos.errorEstandarizado=err.description;
+              datos.errorEstandarizadoCodigo=err.valueStandard;
+            }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus });
+        resolve({ data, estatus, datos });
       });
     });
   }
@@ -163,57 +226,87 @@ export class AmrHttpService {
       afiliado = afiliado.replace('800006', '');
     }
     return new Promise(async (resolve) => {
-      (await this.elegibilidad(arrayValues, afiliado, 8)).subscribe((data) => {
+      (await this.elegibilidad(arrayValues, afiliado, 8)).subscribe(async (data) => {
         let estatus = 0;
+        let datos: DatosElegibilidad;
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
+          } else {
+            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+              .mensaje === 'timeout') {
+              const err = await this.erroresService.findOne({
+                valueStandard: 3
+              });
+              datos.errorEstandarizado=err.description;
+              datos.errorEstandarizadoCodigo=err.valueStandard;
+            }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus });
+        resolve({ data, estatus, datos });
       });
     });
   }
   getElegibilidadOsde(arrayValues): any {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
-      (await this.elegibilidad(arrayValues, afiliado, 10)).subscribe((data) => {
+      (await this.elegibilidad(arrayValues, afiliado, 10)).subscribe(async (data) => {
         let estatus = 0;
+        let datos: DatosElegibilidad;
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
+          } else {
+            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+              .mensaje === 'timeout') {
+              const err = await this.erroresService.findOne({
+                valueStandard: 3
+              });
+              datos.errorEstandarizado=err.description;
+              datos.errorEstandarizadoCodigo=err.valueStandard;
+            }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus });
+        resolve({ data, estatus, datos });
       });
     });
   }
   getElegibilidadUniversidad(arrayValues): any {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
-      (await this.elegibilidad(arrayValues, afiliado, 11)).subscribe((data) => {
+      (await this.elegibilidad(arrayValues, afiliado, 11)).subscribe(async (data) => {
         let estatus = 0;
+        let datos: DatosElegibilidad;
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
+          } else {
+            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+              .mensaje === 'timeout') {
+              const err = await this.erroresService.findOne({
+                valueStandard: 3
+              });
+              datos.errorEstandarizado=err.description;
+              datos.errorEstandarizadoCodigo=err.valueStandard;
+            }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus });
+        resolve({ data, estatus, datos });
       });
     });
   }
@@ -221,57 +314,87 @@ export class AmrHttpService {
   getElegibilidadArqEIngen(arrayValues): any {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
-      (await this.elegibilidad(arrayValues, afiliado, 22)).subscribe((data) => {
+      (await this.elegibilidad(arrayValues, afiliado, 22)).subscribe(async (data) => {
         let estatus = 0;
+        let datos: DatosElegibilidad;
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
+          } else {
+            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+              .mensaje === 'timeout') {
+              const err = await this.erroresService.findOne({
+                valueStandard: 3
+              });
+              datos.errorEstandarizado=err.description;
+              datos.errorEstandarizadoCodigo=err.valueStandard;
+            }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus });
+        resolve({ data, estatus, datos });
       });
     });
   }
   getElegibilidadSmaiEpe(arrayValues): any {
     const afiliado = arrayValues[2];
     return new Promise(async (resolve) => {
-      (await this.elegibilidad(arrayValues, afiliado, 24)).subscribe((data) => {
+      (await this.elegibilidad(arrayValues, afiliado, 24)).subscribe(async (data) => {
         let estatus = 0;
+        let datos: DatosElegibilidad;
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
+          } else {
+            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+              .mensaje === 'timeout') {
+              const err = await this.erroresService.findOne({
+                valueStandard: 3
+              });
+              datos.errorEstandarizado=err.description;
+              datos.errorEstandarizadoCodigo=err.valueStandard;
+            }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus });
+        resolve({ data, estatus, datos });
       });
     });
   }
   getElegibilidadPrevencion(arrayValues): any {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
-      (await this.elegibilidad(arrayValues, afiliado, 41)).subscribe((data) => {
+      (await this.elegibilidad(arrayValues, afiliado, 41)).subscribe(async (data) => {
         let estatus = 0;
+        let datos: DatosElegibilidad;
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
+          } else {
+            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+              .mensaje === 'timeout') {
+              const err = await this.erroresService.findOne({
+                valueStandard: 3
+              });
+              datos.errorEstandarizado=err.description;
+              datos.errorEstandarizadoCodigo=err.valueStandard;
+            }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus });
+        resolve({ data, estatus, datos });
       });
     });
   }

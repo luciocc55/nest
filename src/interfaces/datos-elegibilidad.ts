@@ -15,4 +15,6 @@ export class DatosElegibilidad {
   tipoDocumento: string;
   tipoDocumentoDescripcion: string;
   recupero: any;
+  errorEstandarizado?:string;
+  errorEstandarizadoCodigo?:number;
 }

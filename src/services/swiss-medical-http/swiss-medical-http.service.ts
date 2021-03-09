@@ -247,7 +247,7 @@ export class SwissMedicalHttpService {
   }
   getElegibilidad(arrayValues): any {
     return new Promise(async (resolve) => {
-      (await this.elegibilidad(arrayValues)).subscribe((data) => {
+      (await this.elegibilidad(arrayValues)).subscribe(async (data) => {
         let estatus;
         let datos: DatosElegibilidad;
         if (data.rechaCabecera === 0) {
@@ -273,6 +273,13 @@ export class SwissMedicalHttpService {
           };
         } else {
           estatus = 0;
+          if (data.e) {
+            const err = await this.erroresService.findOne({
+              valueStandard: 3
+            });
+            datos.errorEstandarizado=err.description;
+            datos.errorEstandarizadoCodigo=err.valueStandard;
+          }
         }
         resolve({ data, estatus, datosFinales: datos });
       });
