@@ -48,7 +48,7 @@ export class AmrHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 1)).subscribe(async (data) => {
         let estatus = 0;
-        let datos: DatosElegibilidad;
+        let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
@@ -61,14 +61,14 @@ export class AmrHttpService {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
               });
-              datos.errorEstandarizado=err.description;
-              datos.errorEstandarizadoCodigo=err.valueStandard;
+              datosFinales.errorEstandarizado=err.description;
+              datosFinales.errorEstandarizadoCodigo=err.valueStandard;
             }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus, datos });
+        resolve({ data, estatus, datosFinales });
       });
     });
   }
@@ -77,7 +77,7 @@ export class AmrHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 2)).subscribe(async (data) => {
         let estatus = 0;
-        let datos: DatosElegibilidad;
+        let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
@@ -90,14 +90,14 @@ export class AmrHttpService {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
               });
-              datos.errorEstandarizado=err.description;
-              datos.errorEstandarizadoCodigo=err.valueStandard;
+              datosFinales.errorEstandarizado=err.description;
+              datosFinales.errorEstandarizadoCodigo=err.valueStandard;
             }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus, datos });
+        resolve({ data, estatus, datosFinales });
       });
     });
   }
@@ -107,7 +107,7 @@ export class AmrHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 3)).subscribe(async (data) => {
         let estatus = 0;
-        let datos: DatosElegibilidad;
+        let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
@@ -120,14 +120,14 @@ export class AmrHttpService {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
               });
-              datos.errorEstandarizado=err.description;
-              datos.errorEstandarizadoCodigo=err.valueStandard;
+              datosFinales.errorEstandarizado=err.description;
+              datosFinales.errorEstandarizadoCodigo=err.valueStandard;
             }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus, datos });
+        resolve({ data, estatus, datosFinales });
       });
     });
   }
@@ -137,7 +137,7 @@ export class AmrHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 4)).subscribe(async (data) => {
         let estatus = 0;
-        let datos: DatosElegibilidad;
+        let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
@@ -150,14 +150,14 @@ export class AmrHttpService {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
               });
-              datos.errorEstandarizado=err.description;
-              datos.errorEstandarizadoCodigo=err.valueStandard;
+              datosFinales.errorEstandarizado=err.description;
+              datosFinales.errorEstandarizadoCodigo=err.valueStandard;
             }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus, datos });
+        resolve({ data, estatus, datosFinales });
       });
     });
   }
@@ -167,7 +167,7 @@ export class AmrHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 5)).subscribe(async (data) => {
         let estatus = 0;
-        let datos: DatosElegibilidad;
+        let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
@@ -180,15 +180,15 @@ export class AmrHttpService {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
               });
-              datos.errorEstandarizado=err.description;
-              datos.errorEstandarizadoCodigo=err.valueStandard;
+              datosFinales.errorEstandarizado=err.description;
+              datosFinales.errorEstandarizadoCodigo=err.valueStandard;
               console.log('entro ERROR', err)
             }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus, datos });
+        resolve({ data, estatus, datosFinales });
       });
     });
   }
@@ -197,7 +197,7 @@ export class AmrHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 7)).subscribe(async (data) => {
         let estatus = 0;
-        let datos: DatosElegibilidad;
+        let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
@@ -210,14 +210,14 @@ export class AmrHttpService {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
               });
-              datos.errorEstandarizado=err.description;
-              datos.errorEstandarizadoCodigo=err.valueStandard;
+              datosFinales.errorEstandarizado=err.description;
+              datosFinales.errorEstandarizadoCodigo=err.valueStandard;
             }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus, datos });
+        resolve({ data, estatus, datosFinales });
       });
     });
   }
@@ -229,7 +229,7 @@ export class AmrHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 8)).subscribe(async (data) => {
         let estatus = 0;
-        let datos: DatosElegibilidad;
+        let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
@@ -242,14 +242,14 @@ export class AmrHttpService {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
               });
-              datos.errorEstandarizado=err.description;
-              datos.errorEstandarizadoCodigo=err.valueStandard;
+              datosFinales.errorEstandarizado=err.description;
+              datosFinales.errorEstandarizadoCodigo=err.valueStandard;
             }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus, datos });
+        resolve({ data, estatus, datosFinales });
       });
     });
   }
@@ -258,7 +258,7 @@ export class AmrHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 10)).subscribe(async (data) => {
         let estatus = 0;
-        let datos: DatosElegibilidad;
+        let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
@@ -271,14 +271,14 @@ export class AmrHttpService {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
               });
-              datos.errorEstandarizado=err.description;
-              datos.errorEstandarizadoCodigo=err.valueStandard;
+              datosFinales.errorEstandarizado=err.description;
+              datosFinales.errorEstandarizadoCodigo=err.valueStandard;
             }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus, datos });
+        resolve({ data, estatus, datosFinales });
       });
     });
   }
@@ -287,7 +287,7 @@ export class AmrHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 11)).subscribe(async (data) => {
         let estatus = 0;
-        let datos: DatosElegibilidad;
+        let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
@@ -300,14 +300,14 @@ export class AmrHttpService {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
               });
-              datos.errorEstandarizado=err.description;
-              datos.errorEstandarizadoCodigo=err.valueStandard;
+              datosFinales.errorEstandarizado=err.description;
+              datosFinales.errorEstandarizadoCodigo=err.valueStandard;
             }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus, datos });
+        resolve({ data, estatus, datosFinales });
       });
     });
   }
@@ -317,7 +317,7 @@ export class AmrHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 22)).subscribe(async (data) => {
         let estatus = 0;
-        let datos: DatosElegibilidad;
+        let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
@@ -330,14 +330,14 @@ export class AmrHttpService {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
               });
-              datos.errorEstandarizado=err.description;
-              datos.errorEstandarizadoCodigo=err.valueStandard;
+              datosFinales.errorEstandarizado=err.description;
+              datosFinales.errorEstandarizadoCodigo=err.valueStandard;
             }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus, datos });
+        resolve({ data, estatus, datosFinales });
       });
     });
   }
@@ -346,7 +346,7 @@ export class AmrHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 24)).subscribe(async (data) => {
         let estatus = 0;
-        let datos: DatosElegibilidad;
+        let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
@@ -359,14 +359,14 @@ export class AmrHttpService {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
               });
-              datos.errorEstandarizado=err.description;
-              datos.errorEstandarizadoCodigo=err.valueStandard;
+              datosFinales.errorEstandarizado=err.description;
+              datosFinales.errorEstandarizadoCodigo=err.valueStandard;
             }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus, datos });
+        resolve({ data, estatus, datosFinales });
       });
     });
   }
@@ -375,7 +375,7 @@ export class AmrHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 41)).subscribe(async (data) => {
         let estatus = 0;
-        let datos: DatosElegibilidad;
+        let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
             data.respuestaElegibilidadAfiliado.estadoGeneral
@@ -388,14 +388,14 @@ export class AmrHttpService {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
               });
-              datos.errorEstandarizado=err.description;
-              datos.errorEstandarizadoCodigo=err.valueStandard;
+              datosFinales.errorEstandarizado=err.description;
+              datosFinales.errorEstandarizadoCodigo=err.valueStandard;
             }
           }
         } catch (error) {
           console.log(error);
         }
-        resolve({ data, estatus, datos });
+        resolve({ data, estatus, datosFinales });
       });
     });
   }
