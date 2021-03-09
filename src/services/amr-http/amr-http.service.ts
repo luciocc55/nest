@@ -182,6 +182,7 @@ export class AmrHttpService {
               });
               datos.errorEstandarizado=err.description;
               datos.errorEstandarizadoCodigo=err.valueStandard;
+              console.log('entro ERROR', err)
             }
           }
         } catch (error) {
