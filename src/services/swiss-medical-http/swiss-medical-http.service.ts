@@ -93,7 +93,7 @@ export class SwissMedicalHttpService {
     });
   }
   async cancelarAutorizacion(arrayValues): Promise<Observable<any>> {
-    const headers = await this.getSessionHeaders(arrayValues[0]);
+    const headers = await this.getSessionHeaders(arrayValues[1]);
     const dateToday = this.functionService.returnDateFormat3(new Date());
     return this.httpService
       .post(
