@@ -115,7 +115,7 @@ export class SwissMedicalHttpService {
   }
   getAutorizacion(arrayValues, origen): any {
     return new Promise(async (resolve) => {
-      (await this.autorizacion(arrayValues)).subscribe(async (data) => {
+      (await this.autorizacion(arrayValues)).subscribe((data) => {
         let estatus;
         let resultados = [];
         let error;
@@ -144,14 +144,6 @@ export class SwissMedicalHttpService {
             });
             numeroTransaccion = data.cabecera.transac;
           } else {
-            const err = await this.erroresService.findOne({
-              'values.value': data.cabecera.rechaCabecera.toString(),
-              'values.origen': origen,
-            });
-            if (err) {
-              errorEstandarizado = err.description;
-              errorEstandarizadoCodigo = err.valueStandard;
-            }
             estatus = 0;
             error = data.cabecera.rechaCabeDeno;
           }
