@@ -140,7 +140,7 @@ export class EsencialHttpService {
         return new Promise(async resolve => {
           (await this.elegibilidad(arrayValues)).subscribe(data => {
             let estatus;
-            let datos: DatosElegibilidad;
+            let datos: DatosElegibilidad = new DatosElegibilidad();
             try {
               const info = data['SOAP-ENV:Envelope']['SOAP-ENV:Body']['PSOC063.ExecuteResponse']['Sdtvalidacionsocio'];
               if (info['SINEdo'] === 'AC') {

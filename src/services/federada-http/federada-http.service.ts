@@ -21,43 +21,43 @@ export class FederadaHttpService {
           );
       }
 
-      getSessionHeaders() {
-        const headers = {
-          'x-api-key': `06xeXXOgiq3356caTOOdS4iruZMl0HD72CnYrUnD`,
-        };
-        return headers;
-      }
-      getElegibilidad(arrayValues): any {
-        return new Promise(async resolve => {
-          (await this.elegibilidad(arrayValues)).subscribe(data => {
-            let estatus;
-            let datos: DatosElegibilidad;
-            if (data.o_Status === 'SI') {
-                estatus = 1;
-                datos = {
-                  nroAfiliado: data.o_GruNro + '0' + data.o_IntNro,
-                  nroDocumento: data.o_NroDoc,
-                  estadoAfiliado: data.o_Status === 'SI' ? true : false,
-                  // tslint:disable-next-line: radix
-                  edad: parseInt(data.o_Status),
-                  voluntario: data.o_SitFiscal === 'O' ? true : false,
-                  fechaNac: data.o_FecNac,
-                  plan: data.o_PlanCod,
-                  planDescripcion: data.o_PlanDesc,
-                  genero: data.o_Sexo === 'M' ? 'Masculino' : 'Femenino',
-                  codigoPostal: data.o_CodPos,
-                  localidad: data.o_DescLocali,
-                  nombreApellido: data.o_Apellido + ',' + data.o_Nombres,
-                  servicio: data.o_Status === 'SI' ? true : false,
-                  tipoDocumento: data.o_TipDoc ,
-                  tipoDocumentoDescripcion: '',
-                  recupero: data.o_SitFiscal === 'O' ? true : false,
-                };
-            } else {
-              estatus = 0;
-            }
-            resolve({ data, estatus, datosFinales: datos });
-          });
-        });
-      }
+  getSessionHeaders() {
+    const headers = {
+      'x-api-key': `06xeXXOgiq3356caTOOdS4iruZMl0HD72CnYrUnD`,
+    };
+    return headers;
+  }
+  getElegibilidad(arrayValues): any {
+    return new Promise(async (resolve) => {
+      (await this.elegibilidad(arrayValues)).subscribe((data) => {
+        let estatus;
+        let datos: DatosElegibilidad = new DatosElegibilidad();
+        if (data.o_Status === 'SI') {
+          estatus = 1;
+          datos = {
+            nroAfiliado: data.o_GruNro + '0' + data.o_IntNro,
+            nroDocumento: data.o_NroDoc,
+            estadoAfiliado: data.o_Status === 'SI' ? true : false,
+            // tslint:disable-next-line: radix
+            edad: parseInt(data.o_Status),
+            voluntario: data.o_SitFiscal === 'O' ? true : false,
+            fechaNac: data.o_FecNac,
+            plan: data.o_PlanCod,
+            planDescripcion: data.o_PlanDesc,
+            genero: data.o_Sexo === 'M' ? 'Masculino' : 'Femenino',
+            codigoPostal: data.o_CodPos,
+            localidad: data.o_DescLocali,
+            nombreApellido: data.o_Apellido + ',' + data.o_Nombres,
+            servicio: data.o_Status === 'SI' ? true : false,
+            tipoDocumento: data.o_TipDoc,
+            tipoDocumentoDescripcion: '',
+            recupero: data.o_SitFiscal === 'O' ? true : false,
+          };
+        } else {
+          estatus = 0;
+        }
+        resolve({ data, estatus, datosFinales: datos });
+      });
+    });
+  }
 }

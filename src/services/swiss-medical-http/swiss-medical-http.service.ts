@@ -249,7 +249,7 @@ export class SwissMedicalHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues)).subscribe(async (data) => {
         let estatus;
-        let datos: DatosElegibilidad;
+        let datos: DatosElegibilidad = new DatosElegibilidad();
         if (data.rechaCabecera === 0) {
           estatus = 1;
           datos = {

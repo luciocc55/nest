@@ -55,7 +55,7 @@ export class IaposHttpService {
             'BEWsValidaAfi.ExecuteResponse'
           ];
         let estatus;
-        let datos: DatosElegibilidad;
+        let datos: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (info['Estado']['$t'] === 'A') {
             estatus = 1;
