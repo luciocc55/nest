@@ -99,9 +99,9 @@ export class SwissMedicalHttpService {
       .post(
         this.url + this.urlPlatV11 + 'cancela-prestacion/',
         {
-          creden: arrayValues[1],
+          creden: arrayValues[2],
           alta: dateToday,
-          ticketExt: arrayValues[2],
+          ticketExt: arrayValues[0],
           param1: '0',
         },
         { headers },

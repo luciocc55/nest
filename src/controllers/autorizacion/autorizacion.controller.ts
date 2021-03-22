@@ -92,9 +92,9 @@ export class AutorizacionController {
         ]);
         const usuario = await this.usuariosService.findById(user);
         const arrayValues = [];
+        arrayValues.push(data.numeroTransaccion);
         arrayValues.push(...await this.atributosUserService.getAtributosService(usuario, atributos));
         arrayValues.push(...await this.atributosUserService.getAtributosEntry(data.atributosAdicionales, atributosEntradas));
-        arrayValues.push(data.numeroTransaccion);
         let cancelacion;
         switch (validate.description) {
           case 'Swiss Medical':
