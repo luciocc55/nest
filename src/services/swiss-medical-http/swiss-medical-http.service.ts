@@ -133,7 +133,7 @@ export class SwissMedicalHttpService {
                 estado = false;
               }
               return {
-                prestación: arrayValues[5][index].codigoPrestacion,
+                prestación: arrayValues[8][index].codigoPrestacion,
                 transaccion: data.transac,
                 mensaje: data.denoItem,
                 cantidad: data.canti,
@@ -178,12 +178,12 @@ export class SwissMedicalHttpService {
   async autorizacion(arrayValues): Promise<Observable<any>> {
     const headers = await this.getSessionHeaders(arrayValues[0]);
     const dateToday = this.functionService.returnDateFormat3(new Date());
-    const date = this.functionService.returnDateFormatFrom(arrayValues[6]);
-    const sumTotal = arrayValues[5].reduce(
+    const date = this.functionService.returnDateFormatFrom(arrayValues[9]);
+    const sumTotal = arrayValues[8].reduce(
       (sum, current) => sum + current.cantidad,
       0,
     );
-    const prestaciones = arrayValues[5].reduce((cont, current) => {
+    const prestaciones = arrayValues[8].reduce((cont, current) => {
       let i = '';
       if (cont) {
         i = '|*';
@@ -208,9 +208,9 @@ export class SwissMedicalHttpService {
           param2: '',
           param3: '',
           tipoEfector: 'CUIT',
-          tipoPrescr: null,
+          tipoPrescr: arrayValues[10] ? arrayValues[5]+arrayValues[6]+arrayValues[7]: null,
           idEfector: arrayValues[0],
-          idPrescr: arrayValues[7] ? arrayValues[7] : null,
+          idPrescr: arrayValues[10] ? arrayValues[10] : null,
         },
         { headers },
       )
