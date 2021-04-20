@@ -133,7 +133,7 @@ export class SwissMedicalHttpService {
                 estado = false;
               }
               return {
-                prestación: arrayValues[8][index].codigoPrestacion,
+                prestación: arrayValues[0][index].codigoPrestacion,
                 transaccion: data.transac,
                 mensaje: data.denoItem,
                 cantidad: data.canti,
