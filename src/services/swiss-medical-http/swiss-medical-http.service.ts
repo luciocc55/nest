@@ -176,14 +176,14 @@ export class SwissMedicalHttpService {
     });
   }
   async autorizacion(arrayValues): Promise<Observable<any>> {
-    const headers = await this.getSessionHeaders(arrayValues[0]);
+    const headers = await this.getSessionHeaders(arrayValues[3]);
     const dateToday = this.functionService.returnDateFormat3(new Date());
-    const date = this.functionService.returnDateFormatFrom(arrayValues[9]);
-    const sumTotal = arrayValues[8].reduce(
+    const date = this.functionService.returnDateFormatFrom(arrayValues[1]);
+    const sumTotal = arrayValues[0].reduce(
       (sum, current) => sum + current.cantidad,
       0,
     );
-    const prestaciones = arrayValues[8].reduce((cont, current) => {
+    const prestaciones = arrayValues[0].reduce((cont, current) => {
       let i = '';
       if (cont) {
         i = '|*';
@@ -196,21 +196,21 @@ export class SwissMedicalHttpService {
       .post(
         this.url + this.urlPlat + 'registracion/',
         {
-          creden: arrayValues[3] + '|' + arrayValues[2],
+          creden: arrayValues[6] + '|' + arrayValues[5],
           alta: dateToday,
           fecdif: date,
           manual: '0',
           ticketExt: 0,
           interNro: 2,
-          autoriz: arrayValues[4] ? parseInt(arrayValues[4]) : 0,
+          autoriz: arrayValues[7] ? parseInt(arrayValues[7]) : 0,
           rechaExt: 0,
           param1: sumTotal + '^*' + prestaciones,
           param2: '',
           param3: '',
           tipoEfector: 'CUIT',
-          tipoPrescr: arrayValues[10] ? arrayValues[5]+arrayValues[6]+arrayValues[7]: null,
-          idEfector: arrayValues[0],
-          idPrescr: arrayValues[10] ? arrayValues[10] : null,
+          tipoPrescr: arrayValues[2] ? arrayValues[8]+arrayValues[9]+arrayValues[10]: null,
+          idEfector:  arrayValues[11]? arrayValues[11]: arrayValues[3],
+          idPrescr: arrayValues[2] ? arrayValues[2] : null,
         },
         { headers },
       )

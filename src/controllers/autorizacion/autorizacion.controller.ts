@@ -6,9 +6,7 @@ import { LoggingInterceptor } from 'src/interceptors/logger/logger.interceptor';
 import { AtributosEstaticosService } from 'src/services/atributos-estaticos/atributos-estaticos.service';
 import { AtributosUserService } from 'src/services/atributos-user/atributos-user.service';
 import { AuthService } from 'src/services/auth/auth.service';
-import { EsencialHttpService } from 'src/services/esencial-http/esencial-http.service';
 import { OrigenesService } from 'src/services/origenes/origenes.service';
-import { SinonimosService } from 'src/services/sinonimos/sinonimos.service';
 import { SwissMedicalHttpService } from 'src/services/swiss-medical-http/swiss-medical-http.service';
 import { UsersService } from 'src/services/users/users.service';
 import { Autorizar } from 'src/validators/autorizacion/autorizaciones.validator';
@@ -24,14 +22,11 @@ export class AutorizacionController {
       private atribustoEstaticosService: AtributosEstaticosService,
       private usuariosService: UsersService,
       private atributosUserService: AtributosUserService,
-      private sinonimosService: SinonimosService,
-      private esencialService: EsencialHttpService,
     ) {}
 
     @ApiTags(
         'Permite autorizar practicas contra los servicios habilitados',
-        'Swiss Medical:Cuit Swiss Medical:Cuit de Prescriptor Swiss/true/true:Codigo de seguridad Swiss/true/true: Nro de afiliado Swiss/true:Codigo de Auditoria Swiss/true/true:Tipo de matricula Swiss/true/true:Profesion Swiss/true/true:Provincia Swiss/true/true',
-        'Esencial:Codigo de Proveedor Esencial:Codigo de Socio + Credencial/true/true:Nro. de documento/true/true:Matricula de efector/true/true:Matricula de solicitante/true/true',
+        'Swiss Medical:Cuit Swiss Medical:Cuit de Prescriptor Swiss/true/true:Codigo de seguridad Swiss/true/true: Nro de afiliado Swiss/true:Codigo de Auditoria Swiss/true/true:Tipo de matricula Swiss/true/true:Profesion Swiss/true/true:Provincia Swiss/true/true:CUIT Efector/true/true',
       )
       // , separa los origenes permitidos en el service
       // : separa los atributos necesarios para ese origen
@@ -52,20 +47,15 @@ export class AutorizacionController {
         ]);
         const usuario = await this.usuariosService.findById(user);
         const arrayValues = [];
-        arrayValues.push(...await this.atributosUserService.getAtributosService(usuario, atributos));
-        arrayValues.push(...await this.atributosUserService.getAtributosEntry(data.atributosAdicionales, atributosEntradas));
         arrayValues.push(data.prestaciones);
         arrayValues.push(data.fechaPrestacion);
-        arrayValues.push(await this.sinonimosService.getValue(data.origen, data.ambitoPrestacion));
         arrayValues.push(data.matriculaProfesionalSolicitante);
+        arrayValues.push(...await this.atributosUserService.getAtributosService(usuario, atributos));
+        arrayValues.push(...await this.atributosUserService.getAtributosEntry(data.atributosAdicionales, atributosEntradas));
         let autorizacion;
         switch (validate.description) {
           case 'Swiss Medical':
             autorizacion = await this.swissService.getAutorizacion(arrayValues, data.origen);
-            break;
-          case 'Esencial':
-            autorizacion = await this.esencialService.getAutorizacion(arrayValues, data.origen);
-            break;
         }
         return {autorizacion};
       }
