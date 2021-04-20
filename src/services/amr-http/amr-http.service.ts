@@ -51,12 +51,12 @@ export class AmrHttpService {
         let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
-            data.respuestaElegibilidadAfiliado.estadoGeneral
+            data.respuestaElegibilidadAfiliado?.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
           } else {
-            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+            if (data.respuestaElegibilidadAfiliado?.estadoGeneral
               .mensaje === 'timeout') {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
@@ -80,12 +80,12 @@ export class AmrHttpService {
         let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
-            data.respuestaElegibilidadAfiliado.estadoGeneral
+            data.respuestaElegibilidadAfiliado?.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
           } else {
-            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+            if (data.respuestaElegibilidadAfiliado?.estadoGeneral
               .mensaje === 'timeout') {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
@@ -110,12 +110,12 @@ export class AmrHttpService {
         let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
-            data.respuestaElegibilidadAfiliado.estadoGeneral
+            data.respuestaElegibilidadAfiliado?.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
           } else {
-            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+            if (data.respuestaElegibilidadAfiliado?.estadoGeneral
               .mensaje === 'timeout') {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
@@ -140,12 +140,12 @@ export class AmrHttpService {
         let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
-            data.respuestaElegibilidadAfiliado.estadoGeneral
+            data.respuestaElegibilidadAfiliado?.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
           } else {
-            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+            if (data.respuestaElegibilidadAfiliado?.estadoGeneral
               .mensaje === 'timeout') {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
@@ -170,12 +170,12 @@ export class AmrHttpService {
         let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
-            data.respuestaElegibilidadAfiliado.estadoGeneral
+            data.respuestaElegibilidadAfiliado?.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
           } else {
-            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+            if (data.respuestaElegibilidadAfiliado?.estadoGeneral
               .mensaje === 'timeout') {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
@@ -199,12 +199,12 @@ export class AmrHttpService {
         let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
-            data.respuestaElegibilidadAfiliado.estadoGeneral
+            data.respuestaElegibilidadAfiliado?.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
           } else {
-            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+            if (data.respuestaElegibilidadAfiliado?.estadoGeneral
               .mensaje === 'timeout') {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
@@ -231,12 +231,12 @@ export class AmrHttpService {
         let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
-            data.respuestaElegibilidadAfiliado.estadoGeneral
+            data.respuestaElegibilidadAfiliado?.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
           } else {
-            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+            if (data.respuestaElegibilidadAfiliado?.estadoGeneral
               .mensaje === 'timeout') {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
@@ -260,12 +260,12 @@ export class AmrHttpService {
         let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
-            data.respuestaElegibilidadAfiliado.estadoGeneral
+            data.respuestaElegibilidadAfiliado?.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
           } else {
-            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+            if (data.respuestaElegibilidadAfiliado?.estadoGeneral
               .mensaje === 'timeout') {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
@@ -289,12 +289,12 @@ export class AmrHttpService {
         let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
-            data.respuestaElegibilidadAfiliado.estadoGeneral
+            data.respuestaElegibilidadAfiliado?.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
           } else {
-            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+            if (data.respuestaElegibilidadAfiliado?.estadoGeneral
               .mensaje === 'timeout') {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
@@ -319,12 +319,12 @@ export class AmrHttpService {
         let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
-            data.respuestaElegibilidadAfiliado.estadoGeneral
+            data.respuestaElegibilidadAfiliado?.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
           } else {
-            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+            if (data.respuestaElegibilidadAfiliado?.estadoGeneral
               .mensaje === 'timeout') {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
@@ -348,12 +348,12 @@ export class AmrHttpService {
         let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
-            data.respuestaElegibilidadAfiliado.estadoGeneral
+            data.respuestaElegibilidadAfiliado?.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
           } else {
-            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+            if (data.respuestaElegibilidadAfiliado?.estadoGeneral
               .mensaje === 'timeout') {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
@@ -377,12 +377,12 @@ export class AmrHttpService {
         let datosFinales: DatosElegibilidad = new DatosElegibilidad();
         try {
           if (
-            data.respuestaElegibilidadAfiliado.estadoGeneral
+            data.respuestaElegibilidadAfiliado?.estadoGeneral
               .tiposRespuestaValidacion !== 'ERROR'
           ) {
             estatus = 1;
           } else {
-            if (data.respuestaElegibilidadAfiliado.estadoGeneral
+            if (data.respuestaElegibilidadAfiliado?.estadoGeneral
               .mensaje === 'timeout') {
               const err = await this.erroresService.findOne({
                 valueStandard: 3
