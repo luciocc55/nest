@@ -30,12 +30,17 @@ export class ActiviaHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, "PATCAB")).subscribe((data) => {
         const datosParseados = xmlParser.toJson(
-          data["soap:Envelope"]["soap:Body"]['ExecuteFileTransactionSLResponse']['ExecuteFileTransactionSLResult'],
+          data["soap:Envelope"]["soap:Body"][
+            "ExecuteFileTransactionSLResponse"
+          ]["ExecuteFileTransactionSLResult"],
           { object: true }
         );
         let estatus;
         try {
-          if (datosParseados.Mensaje?.EncabezadoMensaje?.Rta.CodRtaGeneral === '00') {
+          if (
+            datosParseados.Mensaje?.EncabezadoMensaje?.Rta.CodRtaGeneral ===
+            "00"
+          ) {
             estatus = 1;
           } else {
             estatus = 0;
@@ -48,6 +53,7 @@ export class ActiviaHttpService {
     });
   }
   xmlElegibilidad(arrayValues, os) {
+    console.log(arrayValues)
     const xml =
       `<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tem="http://tempuri.org/">
           <soap:Header/>
@@ -56,7 +62,17 @@ export class ActiviaHttpService {
                 <!--Optional:-->
                 <tem:pos></tem:pos>
                 <!--Optional:-->
-                <tem:fileContent><![CDATA[<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?><Mensaje><EncabezadoMensaje><VersionMsj>ACT20</VersionMsj><TipoMsj>OL</TipoMsj><TipoTransaccion>01A</TipoTransaccion><IdMsj>123456789</IdMsj><InicioTrx><FechaTrx>20210115</FechaTrx></InicioTrx><Terminal><TipoTerminal>PC</TipoTerminal><NumeroTerminal>` +arrayValues[1] +`</NumeroTerminal></Terminal><Financiador><CodigoFinanciador>` +os +`</CodigoFinanciador></Financiador><Prestador><CuitPrestador>` +arrayValues[0] +`</CuitPrestador><RazonSocial>?</RazonSocial></Prestador></EncabezadoMensaje><EncabezadoAtencion><Credencial><NumeroCredencial>0100002205</NumeroCredencial><ModoIngreso>M</ModoIngreso></Credencial></EncabezadoAtencion></Mensaje>]]></tem:fileContent></tem:ExecuteFileTransactionSL>
+                <tem:fileContent><![CDATA[<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?><Mensaje><EncabezadoMensaje><VersionMsj>ACT20</VersionMsj><TipoMsj>OL</TipoMsj><TipoTransaccion>01A</TipoTransaccion><IdMsj>123456789</IdMsj><InicioTrx><FechaTrx>20210115</FechaTrx></InicioTrx><Terminal><TipoTerminal>PC</TipoTerminal><NumeroTerminal>` +
+      arrayValues[1] +
+      `</NumeroTerminal></Terminal><Financiador><CodigoFinanciador>` +
+      os +
+      `</CodigoFinanciador></Financiador><Prestador><CuitPrestador>` +
+      arrayValues[0] +
+      `</CuitPrestador><RazonSocial>?</RazonSocial></Prestador></EncabezadoMensaje><EncabezadoAtencion>
+      <Credencial>
+        <NumeroCredencial>`+arrayValues[3]+`</NumeroCredencial>
+        <ModoIngreso>M</ModoIngreso>
+      </Credencial></EncabezadoAtencion></Mensaje>]]></tem:fileContent></tem:ExecuteFileTransactionSL>
           </soap:Body>
          </soap:Envelope>`;
     return xml;
