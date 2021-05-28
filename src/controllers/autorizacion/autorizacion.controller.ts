@@ -27,6 +27,7 @@ export class AutorizacionController {
     @ApiTags(
         'Permite autorizar practicas contra los servicios habilitados',
         'Swiss Medical:Cuit Swiss Medical:Cuit de Prescriptor Swiss/true/true:Codigo de seguridad Swiss/true/true: Nro de afiliado Swiss/true:Codigo de Auditoria Swiss/true/true:Tipo de matricula Swiss/true/true:Profesion Swiss/true/true:Provincia Swiss/true/true:CUIT Efector/true/true',
+        'OS Patrones de Cabotaje (Activia):Cuit Prestador OSPTC:Licencia Prestador:Nro de afiliado PDC/true',
       )
       // , separa los origenes permitidos en el service
       // : separa los atributos necesarios para ese origen
