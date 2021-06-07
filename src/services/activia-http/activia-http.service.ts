@@ -32,7 +32,6 @@ export class ActiviaHttpService {
       );
   }
   async autorizacion(arrayValues, os): Promise<Observable<any>> {
-    console.log(this.xmlAutirizacion(arrayValues, os));
     return this.httpService
       .post(this.url, this.xmlAutirizacion(arrayValues, os), {
         headers: this.headers,
@@ -180,7 +179,6 @@ export class ActiviaHttpService {
     return xml;
   }
   xmlAutirizacion(arrayValues, os) {
-    console.log(arrayValues);
     const date = moment(new Date(arrayValues[1])).toString();
     const xml =
       `
