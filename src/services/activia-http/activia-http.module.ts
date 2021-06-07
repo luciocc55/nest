@@ -1,8 +1,9 @@
-import { Module, HttpModule } from '@nestjs/common';
-import { ActiviaHttpService } from './activia-http.service';
+import { Module, HttpModule } from "@nestjs/common";
+import { ErroresModule } from "../errores/errores.module";
+import { ActiviaHttpService } from "./activia-http.service";
 
 @Module({
-  imports: [HttpModule],
+  imports: [HttpModule, ErroresModule],
   providers: [ActiviaHttpService],
   exports: [ActiviaHttpService],
 })

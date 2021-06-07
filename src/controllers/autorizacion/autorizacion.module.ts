@@ -11,6 +11,7 @@ import { AtributosUserModule } from 'src/services/atributos-user/atributos-user.
 import { UsersServiceModule } from 'src/services/users/users.module';
 import { SinonimosModule } from 'src/services/sinonimos/sinonimos.module';
 import { EsencialHttpModule } from 'src/services/esencial-http/esencial-http.module';
+import { ActiviaHttpModule } from 'src/services/activia-http/activia-http.module';
 
 @Module({
   controllers: [AutorizacionController],
@@ -22,6 +23,7 @@ import { EsencialHttpModule } from 'src/services/esencial-http/esencial-http.mod
     OrigenesModule,
     AtributosEstaticosModule,
     AtributosUserModule,
+    ActiviaHttpModule,
     UsersServiceModule,
     SinonimosModule,
     EsencialHttpModule,

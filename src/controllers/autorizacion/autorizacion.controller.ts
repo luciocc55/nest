@@ -3,6 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Token } from 'src/decorators/token.decorator';
 import { RolesGuard } from 'src/guards/role/role.guard';
 import { LoggingInterceptor } from 'src/interceptors/logger/logger.interceptor';
+import { ActiviaHttpService } from 'src/services/activia-http/activia-http.service';
 import { AtributosEstaticosService } from 'src/services/atributos-estaticos/atributos-estaticos.service';
 import { AtributosUserService } from 'src/services/atributos-user/atributos-user.service';
 import { AuthService } from 'src/services/auth/auth.service';
@@ -22,12 +23,13 @@ export class AutorizacionController {
       private atribustoEstaticosService: AtributosEstaticosService,
       private usuariosService: UsersService,
       private atributosUserService: AtributosUserService,
+      private activiaService:ActiviaHttpService
     ) {}
 
     @ApiTags(
         'Permite autorizar practicas contra los servicios habilitados',
         'Swiss Medical:Cuit Swiss Medical:Cuit de Prescriptor Swiss/true/true:Codigo de seguridad Swiss/true/true: Nro de afiliado Swiss/true:Codigo de Auditoria Swiss/true/true:Tipo de matricula Swiss/true/true:Profesion Swiss/true/true:Provincia Swiss/true/true:CUIT Efector/true/true',
-        'OS Patrones de Cabotaje (Activia):Cuit Prestador OSPTC:Licencia Prestador:Nro de afiliado PDC/true',
+        'OS Patrones de Cabotaje (Activia):Cuit Prestador OSPTC:Licencia Prestador:Nro de afiliado OSPTC/true',
       )
       // , separa los origenes permitidos en el service
       // : separa los atributos necesarios para ese origen
@@ -57,6 +59,10 @@ export class AutorizacionController {
         switch (validate.description) {
           case 'Swiss Medical':
             autorizacion = await this.swissService.getAutorizacion(arrayValues, data.origen);
+        }
+        switch (validate.description) {
+          case 'OS Patrones de Cabotaje (Activia)':
+            autorizacion = await this.activiaService.getAutorizacionOSPDC(arrayValues, data.origen);
         }
         return {autorizacion};
       }
