@@ -136,13 +136,122 @@ export class ActiviaHttpService {
             resultados,
           };
           resolve({
-            data:datosParseados,
+            data: datosParseados,
             resultado: datos,
             datosFinales: datos,
           });
         }
       );
     });
+  }
+  async cancelarTransaccion(arrayValues, os): Promise<Observable<any>> {
+    const date = moment(new Date()).toString();
+    return this.httpService
+      .post(this.url, this.xmlCancelacion(arrayValues[0], os, date), {
+        headers: this.headers,
+      })
+      .pipe(
+        map((res) => xmlParser.toJson(res.data, { object: true })),
+        catchError((e) => {
+          return of({ e });
+        })
+      );
+  }
+  getCancelarAutorizacionOSPDC(arrayValues, origen): any {
+    return new Promise(async (resolve) => {
+      (await this.cancelarTransaccion(arrayValues, "PATCAB")).subscribe(
+        async (datos) => {
+          const data = xmlParser.toJson(
+            datos["soap:Envelope"]["soap:Body"][
+              "ExecuteFileTransactionSLResponse"
+            ]["ExecuteFileTransactionSLResult"],
+            { object: true }
+          )?.Mensaje;
+          let estatus;
+          let error;
+          let numeroTransaccion = null;
+          let errorEstandarizado = null;
+          let errorEstandarizadoCodigo = null;
+          if (data.EncabezadoMensaje) {
+            if (data.EncabezadoMensaje.Rta?.CodRtaGeneral === "00") {
+              estatus = 1;
+              numeroTransaccion = data.EncabezadoMensaje.NroReferencia;
+            } else {
+              const err = await this.erroresService.findOne({
+                "values.value": data.EncabezadoMensaje.Rta?.CodRtaGeneral.toString(),
+                "values.origen": origen,
+              });
+              if (err) {
+                errorEstandarizado = err.description;
+                errorEstandarizadoCodigo = err.valueStandard;
+              }
+              estatus = 0;
+              error = data.EncabezadoMensaje.Rta?.DescripcionRtaGeneral;
+            }
+          } else {
+            estatus = 0;
+            error = "Por favor, intente nuevamente";
+          }
+          resolve({
+            data,
+            resultado: {
+              estatus,
+              errorEstandarizado,
+              numeroTransaccion,
+              errorEstandarizadoCodigo,
+              error,
+            },
+          });
+        }
+      );
+    });
+  }
+  xmlCancelacion(arrayValues, os, date) {
+    const xml =
+      `<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tem="http://tempuri.org/">
+    <soap:Header/>
+    <soap:Body>
+       <tem:ExecuteFileTransactionSL>
+          <!--Optional:-->
+          <tem:pos></tem:pos>
+          <!--Optional:-->
+          <tem:fileContent><![CDATA[<?xml version="1.0" encoding="utf-8"?>
+      <Mensaje>
+        <EncabezadoMensaje>
+          <VersionMsj>ACT20</VersionMsj>
+          <NroReferenciaCancel>` +
+      arrayValues[0] +
+      `</NroReferenciaCancel>
+          <TipoMsj>OL</TipoMsj>
+          <TipoTransaccion>04A</TipoTransaccion>
+          <IdMsj/>
+          <InicioTrx>
+            <FechaTrx>` +
+      date +
+      `</FechaTrx>
+          </InicioTrx>
+          <Terminal>
+            <TipoTerminal>PC</TipoTerminal>
+            <NumeroTerminal>` +
+      os +
+      `</NumeroTerminal>
+          </Terminal>
+          <Validador/>
+          <Financiador>
+            <CodigoFinanciador>` +
+      arrayValues[2] +
+      `</CodigoFinanciador>
+          </Financiador>
+          <Prestador>
+            <CuitPrestador>` +
+      arrayValues[1] +
+      `</CuitPrestador>
+          </Prestador>
+        </EncabezadoMensaje>
+      </Mensaje>]]></tem:fileContent></tem:ExecuteFileTransactionSL>
+      </soap:Body>
+      </soap:Envelope>`;
+    return xml;
   }
   xmlElegibilidad(arrayValues, os) {
     const date = moment(new Date()).toString();
@@ -154,8 +263,7 @@ export class ActiviaHttpService {
                 <!--Optional:-->
                 <tem:pos></tem:pos>
                 <!--Optional:-->
-                <tem:fileContent>
-                <![CDATA[<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?><Mensaje><EncabezadoMensaje><VersionMsj>ACT20</VersionMsj><TipoMsj>OL</TipoMsj><TipoTransaccion>01A</TipoTransaccion>
+                <tem:fileContent><![CDATA[<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?><Mensaje><EncabezadoMensaje><VersionMsj>ACT20</VersionMsj><TipoMsj>OL</TipoMsj><TipoTransaccion>01A</TipoTransaccion>
                 <IdMsj>123456789</IdMsj>
                 <InicioTrx>
                   <FechaTrx>` +
@@ -180,9 +288,23 @@ export class ActiviaHttpService {
   }
   xmlAutirizacion(arrayValues, os) {
     const date = moment(new Date(arrayValues[1])).toString();
-    const xml =
+    const prestaciones = arrayValues[0].map((item) => {
+      return (
+        `
+      <DetalleProcedimientos>
+        <CodPrestacion>` +
+        item.codigoPrestacion +
+        `</CodPrestacion>
+        <TipoPrestacion>1</TipoPrestacion>
+        <CantidadSolicitada>` +
+        item.cantidad +
+        `</CantidadSolicitada>
+      </DetalleProcedimientos>
       `
-    <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tem="http://tempuri.org/">
+      );
+    });
+    const xml =
+      `<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tem="http://tempuri.org/">
           <soap:Header/>
           <soap:Body>
           <tem:ExecuteFileTransactionSL>
@@ -226,21 +348,9 @@ export class ActiviaHttpService {
           <ModoIngreso>M</ModoIngreso>
         </Credencial>
       </EncabezadoAtencion>
-      <DetalleProcedimientos>
-        <CodPrestacion>475</CodPrestacion>
-        <TipoPrestacion>1</TipoPrestacion>
-        <CantidadSolicitada>1</CantidadSolicitada>
-      </DetalleProcedimientos>
-      <DetalleProcedimientos>
-        <CodPrestacion>711</CodPrestacion>
-        <TipoPrestacion>1</TipoPrestacion>
-        <CantidadSolicitada>1</CantidadSolicitada>
-      </DetalleProcedimientos>
-      <DetalleProcedimientos>
-        <CodPrestacion>999999</CodPrestacion>
-        <TipoPrestacion>1</TipoPrestacion>
-        <CantidadSolicitada>1</CantidadSolicitada>
-      </DetalleProcedimientos>
+    ` +
+      prestaciones.join("") +
+      `
     </Mensaje>]]></tem:fileContent></tem:ExecuteFileTransactionSL>
     </soap:Body>
    </soap:Envelope>`;

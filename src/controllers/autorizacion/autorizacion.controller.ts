@@ -69,6 +69,7 @@ export class AutorizacionController {
       @ApiTags(
         'Permite cancelar autorizaciones de practicas contra los servicios habilitados',
         'Swiss Medical:Cuit Swiss Medical: Nro de afiliado Swiss/true',
+        'OS Patrones de Cabotaje (Activia):Cuit Prestador OSPTC:Licencia Prestador',
       )
       // , separa los origenes permitidos en el service
       // : separa los atributos necesarios para ese origen
@@ -96,6 +97,10 @@ export class AutorizacionController {
         switch (validate.description) {
           case 'Swiss Medical':
             cancelacion = await this.swissService.getCancelarAutorizacion(arrayValues, data.origen);
+        }
+        switch (validate.description) {
+          case 'OS Patrones de Cabotaje (Activia)':
+            cancelacion = await this.activiaService.getCancelarAutorizacionOSPDC(arrayValues, data.origen);
         }
         return {cancelacion};
       }
