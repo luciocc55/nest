@@ -61,7 +61,7 @@ export class IaposHttpService {
             estatus = 1;
             datos = {
               nroAfiliado: info['Nafiliado']['$t'],
-              nroDocumento: info['Badocnumdo']['$t'].substr(1),
+              nroDocumento: info['Badocnumdo']['$t'],
               estadoAfiliado: info['Estado']['$t'] === 'A' ? true : false,
               // tslint:disable-next-line: radix
               edad: parseInt(info['Edad']['$t']),
