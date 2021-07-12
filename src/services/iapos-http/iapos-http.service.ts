@@ -16,7 +16,7 @@ export class IaposHttpService {
       arrayValues[1] = '?';
     }
     const xml =
-      `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:iap="IAPOS_PREPRO.ev2">
+      `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:iap="IAPOS_WS">
         <soapenv:Header/>
         <soapenv:Body>
            <iap:BEWsValidaAfi.Execute>
@@ -39,7 +39,7 @@ export class IaposHttpService {
         </soapenv:Body>
         </soapenv:Envelope>`;
     return this.httpService
-      .post(this.url + 'abewsvalidaafi?wsdl/', xml, { headers: this.headers })
+      .post(this.url + 'abewsvalidaafi?wsdl', xml, { headers: this.headers })
       .pipe(
         map((res) => xmlParser.toJson(res.data, { object: true })),
         catchError((e) => {
