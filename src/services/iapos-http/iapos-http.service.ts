@@ -6,7 +6,7 @@ import { DatosElegibilidad } from 'src/interfaces/datos-elegibilidad';
 
 @Injectable()
 export class IaposHttpService {
-  url = 'https://aswe.santafe.gov.ar/proxy.php/iapos/';
+  url = 'https://aswe.santafe.gov.ar/iapos-sw-srvt/servlet/';
   headers = { 'Content-Type': 'text/xml' };
   constructor(private readonly httpService: HttpService) {}
   async elegibilidad(arrayValues): Promise<Observable<any>> {
@@ -39,7 +39,7 @@ export class IaposHttpService {
         </soapenv:Body>
         </soapenv:Envelope>`;
     return this.httpService
-      .post(this.url + 'afiliados/', xml, { headers: this.headers })
+      .post(this.url + 'abewsvalidaafi?wsdl/', xml, { headers: this.headers })
       .pipe(
         map((res) => xmlParser.toJson(res.data, { object: true })),
         catchError((e) => {
