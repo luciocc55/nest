@@ -20,6 +20,8 @@ import { ExtrasModule } from './services/extras/extras.module';
 import { SinonimosModule } from './services/sinonimos/sinonimos.module';
 import { ExtrasControllerModule } from './controllers/extras-controller/extras-controller.module';
 import { ErroresModule } from './services/errores/errores.module';
+import { ServiciosControllerModule } from './controllers/servicios/servicios.module';
+import { EsquemasControllerModule } from './controllers/esquemas/esquemas.module';
 
 @Module({
   imports: [
@@ -51,6 +53,8 @@ import { ErroresModule } from './services/errores/errores.module';
     SinonimosModule,
     ExtrasControllerModule,
     ErroresModule,
+    EsquemasControllerModule,
+    ServiciosControllerModule
   ],
   controllers: [],
 })

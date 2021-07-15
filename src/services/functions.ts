@@ -5,13 +5,35 @@ import moment = require('moment');
 export class FunctionsService {
   diacriticSensitiveRegex(value = '') {
     return value
-      .replace(/a/g, '[a,á,à,ä]')
-      .replace(/e/g, '[e,é,ë]')
-      .replace(/i/g, '[i,í,ï]')
-      .replace(/o/g, '[o,ó,ö,ò]')
-      .replace(/u/g, '[u,ü,ú,ù]');
+    .replace(/a/g, '[a,á,à,ä]')
+    .replace(/e/g, '[e,é,ë]')
+    .replace(/i/g, '[i,í,ï]')
+    .replace(/o/g, '[o,ó,ö,ò]')
+    .replace(/u/g, '[u,ü,ú,ù]')
+    .replace(/A/g, '[a,á,à,ä]')
+    .replace(/E/g, '[e,é,ë]')
+    .replace(/I/g, '[i,í,ï]')
+    .replace(/O/g, '[o,ó,ö,ò]')
+    .replace(/U/g, '[u,ü,ú,ù]');
   }
-
+  returnPaginado(request, cantidadTotal, cantidadPorPagina) {
+    let next;
+    let previus;
+    const query = request.query;
+    const current = parseInt(query.page ? query.page : '1');
+    const cantidadPaginas = (Math.ceil(cantidadTotal / cantidadPorPagina));
+    if (current === 1) {
+      previus = null;
+    } else {
+      previus = request.protocol + '://' + request.get('host') + request.route.path + '?page=' + (current - 1);
+    }
+    if (cantidadPaginas > current) {
+      next = request.protocol + '://' + request.get('host') + request.route.path + '?page=' + (current + 1);
+    } else {
+      next = null;
+    }
+    return {count: cantidadTotal, current, next, previus, page_size: cantidadPorPagina, total_pages: cantidadPaginas};
+  }
   getArrayRegex(array, field) {
     const arrayConverted = [];
     array.forEach(element => {

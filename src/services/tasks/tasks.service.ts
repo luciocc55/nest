@@ -1,30 +1,35 @@
-import { Injectable } from '@nestjs/common';
-import { Timeout, Cron, CronExpression } from '@nestjs/schedule';
-import environment from 'src/env';
-import { PermissionsService } from '../permissions/permissions.service';
-import { RolesService } from '../roles/roles.service';
-import { SessionService } from '../session/session.service';
-import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bull';
-import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
-import { OrigenesService } from '../origenes/origenes.service';
-import { AtributosEstaticosService } from '../atributos-estaticos/atributos-estaticos.service';
-import { ExtrasService } from '../extras/extras.service';
-import { SinonimosService } from '../sinonimos/sinonimos.service';
-import { ErroresService } from '../errores/errores.service';
+import { Injectable } from "@nestjs/common";
+import { Timeout, Cron, CronExpression } from "@nestjs/schedule";
+import environment from "src/env";
+import { PermissionsService } from "../permissions/permissions.service";
+import { RolesService } from "../roles/roles.service";
+import { SessionService } from "../session/session.service";
+import { InjectQueue } from "@nestjs/bull";
+import { Queue } from "bull";
+import { JwtService } from "@nestjs/jwt";
+import { UsersService } from "../users/users.service";
+import { OrigenesService } from "../origenes/origenes.service";
+import { AtributosEstaticosService } from "../atributos-estaticos/atributos-estaticos.service";
+import { ExtrasService } from "../extras/extras.service";
+import { SinonimosService } from "../sinonimos/sinonimos.service";
+import { ErroresService } from "../errores/errores.service";
+import { ServiciosService } from "../servicios/servicios.service";
 
 @Injectable()
 export class TasksService {
-  extras = ['Ambitos de Prestaciones'];
+  extras = ["Ambitos de Prestaciones"];
   sinonimos = [
     [
-      { description: 'Ambulatorio', defaultValue: 'A' },
-      { description: 'Internacion', defaultValue: 'I' },
+      { description: "Ambulatorio", defaultValue: "A" },
+      { description: "Internacion", defaultValue: "I" },
     ],
   ];
+  servicios = [
+    { value: "elegibilidad", endpoint: "/elegibilidad/consultar" },
+    { value: "autorizar", endpoint: "autorizacion/autorizar" },
+  ];
   constructor(
-    @InjectQueue('AutorizadorQueue') private readonly queue: Queue,
+    @InjectQueue("AutorizadorQueue") private readonly queue: Queue,
     private permissionService: PermissionsService,
     private roleService: RolesService,
     private jwtService: JwtService,
@@ -35,6 +40,7 @@ export class TasksService {
     private sinonimosService: SinonimosService,
     private atributosEstaticosService: AtributosEstaticosService,
     private erroresService: ErroresService,
+    private serviciosService: ServiciosService
   ) {}
   //@Cron(CronExpression.EVERY_MINUTE)
   //@Timeout(600)
@@ -115,6 +121,12 @@ export class TasksService {
       for (const sinonimo of sin) {
         await this.sinonimosService.getOrCreate(sinonimo.description, sinonimo.defaultValue, extraM._id);
       }
+    }
+  }
+  @Timeout(7000)
+  async createServicios() {
+    for (const servicio of this.servicios) {
+      const newServicio = await this.serviciosService.create(servicio);
     }
   }
   @Timeout(5000)

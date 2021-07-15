@@ -15,6 +15,7 @@ import { AtributosEstaticosModule } from '../atributos-estaticos/atributos-estat
 import { SinonimosModule } from '../sinonimos/sinonimos.module';
 import { ExtrasModule } from '../extras/extras.module';
 import { ErroresModule } from '../errores/errores.module';
+import { ServiciosModule } from '../servicios/servicios.module';
 
 @Module({
   providers: [TasksService, ConsumerService],
@@ -25,6 +26,7 @@ import { ErroresModule } from '../errores/errores.module';
     PermissionsModule,
     RolesServiceModule,
     UsersServiceModule,
+    ServiciosModule,
     SinonimosModule,
     ExtrasModule,
     RedIHttpModule,
