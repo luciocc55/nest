@@ -16,6 +16,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { Observable, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { Token } from "src/decorators/token.decorator";
+import environment from "src/env";
 import { RolesGuard } from "src/guards/role/role.guard";
 import { LoggingInterceptor } from "src/interceptors/logger/logger.interceptor";
 import { AuthService } from "src/services/auth/auth.service";
@@ -135,12 +136,11 @@ export class EsquemasController {
       bodyEnvio = esquemaEntrada;
     }
     bodyEnvio.origen = origen._id;
-    const url = (
+    const url =
       request.protocol +
       "://" +
-      request.get("host") +
-      request.originalUrl
-    ).split("esquemas/")[0];
+      environment.urlBase +
+      request.originalUrl;
     switch (qparams.servicio) {
       case "elegibilidad":
         return this.getValueRequest(

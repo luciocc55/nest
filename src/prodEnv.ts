@@ -8,6 +8,7 @@ export const prodEnvironment = {
   mongo: 'mongo:27017',
   mongoPassword: process.env.MONGO_INITDB_ROOT_PASSWORD,
   mongoUser: process.env.MONGO_INITDB_ROOT_USERNAME,
+  urlBase: process.env.URL_BASE,
   dataBase: 'autorizador',
   rootAdmin: {
     name: 'Admin',
