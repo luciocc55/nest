@@ -136,10 +136,7 @@ export class EsquemasController {
       bodyEnvio = esquemaEntrada;
     }
     bodyEnvio.origen = origen._id;
-    const url =
-      request.protocol +
-      "://" +
-      environment.urlBase;
+    const url = environment.urlBase;
     switch (qparams.servicio) {
       case "elegibilidad":
         return this.getValueRequest(
