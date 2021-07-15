@@ -24,6 +24,10 @@ const Keys = new mongoose.Schema({
 const auto = new mongoose.Schema(
   {
     origen: { type: mongoose.Schema.Types.ObjectId, ref: "Origenes" },
+    sinonimoOrigen: {
+      type: String,
+      required: true,
+    },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
     servicio: { type: mongoose.Schema.Types.ObjectId, ref: "Servicios" },
     keys: [Keys],
@@ -34,5 +38,8 @@ const auto = new mongoose.Schema(
   },
   { timestamps: {} }
 );
-auto.index({ origen: 1, user: 1, servicio: 1 }, { unique: true });
+auto.index(
+  { origen: 1, user: 1, servicio: 1, sinonimoOrigen: 1 },
+  { unique: true }
+);
 export const Esquemas = auto;

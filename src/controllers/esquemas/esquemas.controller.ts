@@ -79,29 +79,27 @@ export class EsquemasController {
     @Req() request
   ): Promise<any> {
     const user = await this.authService.getUser(token);
-    const [servicio, origen] = await Promise.all([
-      this.serviciosService.findOneSearch({ value: qparams.servicio }),
-      this.origenesService.findOneSearch({ description: qparams.os }),
-    ]);
-    if (!servicio || !origen) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: "Parametros no encontrados",
-        },
-        400
-      );
-    }
+    const servicio = await this.serviciosService.findOneSearch({ value: qparams.servicio })
     const esquema = await this.esquemasService.find({
       user: user,
       servicio: servicio._id,
-      origen: origen._id,
+      sinonimoOrigen: qparams.os,
     });
     if (!esquema) {
       throw new HttpException(
         {
           status: HttpStatus.BAD_REQUEST,
           error: "No existe esquema para estos parametros",
+        },
+        400
+      );
+    }
+    const origen = await this.origenesService.findOneSearch({ description: qparams.os })
+    if (!servicio || !origen) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: "Parametros no encontrados",
         },
         400
       );

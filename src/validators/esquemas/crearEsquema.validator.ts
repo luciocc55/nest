@@ -32,6 +32,10 @@ export class CrearEsquema {
   })
   origen: string;
   @IsNotEmpty({
+    message: "Sinonimo de origen es un campo requerido (sinonimoOrigen)",
+  })
+  sinonimoOrigen: string;
+  @IsNotEmpty({
     message: "JSON es un campo requerido (json)",
   })
   json: string;
