@@ -135,13 +135,16 @@ export class EsquemasController {
       bodyEnvio = esquemaEntrada;
     }
     bodyEnvio.origen = origen._id;
+    const url = (
+      request.protocol +
+      "://" +
+      request.get("host") +
+      request.originalUrl
+    ).split("esquemas/")[0];
     switch (qparams.servicio) {
       case "elegibilidad":
         return this.getValueRequest(
-          request.protocol +
-            "://" +
-            request.headers.host +
-            "/backend/autorizador/elegibilidad/consultar/",
+          url + "elegibilidad/consultar/",
           bodyEnvio,
           request.headers
         );
@@ -149,14 +152,10 @@ export class EsquemasController {
         break;
       case "autorizar":
         return this.getValueRequest(
-          request.protocol +
-            "://" +
-            request.headers.host +
-            "/backend/autorizador/autorizacion/autorizar/",
+          url + "autorizacion/autorizar/",
           bodyEnvio,
           request.headers
         );
-
         break;
     }
     return {};
