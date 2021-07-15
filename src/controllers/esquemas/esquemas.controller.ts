@@ -141,7 +141,7 @@ export class EsquemasController {
           request.protocol +
             "://" +
             request.headers.host +
-            "/autorizador/elegibilidad/consultar/",
+            "/backend/autorizador/elegibilidad/consultar/",
           bodyEnvio,
           request.headers
         );
@@ -152,7 +152,7 @@ export class EsquemasController {
           request.protocol +
             "://" +
             request.headers.host +
-            "/autorizador/autorizacion/autorizar/",
+            "/backend/autorizador/autorizacion/autorizar/",
           bodyEnvio,
           request.headers
         );
