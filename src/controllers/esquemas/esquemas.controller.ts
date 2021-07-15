@@ -139,8 +139,7 @@ export class EsquemasController {
     const url =
       request.protocol +
       "://" +
-      environment.urlBase +
-      request.originalUrl;
+      environment.urlBase;
     switch (qparams.servicio) {
       case "elegibilidad":
         return this.getValueRequest(
