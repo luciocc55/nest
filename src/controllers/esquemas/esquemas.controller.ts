@@ -79,7 +79,9 @@ export class EsquemasController {
     @Req() request
   ): Promise<any> {
     const user = await this.authService.getUser(token);
-    const servicio = await this.serviciosService.findOneSearch({ value: qparams.servicio })
+    const servicio = await this.serviciosService.findOneSearch({
+      value: qparams.servicio,
+    });
     const esquema = await this.esquemasService.find({
       user: user,
       servicio: servicio._id,
@@ -94,7 +96,7 @@ export class EsquemasController {
         400
       );
     }
-    const origen = await this.origenesService.findOneSearch({ description: qparams.os })
+    const origen = await this.origenesService.findOneById(esquema.origen);
     if (!servicio || !origen) {
       throw new HttpException(
         {

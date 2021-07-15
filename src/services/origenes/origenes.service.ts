@@ -73,6 +73,12 @@ export class OrigenesService {
     }
     return validateOrigen;
   }
+  async findOneById(id): Promise<any> {
+    return await this.origenModel
+      .findById(id)
+      .lean()
+      .exec();
+  }
   async findOne(id): Promise<any> {
     return await this.origenModel
       .findOne({ id })
