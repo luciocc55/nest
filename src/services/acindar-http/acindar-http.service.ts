@@ -10,7 +10,7 @@ export class AcindarHttpService {
     if (process.env.Production === "true") {
       this.url = "http://serviciosmacindar.online/api/";
     } else {
-      this.url = "http://dev.serviciosmacindar.online/api/";
+      this.url = "http://serviciosmacindar.online/api/";
     }
   }
 
@@ -27,7 +27,7 @@ export class AcindarHttpService {
       .get(this.url + "Socios/Socio", {
         headers,
         params: {
-          NumeroSocio: arrayValues[1],
+          NumeroSocio: arrayValues[2],
         },
       })
       .pipe(
@@ -41,7 +41,15 @@ export class AcindarHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues)).subscribe((data) => {
         let estatus;
-        let datos: DatosElegibilidad;
+        let datos: DatosElegibilidad = new DatosElegibilidad();
+        datos = {
+          ...datos,
+          nroAfiliado: data.NumeroSocio,
+          estadoAfiliado: data.Habilitado,
+          plan: data.CodigoPlan,
+          planDescripcion: data.Plan,
+          nombreApellido: data.NombreApellido,
+        };
         if (data.Habilitado === true) {
           estatus = 1;
         } else {
