@@ -10,7 +10,7 @@ export class AcindarHttpService {
     if (process.env.Production === "true") {
       this.url = "http://serviciosmacindar.online/api/";
     } else {
-      this.url = "http://serviciosmacindar.online/api/";
+      this.url = "http://dev.serviciosmacindar.online/api/";
     }
   }
 
