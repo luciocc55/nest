@@ -24,6 +24,7 @@ import { LoggingInterceptor } from "src/interceptors/logger/logger.interceptor";
 import { AcaHttpService } from "src/services/aca-http/aca-http.service";
 import { TraditumHttpService } from "src/services/traditum-http/traditum-http.service";
 import { ActiviaHttpService } from "src/services/activia-http/activia-http.service";
+import { AcindarHttpService } from "src/services/acindar-http/acindar-http.service";
 @Controller("elegibilidad")
 @UseGuards(RolesGuard)
 export class ElegibilidadController {
@@ -41,7 +42,8 @@ export class ElegibilidadController {
     private redIService: RediHttpService,
     private acaService: AcaHttpService,
     private traditumService: TraditumHttpService,
-    private activiaService: ActiviaHttpService
+    private activiaService: ActiviaHttpService,
+    private acindarService: AcindarHttpService
   ) {}
   @ApiTags(
     "Permite identificar si una persona posee elegibilidad en un origen particular",
@@ -71,7 +73,8 @@ export class ElegibilidadController {
     "Demi Salud (Red-I)",
     "Proapro (Red-I)",
     "Medife (Traditum):Codigo de Provincia:Numero de Prestador:Tipo de identificador:Descripción de prestador",
-    "OS Patrones de Cabotaje (Activia):Cuit Prestador OSPTC:Licencia Prestador"
+    "OS Patrones de Cabotaje (Activia):Cuit Prestador OSPTC:Licencia Prestador",
+    "Mutual Acindar:Token Acindar"
   )
   // , separa los origenes permitidos en el service
   // : separa los atributos necesarios para ese origen
@@ -202,6 +205,13 @@ export class ElegibilidadController {
           arrayValues
         );
         break;
+
+        case "Mutual Acindar":
+          elegibilidad = await this.acindarService.getElegibilidad(
+            arrayValues
+          );
+          break;
+        
     }
     return { elegibilidad };
   }

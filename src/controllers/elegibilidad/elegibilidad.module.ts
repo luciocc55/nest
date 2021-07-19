@@ -15,6 +15,7 @@ import { RediHttpModule } from 'src/services/redi-http/redi-http.module';
 import { AcaHttpModule } from 'src/services/aca-http/aca-http.module';
 import { TraditumHttpModule } from 'src/services/traditum-http/traditum-http.module';
 import { ActiviaHttpModule } from 'src/services/activia-http/activia-http.module';
+import { AcindarttpModule } from 'src/services/acindar-http/acindar-http.module';
 
 @Module({
   controllers: [ElegibilidadController],
@@ -35,6 +36,7 @@ import { ActiviaHttpModule } from 'src/services/activia-http/activia-http.module
     AcaHttpModule,
     TraditumHttpModule,
     ActiviaHttpModule,
+    AcindarttpModule,
   ],
 })
 export class ElegibilidadModule {}
