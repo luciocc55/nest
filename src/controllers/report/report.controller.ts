@@ -8,6 +8,7 @@ import { LoggerService } from "src/services/logger/logger.service";
 import { Request } from "express";
 import { FunctionsService } from "src/services/functions";
 import { UsersService } from "src/services/users/users.service";
+import moment = require('moment');
 
 @Controller("report")
 @UseGuards(RolesGuard)
@@ -57,10 +58,12 @@ export class ReportController {
       ],
     };
     if (search.fechaDesde || search.fechaHasta) {
+      const fecF = moment(search.fechaHasta).utcOffset("+00:00");
+      const fecI = moment(search.fechaDesde).utcOffset("+00:00");
       query.$and.push({
         date: {
-          $gte: new Date(search.fechaDesde),
-          $lt: new Date(search.fechaHasta),
+          $gte: new Date(Date.UTC(fecF.year(),fecF.month(),fecF.date(),fecF.hours(),fecF.minutes(),fecF.seconds())),
+          $lt: new Date(Date.UTC(fecI.year(),fecI.month(),fecI.date(),fecI.hours(),fecI.minutes(),fecI.seconds())),
         },
       });
     }

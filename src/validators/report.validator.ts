@@ -10,9 +10,7 @@ export class GetReporte {
   @IsOptional()
   busqueda: string;
   @IsOptional()
-  @IsISO8601()
   fechaHasta: string;
   @IsOptional()
-  @IsISO8601()
   fechaDesde: string;
 }
