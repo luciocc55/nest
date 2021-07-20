@@ -22,6 +22,7 @@ import { ExtrasControllerModule } from './controllers/extras-controller/extras-c
 import { ErroresModule } from './services/errores/errores.module';
 import { ServiciosControllerModule } from './controllers/servicios/servicios.module';
 import { EsquemasControllerModule } from './controllers/esquemas/esquemas.module';
+import { ReportModule } from './controllers/report/report.module';
 
 @Module({
   imports: [
@@ -54,7 +55,8 @@ import { EsquemasControllerModule } from './controllers/esquemas/esquemas.module
     ExtrasControllerModule,
     ErroresModule,
     EsquemasControllerModule,
-    ServiciosControllerModule
+    ServiciosControllerModule,
+    ReportModule,
   ],
   controllers: [],
 })

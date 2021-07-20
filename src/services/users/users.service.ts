@@ -166,10 +166,13 @@ export class UsersService {
       );
     }
   }
+  async getRoles(priority): Promise<any[]> {
+    return this.roleService.getRoles(priority);
+  }
   async busUsers(busqueda, cantidad = 50, priority = 10): Promise<any[]> {
     const regex = this.functions.returnRegex(busqueda);
     const [roles, rolesDesc] = await Promise.all([
-      this.roleService.getRoles(priority),
+      this.getRoles(priority),
       this.roleService.getRolesDescription(busqueda),
     ]);
     const [rolesIds, rolesIdsDesc] = await Promise.all([
@@ -295,6 +298,9 @@ export class UsersService {
   }
   async findAll(): Promise<Users[]> {
     return await this.usuarioModel.find().exec();
+  }
+  async findAllSearch(search:any): Promise<Users[]> {
+    return await this.usuarioModel.find(search).lean();
   }
   async findUsuario(user): Promise<Users> {
     return await this.usuarioModel
