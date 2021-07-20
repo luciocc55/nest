@@ -4,6 +4,7 @@ import { catchError, map } from "rxjs/operators";
 import xmlParser = require("xml2json");
 import moment = require("moment");
 import { ErroresService } from "../errores/errores.service";
+import { RespuestaHttp } from "src/interfaces/respuesta-http";
 @Injectable()
 export class ActiviaHttpService {
   url;
@@ -19,27 +20,53 @@ export class ActiviaHttpService {
         "http://wsconectadotest.activiaweb.com.ar/WSActiviaC.asmx?WSDL";
     }
   }
-  async elegibilidad(arrayValues, os): Promise<Observable<any>> {
+  async elegibilidad(arrayValues, os): Promise<Observable<RespuestaHttp>> {
+    const xml = this.xmlElegibilidad(arrayValues, os);
     return this.httpService
-      .post(this.url, this.xmlElegibilidad(arrayValues, os), {
+      .post(this.url, xml, {
         headers: this.headers,
       })
       .pipe(
-        map((res) => xmlParser.toJson(res.data, { object: true })),
+        map((res) => ({
+          url: this.url,
+          envio: xml,
+          params: {},
+          headers: this.headers,
+          data: xmlParser.toJson(res.data, { object: true }),
+        })),
         catchError((e) => {
-          return of({ e });
+          return of({
+            data: e,
+            envio: xml,
+            params: {},
+            headers: this.headers,
+            url: this.url,
+          });
         })
       );
   }
-  async autorizacion(arrayValues, os): Promise<Observable<any>> {
+  async autorizacion(arrayValues, os): Promise<Observable<RespuestaHttp>> {
+    const xml = this.xmlAutirizacion(arrayValues, os);
     return this.httpService
-      .post(this.url, this.xmlAutirizacion(arrayValues, os), {
+      .post(this.url, xml, {
         headers: this.headers,
       })
       .pipe(
-        map((res) => xmlParser.toJson(res.data, { object: true })),
+        map((res) => ({
+          url: this.url,
+          envio: xml,
+          params: {},
+          headers: this.headers,
+          data: xmlParser.toJson(res.data, { object: true }),
+        })),
         catchError((e) => {
-          return of({ e });
+          return of({
+            data: e,
+            envio: xml,
+            params: {},
+            headers: this.headers,
+            url: this.url,
+          });
         })
       );
   }
@@ -74,7 +101,7 @@ export class ActiviaHttpService {
       (await this.autorizacion(arrayValues, "PATCAB")).subscribe(
         async (data) => {
           const datosParseados = xmlParser.toJson(
-            data["soap:Envelope"]["soap:Body"][
+            data?.data["soap:Envelope"]["soap:Body"][
               "ExecuteFileTransactionSLResponse"
             ]["ExecuteFileTransactionSLResult"],
             { object: true }
@@ -139,21 +166,42 @@ export class ActiviaHttpService {
             data: datosParseados,
             resultado: datos,
             datosFinales: datos,
+            estatus,
+            envio: data.envio,
+            params: data.params,
+            url: data.url,
+            headers: data.headers,
           });
         }
       );
     });
   }
-  async cancelarTransaccion(arrayValues, os): Promise<Observable<any>> {
+  async cancelarTransaccion(
+    arrayValues,
+    os
+  ): Promise<Observable<RespuestaHttp>> {
     const date = moment(new Date()).toString();
+    const xml = this.xmlCancelacion(arrayValues[0], os, date);
     return this.httpService
-      .post(this.url, this.xmlCancelacion(arrayValues[0], os, date), {
+      .post(this.url, xml, {
         headers: this.headers,
       })
       .pipe(
-        map((res) => xmlParser.toJson(res.data, { object: true })),
+        map((res) => ({
+          url: this.url,
+          envio: xml,
+          params: {},
+          headers: this.headers,
+          data: xmlParser.toJson(res.data, { object: true }),
+        })),
         catchError((e) => {
-          return of({ e });
+          return of({
+            data: e,
+            envio: xml,
+            params: {},
+            headers: this.headers,
+            url: this.url,
+          });
         })
       );
   }
@@ -162,7 +210,7 @@ export class ActiviaHttpService {
       (await this.cancelarTransaccion(arrayValues, "PATCAB")).subscribe(
         async (datos) => {
           const data = xmlParser.toJson(
-            datos["soap:Envelope"]["soap:Body"][
+            datos?.data["soap:Envelope"]["soap:Body"][
               "ExecuteFileTransactionSLResponse"
             ]["ExecuteFileTransactionSLResult"],
             { object: true }
@@ -193,6 +241,11 @@ export class ActiviaHttpService {
             error = "Por favor, intente nuevamente";
           }
           resolve({
+            estatus,
+            envio: data.envio,
+            params: data.params,
+            url: data.url,
+            headers: data.headers,
             data,
             resultado: {
               estatus,
