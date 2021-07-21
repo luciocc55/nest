@@ -44,7 +44,7 @@ export class LoggerService {
         )
         .limit(parseInt(request.query.perPage?.toString()) || 25)
         .populate("origenPopulate")
-        .sort({ data: -1})
+        .sort({ date: 1})
         .lean()
         .exec(),
     ]);
