@@ -69,7 +69,7 @@ export class ReportController {
     }
     if (search.url) {
       query.$and.push({
-        url: { $regex: search.url },
+        url: search.url ,
       });
     }
 
