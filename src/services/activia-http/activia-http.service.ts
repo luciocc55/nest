@@ -74,7 +74,7 @@ export class ActiviaHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, "PATCAB")).subscribe((data) => {
         const datosParseados = xmlParser.toJson(
-          data["soap:Envelope"]["soap:Body"][
+          data?.data["soap:Envelope"]["soap:Body"][
             "ExecuteFileTransactionSLResponse"
           ]["ExecuteFileTransactionSLResult"],
           { object: true }
