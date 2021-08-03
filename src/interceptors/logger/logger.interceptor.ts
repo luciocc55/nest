@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { LoggerService } from 'src/services/logger/logger.service';
 import { AuthService } from 'src/services/auth/auth.service';
-
 export interface Response<T> {
   data: T;
 }
@@ -14,7 +13,6 @@ export class LoggingInterceptor<T> implements NestInterceptor<T, Response<T>> {
     const contexto = context.getArgs();
     // tslint:disable-next-line: one-variable-per-declaration
     const user = await this.authService.decode(contexto[0].headers.authorization);
-    const date = new Date();
     const method = contexto[0].method;
     const url = contexto[0].url;
     let body = '';
@@ -33,7 +31,6 @@ export class LoggingInterceptor<T> implements NestInterceptor<T, Response<T>> {
       body,
       ip,
       user: user['user'],
-      date,
       client,
     };
     const logRegistro = await this.logService.create(log);
