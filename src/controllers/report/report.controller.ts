@@ -58,12 +58,10 @@ export class ReportController {
       ],
     };
     if (search.fechaDesde || search.fechaHasta) {
-      const fecF = moment(search.fechaHasta).utcOffset("+00:00");
-      const fecI = moment(search.fechaDesde).utcOffset("+00:00");
       query.$and.push({
-        date: {
-          $gte: new Date(Date.UTC(fecF.year(),fecF.month(),fecF.date(),fecF.hours(),fecF.minutes(),fecF.seconds())),
-          $lt: new Date(Date.UTC(fecI.year(),fecI.month(),fecI.date(),fecI.hours(),fecI.minutes(),fecI.seconds())),
+        created: {
+          $gte: new Date(search.fechaHasta),
+          $lt: new Date(search.fechaDesde),
         },
       });
     }
