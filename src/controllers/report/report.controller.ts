@@ -35,7 +35,7 @@ export class ReportController {
       $and: [{ role: roles }],
     };
     if (search.user) {
-      usersQuery.$and.push({ $regex: search.user });
+      usersQuery.$and.push({ user: {$regex: search.user }});
     }
     const users = (await this.usersService.findAllSearch(usersQuery)).map(
       (item) => item.user
@@ -70,7 +70,6 @@ export class ReportController {
         url: search.url ,
       });
     }
-
     return await this.loggerService.reporte(query, request);
   }
 }
