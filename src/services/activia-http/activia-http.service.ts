@@ -180,8 +180,7 @@ export class ActiviaHttpService {
     arrayValues,
     os
   ): Promise<Observable<RespuestaHttp>> {
-    const date = moment(new Date()).toString();
-    const xml = this.xmlCancelacion(arrayValues[0], os, date);
+    const xml = this.xmlCancelacion(arrayValues[0], os);
     return this.httpService
       .post(this.url, xml, {
         headers: this.headers,
@@ -259,7 +258,10 @@ export class ActiviaHttpService {
       );
     });
   }
-  xmlCancelacion(arrayValues, os, date) {
+  xmlCancelacion(arrayValues, os) {
+    const date = moment(new Date());
+    const fecha = date.format('YYYYMMDD')
+    const hora = date.format('HHmmss')
     const xml =
       `<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tem="http://tempuri.org/">
     <soap:Header/>
@@ -279,9 +281,10 @@ export class ActiviaHttpService {
           <TipoTransaccion>04A</TipoTransaccion>
           <IdMsj/>
           <InicioTrx>
-            <FechaTrx>` +
-      date +
-      `</FechaTrx>
+          <FechaTrx>` +
+          fecha +
+          `</FechaTrx>
+          <HoraTrx>`+hora+`</HoraTrx>
           </InicioTrx>
           <Terminal>
             <TipoTerminal>PC</TipoTerminal>
@@ -307,7 +310,9 @@ export class ActiviaHttpService {
     return xml;
   }
   xmlElegibilidad(arrayValues, os) {
-    const date = moment(new Date()).toString();
+    const date = moment(new Date());
+    const fecha = date.format('YYYYMMDD')
+    const hora = date.format('HHmmss')
     const xml =
       `<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tem="http://tempuri.org/">
           <soap:Header/>
@@ -320,8 +325,9 @@ export class ActiviaHttpService {
                 <IdMsj>123456789</IdMsj>
                 <InicioTrx>
                   <FechaTrx>` +
-      date +
+                  fecha +
       `</FechaTrx>
+      <HoraTrx>`+hora+`</HoraTrx>
                 </InicioTrx><Terminal><TipoTerminal>PC</TipoTerminal><NumeroTerminal>` +
       arrayValues[1] +
       `</NumeroTerminal></Terminal><Financiador><CodigoFinanciador>` +
@@ -340,7 +346,9 @@ export class ActiviaHttpService {
     return xml;
   }
   xmlAutirizacion(arrayValues, os) {
-    const date = moment(new Date(arrayValues[1])).toString();
+    const date = moment(new Date(arrayValues[1]));
+    const fecha = date.format('YYYYMMDD')
+    const hora = date.format('HHmmss')
     const prestaciones = arrayValues[0].map((item) => {
       return (
         `
@@ -372,9 +380,10 @@ export class ActiviaHttpService {
         <TipoTransaccion>02A</TipoTransaccion>
         <IdMsj></IdMsj>
         <InicioTrx>
-          <FechaTrx>` +
-      date +
-      `</FechaTrx>
+        <FechaTrx>` +
+        fecha +
+        `</FechaTrx>
+        <HoraTrx>`+hora+`</HoraTrx>
         </InicioTrx>
         <Terminal>
           <NumeroTerminal>` +
