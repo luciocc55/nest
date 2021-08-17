@@ -183,7 +183,7 @@ export class ActiviaHttpService {
     arrayValues,
     os
   ): Promise<Observable<RespuestaHttp>> {
-    const xml = this.xmlCancelacion(arrayValues[0], os);
+    const xml = this.xmlCancelacion(arrayValues, os);
     return this.httpService
       .post(this.url, xml, {
         headers: this.headers,
