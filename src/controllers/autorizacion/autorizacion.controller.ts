@@ -90,6 +90,7 @@ export class AutorizacionController {
         ]);
         const usuario = await this.usuariosService.findById(user);
         const arrayValues = [];
+        console.log(data)
         arrayValues.push(data.numeroTransaccion);
         arrayValues.push(...await this.atributosUserService.getAtributosService(usuario, atributos));
         arrayValues.push(...await this.atributosUserService.getAtributosEntry(data.atributosAdicionales, atributosEntradas));
