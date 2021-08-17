@@ -211,6 +211,7 @@ export class ActiviaHttpService {
     return new Promise(async (resolve) => {
       (await this.cancelarTransaccion(arrayValues, "PATCAB")).subscribe(
         async (datos) => {
+          console.log(datos?.data)
           const data = xmlParser.toJson(
             datos?.data["soap:Envelope"]["soap:Body"][
               "ExecuteFileTransactionSLResponse"
