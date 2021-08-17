@@ -274,9 +274,7 @@ export class ActiviaHttpService {
           <!--Optional:-->
           <tem:pos></tem:pos>
           <!--Optional:-->
-          <tem:fileContent><![CDATA[<?xml version="1.0" encoding="utf-8"?>
-      <Mensaje>
-        <EncabezadoMensaje>
+          <tem:fileContent><![CDATA[<?xml version="1.0" encoding="utf-8"?><Mensaje><EncabezadoMensaje>
           <VersionMsj>ACT20</VersionMsj>
           <NroReferenciaCancel>` +
       arrayValues[0] +
