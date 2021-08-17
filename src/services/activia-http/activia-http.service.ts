@@ -114,8 +114,10 @@ export class ActiviaHttpService {
           let errorEstandarizadoCodigo = null;
           if (datosParseados.EncabezadoMensaje) {
             if (datosParseados.EncabezadoMensaje.Rta?.CodRtaGeneral === "00") {
-              console.log(datosParseados)
               estatus = 1;
+              if (! Array.isArray(datosParseados.DetalleProcedimientos)) {
+                datosParseados.DetalleProcedimientos = [datosParseados.DetalleProcedimientos]
+              }
               resultados = datosParseados.DetalleProcedimientos?.map(
                 (element) => {
                   let estado;
