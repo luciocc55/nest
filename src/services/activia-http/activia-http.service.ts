@@ -115,7 +115,7 @@ export class ActiviaHttpService {
           if (datosParseados.EncabezadoMensaje) {
             if (datosParseados.EncabezadoMensaje.Rta?.CodRtaGeneral === "00") {
               estatus = 1;
-              resultados = datosParseados.DetalleProcedimientos.map(
+              resultados = datosParseados.DetalleProcedimientos?.map(
                 (element) => {
                   let estado;
                   if (element.CodRta === "00") {
