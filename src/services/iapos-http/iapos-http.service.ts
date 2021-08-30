@@ -68,9 +68,16 @@ export class IaposHttpService {
           ];
         let estatus;
         let datos: DatosElegibilidad = new DatosElegibilidad();
+        let datosTasy: any = {
+          MotivoRechazo: "",
+          EstadoIntegrante: "I",
+        };
         try {
           if (info["Estado"]["$t"] === "A") {
             estatus = 1;
+            datosTasy.NroAfiliado = info["Nafiliado"]["$t"];
+            datosTasy.EstadoIntegrante = 'A';
+            datosTasy.NombreApellido = info["Apenom"]["$t"];
             datos = {
               nroAfiliado: info["Nafiliado"]["$t"],
               nroDocumento: info["Badocnumdo"]["$t"],
@@ -98,6 +105,7 @@ export class IaposHttpService {
         }
         resolve({
           data: data.data,
+          ...datosTasy,
           datosFinales: datos,
           estatus,
           envio: data.envio,

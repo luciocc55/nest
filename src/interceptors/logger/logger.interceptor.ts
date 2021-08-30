@@ -34,6 +34,8 @@ export class LoggingInterceptor<T> implements NestInterceptor<T, Response<T>> {
       client,
     };
     const logRegistro = await this.logService.create(log);
+    const request = context.switchToHttp().getRequest();
+    request.params.IdTransaccion = logRegistro['_id']
     return next.handle().pipe(tap((async data => {
       this.logService.writeResponse(JSON.stringify(data), logRegistro['_id']);
     })));

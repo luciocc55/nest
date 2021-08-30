@@ -79,6 +79,11 @@ export class ActiviaHttpService {
           ]["ExecuteFileTransactionSLResult"],
           { object: true }
         );
+        let datosTasy: any = {
+          NroAfiliado: arrayValues[3],
+          MotivoRechazo: "",
+          EstadoIntegrante: "I",
+        };
         let estatus;
         try {
           if (
@@ -86,13 +91,24 @@ export class ActiviaHttpService {
             "00"
           ) {
             estatus = 1;
+            datosTasy.EstadoIntegrante = "A";
+            datosTasy.NombreApellido =
+              datosParseados.Mensaje?.EncabezadoAtencion?.Beneficiario?.NombreBeneficiario;
           } else {
             estatus = 0;
           }
         } catch (error) {
           estatus = 0;
         }
-        resolve({ data: datosParseados, estatus });
+        resolve({
+          data: datosParseados,
+          ...datosTasy,
+          estatus,
+          envio: data.envio,
+          params: data.params,
+          url: data.url,
+          headers: data.headers,
+        });
       });
     });
   }
@@ -115,8 +131,10 @@ export class ActiviaHttpService {
           if (datosParseados.EncabezadoMensaje) {
             if (datosParseados.EncabezadoMensaje.Rta?.CodRtaGeneral === "00") {
               estatus = 1;
-              if (! Array.isArray(datosParseados.DetalleProcedimientos)) {
-                datosParseados.DetalleProcedimientos = [datosParseados.DetalleProcedimientos]
+              if (!Array.isArray(datosParseados.DetalleProcedimientos)) {
+                datosParseados.DetalleProcedimientos = [
+                  datosParseados.DetalleProcedimientos,
+                ];
               }
               resultados = datosParseados.DetalleProcedimientos?.map(
                 (element) => {
@@ -211,7 +229,7 @@ export class ActiviaHttpService {
     return new Promise(async (resolve) => {
       (await this.cancelarTransaccion(arrayValues, "PATCAB")).subscribe(
         async (datos) => {
-          console.log(datos?.data)
+          console.log(datos?.data);
           const data = xmlParser.toJson(
             datos?.data["soap:Envelope"]["soap:Body"][
               "ExecuteFileTransactionSLResponse"
@@ -264,8 +282,8 @@ export class ActiviaHttpService {
   }
   xmlCancelacion(arrayValues, os) {
     const date = moment(new Date());
-    const fecha = date.format('YYYYMMDD')
-    const hora = date.format('HHmmss')
+    const fecha = date.format("YYYYMMDD");
+    const hora = date.format("HHmmss");
     const xml =
       `<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tem="http://tempuri.org/">
     <soap:Header/>
@@ -284,9 +302,11 @@ export class ActiviaHttpService {
           <IdMsj/>
           <InicioTrx>
           <FechaTrx>` +
-          fecha +
-          `</FechaTrx>
-          <HoraTrx>`+hora+`</HoraTrx>
+      fecha +
+      `</FechaTrx>
+          <HoraTrx>` +
+      hora +
+      `</HoraTrx>
           </InicioTrx>
           <Terminal>
             <TipoTerminal>PC</TipoTerminal>
@@ -313,8 +333,8 @@ export class ActiviaHttpService {
   }
   xmlElegibilidad(arrayValues, os) {
     const date = moment(new Date());
-    const fecha = date.format('YYYYMMDD')
-    const hora = date.format('HHmmss')
+    const fecha = date.format("YYYYMMDD");
+    const hora = date.format("HHmmss");
     const xml =
       `<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tem="http://tempuri.org/">
           <soap:Header/>
@@ -327,9 +347,11 @@ export class ActiviaHttpService {
                 <IdMsj>123456789</IdMsj>
                 <InicioTrx>
                   <FechaTrx>` +
-                  fecha +
+      fecha +
       `</FechaTrx>
-      <HoraTrx>`+hora+`</HoraTrx>
+      <HoraTrx>` +
+      hora +
+      `</HoraTrx>
                 </InicioTrx><Terminal><TipoTerminal>PC</TipoTerminal><NumeroTerminal>` +
       arrayValues[1] +
       `</NumeroTerminal></Terminal><Financiador><CodigoFinanciador>` +
@@ -349,8 +371,8 @@ export class ActiviaHttpService {
   }
   xmlAutirizacion(arrayValues, os) {
     const date = moment(new Date(arrayValues[1]));
-    const fecha = date.format('YYYYMMDD')
-    const hora = date.format('HHmmss')
+    const fecha = date.format("YYYYMMDD");
+    const hora = date.format("HHmmss");
     const prestaciones = arrayValues[0].map((item) => {
       return (
         `
@@ -383,9 +405,11 @@ export class ActiviaHttpService {
         <IdMsj></IdMsj>
         <InicioTrx>
         <FechaTrx>` +
-        fecha +
-        `</FechaTrx>
-        <HoraTrx>`+hora+`</HoraTrx>
+      fecha +
+      `</FechaTrx>
+        <HoraTrx>` +
+      hora +
+      `</HoraTrx>
         </InicioTrx>
         <Terminal>
           <NumeroTerminal>` +

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Param, Post, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Token } from 'src/decorators/token.decorator';
 import { RolesGuard } from 'src/guards/role/role.guard';
@@ -37,7 +37,7 @@ export class AutorizacionController {
       // / separa los atributos booleanos de la coleccion de atributos estaticos
       @UseInterceptors(LoggingInterceptor)
       @Post('autorizar')
-      async list(@Body() data: Autorizar, @Token() token: string): Promise<any> {
+      async list(@Body() data: Autorizar, @Token() token: string, @Param("IdTransaccion") IdTransaccion: string): Promise<any> {
         const path = '/autorizador/autorizacion/autorizar:post';
         const validate = await this.origenesService.validateOrigenService(
           data.origen,
@@ -64,7 +64,8 @@ export class AutorizacionController {
           case 'OS Patrones de Cabotaje (Activia)':
             autorizacion = await this.activiaService.getAutorizacionOSPDC(arrayValues, data.origen);
         }
-        return {autorizacion};
+        const autorizacionResp = {...autorizacion, IdTransaccion};
+        return { autorizacion: autorizacionResp, AutorizacionRespuesta: autorizacionResp };
       }
       @ApiTags(
         'Permite cancelar autorizaciones de practicas contra los servicios habilitados',
@@ -77,7 +78,7 @@ export class AutorizacionController {
       // / separa los atributos booleanos de la coleccion de atributos estaticos
       @UseInterceptors(LoggingInterceptor)
       @Post('cancelarAutorizacion')
-      async cancelar(@Body() data: CancelarAutorizacion, @Token() token: string): Promise<any> {
+      async cancelar(@Body() data: CancelarAutorizacion, @Token() token: string, @Param("IdTransaccion") IdTransaccion: string): Promise<any> {
         const path = '/autorizador/autorizacion/cancelarAutorizacion:post';
         const validate = await this.origenesService.validateOrigenService(
           data.origen,
@@ -103,6 +104,7 @@ export class AutorizacionController {
           case 'OS Patrones de Cabotaje (Activia)':
             cancelacion = await this.activiaService.getCancelarAutorizacionOSPDC(arrayValues, data.origen);
         }
-        return {cancelacion};
+        const cancelacionResp = {...cancelacion, IdTransaccion};
+        return { cancelacion: cancelacionResp, AutorizacionRespuesta: cancelacionResp };
       }
 }

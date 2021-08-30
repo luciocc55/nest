@@ -288,6 +288,10 @@ export class SwissMedicalHttpService {
         let estatus;
         let dataHttp = data.data;
         let datos: DatosElegibilidad = new DatosElegibilidad();
+        let datosTasy: any = {
+          "NroAfiliado" : arrayValues[3], 
+          "MotivoRechazo" : ""
+        }
         if (dataHttp.rechaCabecera === 0) {
           estatus = 1;
           datos = {
@@ -309,17 +313,22 @@ export class SwissMedicalHttpService {
             tipoDocumentoDescripcion: "",
             recupero: dataHttp.gravado === "1" ? true : false,
           };
+          datosTasy.EstadoIntegrante = dataHttp.rechaCabecera === 0 ? 'A' : 'I';
+          datosTasy.NombreApellido = dataHttp.apeNom;
         } else {
           estatus = 0;
-          if (dataHttp.e) {
+          datosTasy.MotivoRechazo = dataHttp.rechaCabeDeno;
+          if (dataHttp.rechaCabeDeno) {
             const err = await this.erroresService.findOne({
               valueStandard: 3,
             });
             datos.errorEstandarizado = err.description;
             datos.errorEstandarizadoCodigo = err.valueStandard;
+            datosTasy.MotivoRechazo = err.description;
           }
         }
         resolve({
+          ...datosTasy,
           data: dataHttp,
           datosFinales: datos,
           estatus,

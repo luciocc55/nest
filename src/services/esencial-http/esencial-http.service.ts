@@ -180,6 +180,10 @@ export class EsencialHttpService {
       (await this.elegibilidad(arrayValues)).subscribe((data) => {
         let estatus;
         let datos: DatosElegibilidad = new DatosElegibilidad();
+        let datosTasy: any = {
+          MotivoRechazo: "",
+          EstadoIntegrante: "I",
+        };
         try {
           const info =
             data.data["SOAP-ENV:Envelope"]["SOAP-ENV:Body"][
@@ -187,6 +191,9 @@ export class EsencialHttpService {
             ]["Sdtvalidacionsocio"];
           if (info["SINEdo"] === "AC") {
             estatus = 1;
+            datosTasy.NroAfiliado = info["SocCodSINCod"];
+            datosTasy.NombreApellido = info["SINAyN"];
+            datosTasy.EstadoIntegrante = "A";
             datos = {
               nroAfiliado: info["SocCodSINCod"],
               nroDocumento: info["SINNroDoc"],
@@ -215,6 +222,7 @@ export class EsencialHttpService {
         resolve({
           data: data.data,
           datosFinales: datos,
+          ...datosTasy,
           estatus,
           envio: data.envio,
           params: data.params,

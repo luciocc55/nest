@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   UseInterceptors,
+  Param,
 } from "@nestjs/common";
 import { RolesGuard } from "src/guards/role/role.guard";
 import { ApiTags } from "@nestjs/swagger";
@@ -80,7 +81,7 @@ export class ElegibilidadController {
   // : separa los atributos necesarios para ese origen
   @UseInterceptors(LoggingInterceptor)
   @Post("consultar")
-  async list(@Body() data: Elegibilidad, @Token() token: string): Promise<any> {
+  async list(@Body() data: Elegibilidad, @Token() token: string, @Param("IdTransaccion") IdTransaccion: string): Promise<any> {
     const path = "/autorizador/elegibilidad/consultar:post";
     const validate = await this.origenesService.validateOrigenService(
       data.origen,
@@ -211,8 +212,8 @@ export class ElegibilidadController {
             arrayValues
           );
           break;
-        
     }
-    return { elegibilidad };
+    const elegibilidadResp = {...elegibilidad, IdTransaccion};
+    return { elegibilidad: elegibilidadResp, ElegibilidadRespuesta: elegibilidadResp };
   }
 }
