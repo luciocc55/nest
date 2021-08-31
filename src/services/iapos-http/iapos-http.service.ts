@@ -99,9 +99,11 @@ export class IaposHttpService {
             };
           } else {
             estatus = 0;
+            datosTasy.EstadoIntegrante = 'E';
           }
         } catch (error) {
           estatus = 0;
+          datosTasy.EstadoIntegrante = 'E';
         }
         resolve({
           data: data.data,

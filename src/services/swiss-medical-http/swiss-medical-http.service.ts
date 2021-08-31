@@ -322,6 +322,7 @@ export class SwissMedicalHttpService {
             const err = await this.erroresService.findOne({
               valueStandard: 3,
             });
+            datosTasy.EstadoIntegrante = 'E';
             datos.errorEstandarizado = err.description;
             datos.errorEstandarizadoCodigo = err.valueStandard;
             datosTasy.MotivoRechazo = err.description;
