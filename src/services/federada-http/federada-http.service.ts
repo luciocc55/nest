@@ -48,7 +48,14 @@ export class FederadaHttpService {
         let estatus;
         let dataHttp = data.data;
         let datos: DatosElegibilidad = new DatosElegibilidad();
+        let datosTasy: any = {
+          "MotivoRechazo" : "",
+          EstadoIntegrante : 'I'
+        }
         if (dataHttp.o_Status === "SI") {
+          datosTasy.NroAfiliado = dataHttp.o_GruNro + "0" + dataHttp.o_IntNro;
+          datosTasy.EstadoIntegrante = 'A';
+          datosTasy.NombreApellido = dataHttp.o_Apellido + "," + dataHttp.o_Nombres;
           estatus = 1;
           datos = {
             nroAfiliado: dataHttp.o_GruNro + "0" + dataHttp.o_IntNro,
@@ -74,6 +81,7 @@ export class FederadaHttpService {
         }
         resolve({
           data: dataHttp,
+          ...datosTasy,
           datosFinales: datos,
           estatus,
           envio: data.envio,

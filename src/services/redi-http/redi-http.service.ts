@@ -46,13 +46,19 @@ export class RediHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, os)).subscribe((data) => {
         let estatus;
+        let datosTasy: any = {
+          "MotivoRechazo" : "",
+          EstadoIntegrante : 'I'
+        }
         if (data.data.estado) {
           estatus = 1;
+          datosTasy.EstadoIntegrante = 'A'
         } else {
           estatus = 0;
         }
         resolve({
           data: data.data,
+          ...datosTasy,
           estatus,
           envio: data.envio,
           params: data.params,

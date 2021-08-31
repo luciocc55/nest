@@ -105,17 +105,22 @@ export class AmrHttpService {
         async (data) => {
           let estatus = 0;
           let datosFinales: DatosElegibilidad = new DatosElegibilidad();
+          let datosTasy: any = {
+            EstadoIntegrante : 'I',
+          }
           try {
             if (
               data?.data.respuestaElegibilidadAfiliado?.estadoGeneral
                 .tiposRespuestaValidacion !== "ERROR"
             ) {
               estatus = 1;
+              datosTasy.EstadoIntegrante = 'A';
             } else {
               if (
                 data?.data.respuestaElegibilidadAfiliado?.estadoGeneral.mensaje ===
                 "timeout"
               ) {
+                datosTasy.EstadoIntegrante = 'E';
                 const err = await this.erroresService.findOne({
                   valueStandard: 3,
                 });
@@ -125,8 +130,10 @@ export class AmrHttpService {
             }
           } catch (error) {
             console.log(error);
+            datosTasy.EstadoIntegrante = 'E';
           }
           resolve({
+            ...datosTasy,
             data: data.data,
             datosFinales,
             estatus,

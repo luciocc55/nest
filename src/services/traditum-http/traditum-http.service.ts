@@ -67,7 +67,6 @@ export class TraditumHttpService {
   }
   async getSessionHeaders() {
     const token = await this.getToken();
-    console.log(token);
     const headers = {
       Authorization: `Bearer ${token}`,
     };
@@ -105,14 +104,26 @@ export class TraditumHttpService {
       (await this.elegibilidad(hl7)).subscribe((data) => {
         let estatus;
         let datos: DatosElegibilidad;
+        let datosTasy: any = {
+          "MotivoRechazo" : "",
+          EstadoIntegrante : 'I'
+        }
         if (data.data.rechaCabecera === 0) {
           estatus = 1;
+          datosTasy.EstadoIntegrante = 'A'
         } else {
           estatus = 0;
         }
+        let response = {}
+        try {
+          response = this.decrypt(data.data)
+        } catch (error) {
+          datosTasy.EstadoIntegrante = 'E'
+        }
         resolve({
-          data: this.decrypt(data.data),
+          data: response,
           datosFinales: datos,
+          ...datosTasy,
           estatus,
           envio: data.envio,
           params: data.params,

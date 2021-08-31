@@ -88,6 +88,10 @@ export class AcaHttpService {
       (await this.elegibilidad(arrayValues)).subscribe((data) => {
         process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = null;
         let estatus = 0;
+        let datosTasy: any = {
+          "NroAfiliado" : arrayValues[3], 
+          "MotivoRechazo" : ""
+        }
         try {
           const datosParseados = xmlParser.toJson(
             data?.data["S:Envelope"]["S:Body"]["ns0:transaccionstrResponse"][
@@ -97,9 +101,13 @@ export class AcaHttpService {
           );
           if (!datosParseados.RESPUESTA.RSPMSGGADIC) {
             estatus = 1;
+            datosTasy.NroAfiliado = datosParseados.RESPUESTA.AFICODIGO;
+            datosTasy.NombreApellido = datosParseados.RESPUESTA.AFIAPE + ' ' + datosParseados.RESPUESTA.AFINOM;
+            datosTasy.EstadoIntegrante = 'A';
           }
           resolve({
             data: datosParseados,
+            ...datosTasy,
             estatus,
             params: data.params,
             envio: data.envio,
@@ -108,9 +116,11 @@ export class AcaHttpService {
           });
         } catch (error) {
           console.log(error);
+          datosTasy.EstadoIntegrante = 'E';
         }
         resolve({
           data: data.data,
+          ...datosTasy,
           estatus,
           envio: data.envio,
           params: data.params,

@@ -60,6 +60,11 @@ export class AcindarHttpService {
           planDescripcion: dataHttp.Plan,
           nombreApellido: dataHttp.NombreApellido,
         };
+        let datosTasy: any = {
+          "NroAfiliado" : dataHttp.NumeroSocio, 
+          NombreApellido : dataHttp.NombreApellido,
+          EstadoIntegrante : dataHttp.Habilitado? 'A': 'I',
+        }
         if (dataHttp.Habilitado === true) {
           estatus = 1;
         } else {
@@ -67,6 +72,7 @@ export class AcindarHttpService {
         }
         resolve({
           data: dataHttp,
+          ...datosTasy,
           datosFinales: datos,
           estatus,
           envio: data.envio,
