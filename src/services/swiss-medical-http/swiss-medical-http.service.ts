@@ -69,16 +69,22 @@ export class SwissMedicalHttpService {
         let errorEstandarizado = null;
         let errorEstandarizadoCodigo = null;
         let dataHttp = data.data;
+        let datosTasy: any = {
+          Estado: false,
+        }
         if (dataHttp.cabecera) {
           if (dataHttp.cabecera.rechaCabecera === 0) {
             estatus = 1;
             numeroTransaccion = dataHttp.cabecera.transac;
+            datosTasy.NroAtención = dataHttp.cabecera.transac;
           } else {
             const err = await this.erroresService.findOne({
               "values.value": dataHttp.cabecera.rechaCabecera.toString(),
               "values.origen": origen,
             });
+            datosTasy.MotivoRechazo = dataHttp.cabecera.rechaCabeDeno;
             if (err) {
+              datosTasy.MotivoRechazo = err.description;
               errorEstandarizado = err.description;
               errorEstandarizadoCodigo = err.valueStandard;
             }
@@ -87,14 +93,17 @@ export class SwissMedicalHttpService {
           }
         } else {
           estatus = 0;
+          datosTasy.MotivoRechazo = "Por favor, intente nuevamente";
           error = "Por favor, intente nuevamente";
         }
+
         resolve({
           data: dataHttp,
           envio: data.envio,
           params: data.params,
           url: data.url,
           headers: data.headers,
+          ...datosTasy,
           resultado: {
             estatus,
             errorEstandarizado,
@@ -145,9 +154,13 @@ export class SwissMedicalHttpService {
         let errorEstandarizado = null;
         let errorEstandarizadoCodigo = null;
         const dataHttp = data.data;
+        let datosTasy: any = {
+          Estado: false
+        }
         if (dataHttp.cabecera) {
           if (dataHttp.cabecera.rechaCabecera === 0) {
             estatus = 1;
+            datosTasy.Estado = true;
             resultados = dataHttp.detalle.map((data, index) => {
               let estado;
               if (data.recha === 0) {
@@ -157,29 +170,41 @@ export class SwissMedicalHttpService {
               }
               return {
                 prestación: arrayValues[0][index].codigoPrestacion,
+                CodigoPrestacion:arrayValues[0][index].codigoPrestacion,
                 transaccion: data.transac,
                 mensaje: data.denoItem,
                 cantidad: data.canti,
+                Cantidad: data.canti,
+                Rechazadas: data.recha,
                 rechazadas: data.recha,
                 copago: data.valorCopa,
+                Copago: data.valorCopa,
+                Estado: estado? 'A': 'R',
                 estado,
               };
             });
+            datosTasy.Prestaciones = resultados;
+            datosTasy.NroAtención = dataHttp.cabecera.transac;
             numeroTransaccion = dataHttp.cabecera.transac;
           } else {
             const err = await this.erroresService.findOne({
               "values.value": dataHttp.cabecera.rechaCabecera.toString(),
               "values.origen": origen,
             });
+            datosTasy.Error = 0;
+            datosTasy.MotivoRechazo = dataHttp.cabecera.rechaCabeDeno;
             if (err) {
               errorEstandarizado = err.description;
               errorEstandarizadoCodigo = err.valueStandard;
+              datosTasy.Error = err.valueStandard;
+              datosTasy.MotivoRechazo =  err.description;
             }
             estatus = 0;
             error = dataHttp.cabecera.rechaCabeDeno;
           }
         } else {
           estatus = 0;
+          datosTasy.MotivoRechazo = "Por favor, intente nuevamente";
           error = "Por favor, intente nuevamente";
         }
         const datos = {
@@ -193,6 +218,7 @@ export class SwissMedicalHttpService {
         resolve({
           resultado: datos,
           datosFinales: datos,
+          ...datosTasy,
           data: dataHttp,
           envio: data.envio,
           params: data.params,
