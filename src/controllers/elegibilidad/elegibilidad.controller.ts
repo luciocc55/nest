@@ -81,7 +81,11 @@ export class ElegibilidadController {
   // : separa los atributos necesarios para ese origen
   @UseInterceptors(LoggingInterceptor)
   @Post("consultar")
-  async list(@Body() data: Elegibilidad, @Token() token: string, @Param("IdTransaccion") IdTransaccion: string): Promise<any> {
+  async list(
+    @Body() data: Elegibilidad,
+    @Token() token: string,
+    @Param("IdTransaccion") IdTransaccion: string
+  ): Promise<any> {
     const path = "/autorizador/elegibilidad/consultar:post";
     const validate = await this.origenesService.validateOrigenService(
       data.origen,
@@ -207,13 +211,14 @@ export class ElegibilidadController {
         );
         break;
 
-        case "Mutual Acindar":
-          elegibilidad = await this.acindarService.getElegibilidad(
-            arrayValues
-          );
-          break;
+      case "Mutual Acindar":
+        elegibilidad = await this.acindarService.getElegibilidad(arrayValues);
+        break;
     }
-    const elegibilidadResp = {...elegibilidad, IdTransaccion};
-    return { elegibilidad: elegibilidadResp, ElegibilidadRespuesta: elegibilidadResp };
+    const elegibilidadResp = { ...elegibilidad, IdTransaccion };
+    return {
+      elegibilidad: elegibilidadResp,
+      ElegibilidadRespuesta: elegibilidadResp,
+    };
   }
 }

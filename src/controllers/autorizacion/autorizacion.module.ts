@@ -12,6 +12,7 @@ import { UsersServiceModule } from 'src/services/users/users.module';
 import { SinonimosModule } from 'src/services/sinonimos/sinonimos.module';
 import { EsencialHttpModule } from 'src/services/esencial-http/esencial-http.module';
 import { ActiviaHttpModule } from 'src/services/activia-http/activia-http.module';
+import { AcindarttpModule } from 'src/services/acindar-http/acindar-http.module';
 
 @Module({
   controllers: [AutorizacionController],
@@ -27,6 +28,7 @@ import { ActiviaHttpModule } from 'src/services/activia-http/activia-http.module
     UsersServiceModule,
     SinonimosModule,
     EsencialHttpModule,
+    AcindarttpModule
   ],
 })
 export class AutorizacionModule {}
