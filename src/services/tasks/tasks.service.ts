@@ -45,33 +45,33 @@ export class TasksService {
   //@Cron(CronExpression.EVERY_MINUTE)
   //@Timeout(600)
   async refreshTokenRedICore() {
-    const user = await this.sessionService.findAdmin('adminRedI');
+    const user = await this.sessionService.findAdmin("adminRedI");
     try {
       const decoded = this.jwtService.decode(user.token, { complete: true });
       const now = Date.now();
-      const expired = decoded['payload'].exp * 1000;
+      const expired = decoded["payload"].exp * 1000;
       if (now > expired) {
-        const job = this.queue.add('sessionRedI', {
-          foo: 'AutorizadorQueue',
+        const job = this.queue.add("sessionRedI", {
+          foo: "AutorizadorQueue",
         });
       }
     } catch (error) {
-      const job = this.queue.add('sessionRedI', {
-        foo: 'AutorizadorQueue',
+      const job = this.queue.add("sessionRedI", {
+        foo: "AutorizadorQueue",
       });
     }
   }
   //@Timeout(600)
   //@Cron(CronExpression.EVERY_DAY_AT_1AM)
   async logEsps() {
-    const job = this.queue.add('practicas', {
-      foo: 'AutorizadorQueue',
+    const job = this.queue.add("practicas", {
+      foo: "AutorizadorQueue",
     });
   }
   @Timeout(5000)
   createPermissions() {
     environment.permissions.forEach((element) => {
-      let description = '';
+      let description = "";
       if (element.description) {
         description = element.description.toString();
       }
@@ -86,7 +86,7 @@ export class TasksService {
     for (const service of environment.orignesPermissions) {
       const origen = await this.origenesService.create(
         service.origen,
-        service.path,
+        service.path
       );
       service.atributos.forEach(async (atributo, index) => {
         await this.atributosEstaticosService.updateServicios(
@@ -95,16 +95,27 @@ export class TasksService {
           atributo.isOptional,
           service.path,
           origen._id,
-          index,
+          index
         );
       });
     }
   }
   @Timeout(5000)
   async createErroresSwiss() {
-    const origen = await this.origenesService.findOneSearch({description: 'Swiss Medical'});
-    const err = await Promise.all([this.erroresService.getOrCreate('1', 'La autorización requiere token'), this.erroresService.getOrCreate('2', 'El token es incorrecto'), this.erroresService.getOrCreate('3', 'Hubo un error en la transaccion')]);
-    const values = await Promise.all([this.erroresService.pushValue('1', '148', origen._id), this.erroresService.pushValue('2', '149', origen._id)]);
+    const origen = await this.origenesService.findOneSearch({
+      description: "Swiss Medical",
+    });
+    const err = await Promise.all([
+      this.erroresService.getOrCreate("1", "La autorización requiere token"),
+      this.erroresService.getOrCreate("2", "El token es incorrecto"),
+      this.erroresService.getOrCreate("3", "Hubo un error en la transaccion"),
+      this.erroresService.getOrCreate('4', 'Afiliado inexistente')
+    ]);
+    const values = await Promise.all([
+      this.erroresService.pushValue("1", "148", origen._id),
+      this.erroresService.pushValue("2", "149", origen._id),
+      this.erroresService.pushValue("4", "35", origen._id),
+    ]);
   }
   @Timeout(5000)
   async createExtras() {
@@ -119,7 +130,11 @@ export class TasksService {
       const extraM = await this.extrasService.findOne({ description: extra });
       const sin = this.sinonimos[index];
       for (const sinonimo of sin) {
-        await this.sinonimosService.getOrCreate(sinonimo.description, sinonimo.defaultValue, extraM._id);
+        await this.sinonimosService.getOrCreate(
+          sinonimo.description,
+          sinonimo.defaultValue,
+          extraM._id
+        );
       }
     }
   }
@@ -132,10 +147,10 @@ export class TasksService {
   @Timeout(5000)
   async createAdmin() {
     await this.roleService
-      .createRole({ description: 'Admin', priority: 1 })
+      .createRole({ description: "Admin", priority: 1 })
       .catch((error) => {});
     await this.roleService
-      .createRole({ description: 'Profesional' })
+      .createRole({ description: "Profesional" })
       .catch((error) => {});
   }
   @Timeout(6000)
