@@ -157,7 +157,7 @@ export class ActiviaHttpService {
                   };
                 }
               );
-              numeroTransaccion = datosParseados.EncabezadoMensaje.transac;
+              numeroTransaccion = datosParseados.EncabezadoMensaje.NroReferencia;
             } else {
               const err = await this.erroresService.findOne({
                 "values.value": datosParseados.EncabezadoMensaje.Rta?.CodRtaGeneral.toString(),
