@@ -164,16 +164,19 @@ export class AutorizacionController {
           arrayValues,
           data.origen
         );
+        break;
       case "OS Patrones de Cabotaje (Activia)":
         cancelacion = await this.activiaService.getCancelarAutorizacionOSPDC(
           arrayValues,
           data.origen
         );
+        break;
 
       case "Mutual Acindar":
         cancelacion = await this.acindarService.getCancelarAutorizacion(
           arrayValues
         );
+        break;
     }
 
     const cancelacionResp = { ...cancelacion, IdTransaccion };
