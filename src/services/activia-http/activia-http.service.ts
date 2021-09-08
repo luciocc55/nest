@@ -128,6 +128,9 @@ export class ActiviaHttpService {
           let numeroTransaccion = null;
           let errorEstandarizado = null;
           let errorEstandarizadoCodigo = null;
+          let datosTasy: any = {
+            Estado: false,
+          };
           if (datosParseados.EncabezadoMensaje) {
             if (datosParseados.EncabezadoMensaje.Rta?.CodRtaGeneral === "00") {
               estatus = 1;
@@ -136,6 +139,8 @@ export class ActiviaHttpService {
                   datosParseados.DetalleProcedimientos,
                 ];
               }
+              datosTasy.Estado = true;
+              datosTasy.NroAtención = datosParseados.EncabezadoMensaje.NroReferencia;
               resultados = datosParseados.DetalleProcedimientos?.map(
                 (element) => {
                   let estado;
@@ -163,9 +168,13 @@ export class ActiviaHttpService {
                 "values.value": datosParseados.EncabezadoMensaje.Rta?.CodRtaGeneral.toString(),
                 "values.origen": origen,
               });
+              datosTasy.Error = 0;
+              datosTasy.MotivoRechazo = datosParseados.EncabezadoMensaje.Rta?.DescripcionRtaGeneral;
               if (err) {
                 errorEstandarizado = err.description;
                 errorEstandarizadoCodigo = err.valueStandard;
+                datosTasy.Error = err.valueStandard;
+                datosTasy.MotivoRechazo = err.description;
               }
               estatus = 0;
               error =
@@ -173,6 +182,7 @@ export class ActiviaHttpService {
             }
           } else {
             estatus = 0;
+            datosTasy.MotivoRechazo = "Por favor, intente nuevamente";
             error = "Por favor, intente nuevamente";
           }
           const datos = {
@@ -186,6 +196,7 @@ export class ActiviaHttpService {
           resolve({
             data: datosParseados,
             resultado: datos,
+            ...datosTasy,
             datosFinales: datos,
             estatus,
             envio: data.envio,
