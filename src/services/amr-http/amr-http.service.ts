@@ -8,14 +8,73 @@ import { FunctionsService } from "../functions";
 
 @Injectable()
 export class AmrHttpService {
-  url =
-    "https://www.amr.org.ar/gestion/webServices/autorizador/v9/ambulatorio/";
+  url;
   headers = { Authorization: "Basic  OTgwMTI6TllEVURIQ0s=" };
   constructor(
     private httpService: HttpService,
     private functionService: FunctionsService,
     private erroresService: ErroresService
-  ) {}
+  ) {
+    if (process.env.Production === "true") {
+      this.url =
+        "https://www.amr.org.ar/gestion/webServices/autorizador/v/ambulatorio/";
+    } else {
+      this.url =
+        "https://www.amr.org.ar/gestion/webServices/autorizador/v10/test/ambulatorio/";
+    }
+  }
+  async autorizar(
+    arrayValues,
+    codigoConvenio
+  ): Promise<Observable<RespuestaHttp>> {
+    const date = this.functionService.returnDateFormat2(new Date());
+    const url = this.url + "solicitar/autorizacion";
+    const prestaciones = arrayValues[0].map((item) => ({
+      codigoPrestacion: item.codigoPrestacion,
+      cantidad: item.cantidad,
+      bono: "321",
+      solicitudAdicional: null,
+    }));
+    const body: any = {
+      efector: { codigoProfesion: arrayValues[4], matricula: arrayValues[3], libro: " ", folio: " " },
+      prescriptor: {
+        codigoProfesion: arrayValues[2],
+        matricula: arrayValues[0],
+        libro: " ",
+        folio: " ",
+      },
+      fechaPrestacion: date,
+      codigoAfiliado: arrayValues[5],
+      tokenAfiliado: arrayValues[6],
+      codigoConvenio: codigoConvenio,
+      codigoDelegacion: 1,
+      codigoMedioDePago: 0,
+      diagnostico: "",
+      prestacionSolicitadas: prestaciones,
+    };
+    return this.httpService
+      .post(url, body, {
+        headers: this.headers,
+      })
+      .pipe(
+        map((res) => ({
+          data: res.data,
+          params: {},
+          url,
+          headers: this.headers,
+          envio: body,
+        })),
+        catchError((e) => {
+          return of({
+            data: e,
+            envio: body,
+            params: {},
+            headers: this.headers,
+            url: url,
+          });
+        })
+      );
+  }
   async elegibilidad(
     arrayValues,
     afiliado,
@@ -56,7 +115,67 @@ export class AmrHttpService {
         })
       );
   }
-
+  getAutorizacionAmrSalud(arrayValues, origen): any {
+    return new Promise(async (resolve) => {
+      (await this.autorizar(arrayValues, 2)).subscribe(async (data) => {
+        let estatus;
+        let resultados = [];
+        let error;
+        let numeroTransaccion = null;
+        let errorEstandarizado = null;
+        let errorEstandarizadoCodigo = null;
+        const dataHttp = data.data;
+        let datosTasy: any = {
+          Estado: false,
+        };
+        if (dataHttp) {
+          if (dataHttp.Estado === 0) {
+            estatus = 1;
+            datosTasy.Estado = true;
+            datosTasy.NroAtención = dataHttp.NumeroOrden;
+            numeroTransaccion = dataHttp.NumeroOrden;
+          } else {
+            const err = await this.erroresService.findOne({
+              "values.value": dataHttp?.Mensaje?.toString(),
+              "values.origen": origen,
+            });
+            datosTasy.Error = 0;
+            datosTasy.MotivoRechazo = dataHttp.Mensaje;
+            if (err) {
+              errorEstandarizado = err.description;
+              errorEstandarizadoCodigo = err.valueStandard;
+              datosTasy.Error = err.valueStandard;
+              datosTasy.MotivoRechazo = err.description;
+            }
+            estatus = 0;
+            error = dataHttp.Mensaje;
+          }
+        } else {
+          estatus = 0;
+          datosTasy.MotivoRechazo = "Por favor, intente nuevamente";
+          error = "Por favor, intente nuevamente";
+        }
+        const datos = {
+          estatus,
+          error,
+          errorEstandarizado,
+          numeroTransaccion,
+          errorEstandarizadoCodigo,
+          resultados,
+        };
+        resolve({
+          resultado: datos,
+          datosFinales: datos,
+          ...datosTasy,
+          data: dataHttp,
+          envio: data.envio,
+          params: data.params,
+          url: data.url,
+          headers: data.headers,
+        });
+      });
+    });
+  }
   getElegibilidadIapos(arrayValues): any {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
@@ -72,8 +191,8 @@ export class AmrHttpService {
               estatus = 1;
             } else {
               if (
-                data.data.respuestaElegibilidadAfiliado?.estadoGeneral.mensaje ===
-                "timeout"
+                data.data.respuestaElegibilidadAfiliado?.estadoGeneral
+                  .mensaje === "timeout"
               ) {
                 const err = await this.erroresService.findOne({
                   valueStandard: 3,
@@ -106,21 +225,21 @@ export class AmrHttpService {
           let estatus = 0;
           let datosFinales: DatosElegibilidad = new DatosElegibilidad();
           let datosTasy: any = {
-            EstadoIntegrante : 'I',
-          }
+            EstadoIntegrante: "I",
+          };
           try {
             if (
               data?.data.respuestaElegibilidadAfiliado?.estadoGeneral
                 .tiposRespuestaValidacion !== "ERROR"
             ) {
               estatus = 1;
-              datosTasy.EstadoIntegrante = 'A';
+              datosTasy.EstadoIntegrante = "A";
             } else {
               if (
-                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral.mensaje ===
-                "timeout"
+                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral
+                  .mensaje === "timeout"
               ) {
-                datosTasy.EstadoIntegrante = 'E';
+                datosTasy.EstadoIntegrante = "E";
                 const err = await this.erroresService.findOne({
                   valueStandard: 3,
                 });
@@ -130,7 +249,7 @@ export class AmrHttpService {
             }
           } catch (error) {
             console.log(error);
-            datosTasy.EstadoIntegrante = 'E';
+            datosTasy.EstadoIntegrante = "E";
           }
           resolve({
             ...datosTasy,
@@ -162,8 +281,8 @@ export class AmrHttpService {
               estatus = 1;
             } else {
               if (
-                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral.mensaje ===
-                "timeout"
+                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral
+                  .mensaje === "timeout"
               ) {
                 const err = await this.erroresService.findOne({
                   valueStandard: 3,
@@ -204,8 +323,8 @@ export class AmrHttpService {
               estatus = 1;
             } else {
               if (
-                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral.mensaje ===
-                "timeout"
+                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral
+                  .mensaje === "timeout"
               ) {
                 const err = await this.erroresService.findOne({
                   valueStandard: 3,
@@ -246,8 +365,8 @@ export class AmrHttpService {
               estatus = 1;
             } else {
               if (
-                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral.mensaje ===
-                "timeout"
+                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral
+                  .mensaje === "timeout"
               ) {
                 const err = await this.erroresService.findOne({
                   valueStandard: 3,
@@ -287,8 +406,8 @@ export class AmrHttpService {
               estatus = 1;
             } else {
               if (
-                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral.mensaje ===
-                "timeout"
+                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral
+                  .mensaje === "timeout"
               ) {
                 const err = await this.erroresService.findOne({
                   valueStandard: 3,
@@ -331,8 +450,8 @@ export class AmrHttpService {
               estatus = 1;
             } else {
               if (
-                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral.mensaje ===
-                "timeout"
+                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral
+                  .mensaje === "timeout"
               ) {
                 const err = await this.erroresService.findOne({
                   valueStandard: 3,
@@ -372,8 +491,8 @@ export class AmrHttpService {
               estatus = 1;
             } else {
               if (
-                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral.mensaje ===
-                "timeout"
+                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral
+                  .mensaje === "timeout"
               ) {
                 const err = await this.erroresService.findOne({
                   valueStandard: 3,
@@ -413,8 +532,8 @@ export class AmrHttpService {
               estatus = 1;
             } else {
               if (
-                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral.mensaje ===
-                "timeout"
+                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral
+                  .mensaje === "timeout"
               ) {
                 const err = await this.erroresService.findOne({
                   valueStandard: 3,
@@ -455,8 +574,8 @@ export class AmrHttpService {
               estatus = 1;
             } else {
               if (
-                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral.mensaje ===
-                "timeout"
+                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral
+                  .mensaje === "timeout"
               ) {
                 const err = await this.erroresService.findOne({
                   valueStandard: 3,
@@ -496,8 +615,8 @@ export class AmrHttpService {
               estatus = 1;
             } else {
               if (
-                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral.mensaje ===
-                "timeout"
+                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral
+                  .mensaje === "timeout"
               ) {
                 const err = await this.erroresService.findOne({
                   valueStandard: 3,
@@ -537,8 +656,8 @@ export class AmrHttpService {
               estatus = 1;
             } else {
               if (
-                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral.mensaje ===
-                "timeout"
+                data?.data.respuestaElegibilidadAfiliado?.estadoGeneral
+                  .mensaje === "timeout"
               ) {
                 const err = await this.erroresService.findOne({
                   valueStandard: 3,

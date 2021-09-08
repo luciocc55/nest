@@ -12,6 +12,7 @@ import { RolesGuard } from "src/guards/role/role.guard";
 import { LoggingInterceptor } from "src/interceptors/logger/logger.interceptor";
 import { AcindarHttpService } from "src/services/acindar-http/acindar-http.service";
 import { ActiviaHttpService } from "src/services/activia-http/activia-http.service";
+import { AmrHttpService } from "src/services/amr-http/amr-http.service";
 import { AtributosEstaticosService } from "src/services/atributos-estaticos/atributos-estaticos.service";
 import { AtributosUserService } from "src/services/atributos-user/atributos-user.service";
 import { AuthService } from "src/services/auth/auth.service";
@@ -32,14 +33,16 @@ export class AutorizacionController {
     private usuariosService: UsersService,
     private atributosUserService: AtributosUserService,
     private activiaService: ActiviaHttpService,
-    private acindarService: AcindarHttpService
+    private acindarService: AcindarHttpService,
+    private amrService: AmrHttpService,
   ) {}
 
   @ApiTags(
     "Permite autorizar practicas contra los servicios habilitados",
     "Swiss Medical:Cuit Swiss Medical:Cuit de Prescriptor Swiss/true/true:Codigo de seguridad Swiss/true/true: Nro de afiliado Swiss/true:Codigo de Auditoria Swiss/true/true:Tipo de matricula Swiss/true/true:Profesion Swiss/true/true:Provincia Swiss/true/true:CUIT Efector/true/true",
     "OS Patrones de Cabotaje (Activia):Cuit Prestador OSPTC:Licencia Prestador:Nro de afiliado OSPTC/true",
-    "Mutual Acindar:Token Acindar:Nro de afiliado Acindar/true"
+    "Mutual Acindar:Token Acindar:Nro de afiliado Acindar/true",
+    "AMR Salud:Matricula de Efector:Codigo de Profesion:Codigo afiliado AMR/true:Token AMR/true/true",
   )
   // , separa los origenes permitidos en el service
   // : separa los atributos necesarios para ese origen
@@ -103,6 +106,12 @@ export class AutorizacionController {
           data.origen
         );
         break;
+        case "AMR Salud":
+          autorizacion = await this.amrService.getAutorizacionAmrSalud(
+            arrayValues,
+            data.origen
+          );
+          break;
     }
 
     const autorizacionResp = { ...autorizacion, IdTransaccion };
