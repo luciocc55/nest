@@ -130,7 +130,7 @@ export class AcindarHttpService {
             numeroTransaccion = dataHttp.NumeroOrden;
           } else {
             const err = await this.erroresService.findOne({
-              "values.value": dataHttp.Mensaje.toString(),
+              "values.value": dataHttp?.Mensaje?.toString(),
               "values.origen": origen,
             });
             datosTasy.Error = 0;

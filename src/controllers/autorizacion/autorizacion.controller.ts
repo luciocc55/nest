@@ -90,16 +90,19 @@ export class AutorizacionController {
           arrayValues,
           data.origen
         );
+        break;
       case "OS Patrones de Cabotaje (Activia)":
         autorizacion = await this.activiaService.getAutorizacionOSPDC(
           arrayValues,
           data.origen
         );
+        break;
       case "Mutual Acindar":
         autorizacion = await this.acindarService.getAutorizacion(
           arrayValues,
           data.origen
         );
+        break;
     }
 
     const autorizacionResp = { ...autorizacion, IdTransaccion };
