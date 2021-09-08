@@ -229,7 +229,6 @@ export class ActiviaHttpService {
     return new Promise(async (resolve) => {
       (await this.cancelarTransaccion(arrayValues, "PATCAB")).subscribe(
         async (datos) => {
-          console.log(datos?.data);
           const data = xmlParser.toJson(
             datos?.data["soap:Envelope"]["soap:Body"][
               "ExecuteFileTransactionSLResponse"
@@ -285,50 +284,7 @@ export class ActiviaHttpService {
     const fecha = date.format("YYYYMMDD");
     const hora = date.format("HHmmss");
     const xml =
-      `<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tem="http://tempuri.org/">
-    <soap:Header/>
-    <soap:Body>
-       <tem:ExecuteFileTransactionSL>
-          <!--Optional:-->
-          <tem:pos></tem:pos>
-          <!--Optional:-->
-          <tem:fileContent><![CDATA[<?xml version="1.0" encoding="utf-8"?><Mensaje><EncabezadoMensaje>
-          <VersionMsj>ACT20</VersionMsj>
-          <NroReferenciaCancel>` +
-      arrayValues[0] +
-      `</NroReferenciaCancel>
-          <TipoMsj>OL</TipoMsj>
-          <TipoTransaccion>04A</TipoTransaccion>
-          <IdMsj/>
-          <InicioTrx>
-          <FechaTrx>` +
-      fecha +
-      `</FechaTrx>
-          <HoraTrx>` +
-      hora +
-      `</HoraTrx>
-          </InicioTrx>
-          <Terminal>
-            <TipoTerminal>PC</TipoTerminal>
-            <NumeroTerminal>` +
-      os +
-      `</NumeroTerminal>
-          </Terminal>
-          <Validador/>
-          <Financiador>
-            <CodigoFinanciador>` +
-      arrayValues[2] +
-      `</CodigoFinanciador>
-          </Financiador>
-          <Prestador>
-            <CuitPrestador>` +
-      arrayValues[1] +
-      `</CuitPrestador>
-          </Prestador>
-        </EncabezadoMensaje>
-      </Mensaje>]]></tem:fileContent></tem:ExecuteFileTransactionSL>
-      </soap:Body>
-      </soap:Envelope>`;
+      `<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tem="http://tempuri.org/"><soap:Header/><soap:Body><tem:ExecuteFileTransactionSL><!--Optional:--><tem:pos></tem:pos><!--Optional:--><tem:fileContent><![CDATA[<?xml version="1.0" encoding="utf-8"?><Mensaje><EncabezadoMensaje><VersionMsj>ACT20</VersionMsj><NroReferenciaCancel>` +arrayValues[0] +`</NroReferenciaCancel><TipoMsj>OL</TipoMsj><TipoTransaccion>04A</TipoTransaccion><IdMsj/><InicioTrx><FechaTrx>` +fecha +`</FechaTrx><HoraTrx>` +hora +`</HoraTrx></InicioTrx><Terminal><TipoTerminal>PC</TipoTerminal><NumeroTerminal>` +os +`</NumeroTerminal></Terminal><Validador/><Financiador><CodigoFinanciador>` +arrayValues[2] +`</CodigoFinanciador></Financiador><Prestador><CuitPrestador>` +arrayValues[1] +`</CuitPrestador></Prestador></EncabezadoMensaje></Mensaje>]]></tem:fileContent></tem:ExecuteFileTransactionSL></soap:Body></soap:Envelope>`;
     return xml;
   }
   xmlElegibilidad(arrayValues, os) {
