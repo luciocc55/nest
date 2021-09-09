@@ -17,10 +17,10 @@ export class AmrHttpService {
   ) {
     if (process.env.Production === "true") {
       this.url =
-        "https://www.amr.org.ar/gestion/webServices/autorizador/v/ambulatorio/";
+        "https://www.amr.org.ar/gestion/webServices/autorizador/v10/ambulatorio/";
     } else {
       this.url =
-        "https://www.amr.org.ar/gestion/webServices/autorizador/v10/test/ambulatorio/";
+        "https://www.amr.org.ar/gestion/webServices/autorizador/test/ambulatorio/";
     }
   }
   async autorizar(
@@ -65,6 +65,7 @@ export class AmrHttpService {
           envio: body,
         })),
         catchError((e) => {
+          console.log(e)
           return of({
             data: e,
             envio: body,
@@ -115,7 +116,9 @@ export class AmrHttpService {
         })
       );
   }
+
   getAutorizacionAmrSalud(arrayValues, origen): any {
+    console.log(arrayValues)
     return new Promise(async (resolve) => {
       (await this.autorizar(arrayValues, 2)).subscribe(async (data) => {
         let estatus;
