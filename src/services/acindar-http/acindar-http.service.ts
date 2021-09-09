@@ -127,6 +127,16 @@ export class AcindarHttpService {
             datosTasy.Estado = true;
             datosTasy.NroAtención = dataHttp.NumeroOrden;
             numeroTransaccion = dataHttp.NumeroOrden;
+            resultados = arrayValues[0].map((item) => ({
+              CodigoPractica: item.codigoPrestacion,
+              Cantidad: item.cantidad,
+              transaccion:  dataHttp.NumeroOrden,
+              cantidad: item.cantidad,
+              copago: dataHttp.ValorOrden,
+              Copago: dataHttp.ValorOrden,
+              Estado: estatus === 1? 'A': 'R',
+              estado: estatus,
+            }));
           } else {
             const err = await this.erroresService.findOne({
               "values.value": dataHttp?.Mensaje?.toString(),
