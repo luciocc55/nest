@@ -32,22 +32,21 @@ export class AcindarHttpService {
       CodigoPractica: item.codigoPrestacion,
       Cantidad: item.cantidad,
     }));
-    const params = {
+    const body = {
       NumeroSocio: arrayValues[4],
       Practicas: prestaciones,
     };
     return this.httpService
-      .get(url, {
+      .post(url, body, {
         headers,
-        params: params,
       })
       .pipe(
-        map((res) => ({ data: res.data, params, url, headers, envio: {} })),
+        map((res) => ({ data: res.data, params: {}, url, headers, envio: body })),
         catchError((e) => {
           return of({
             data: e,
-            envio: {},
-            params,
+            envio: body,
+            params: {},
             headers: headers,
             url: url,
           });
