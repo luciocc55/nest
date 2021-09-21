@@ -32,7 +32,6 @@ export class AmrHttpService {
     const prestaciones = arrayValues[0].map((item) => ({
       codigoPrestacion: item.codigoPrestacion,
       cantidad: item.cantidad,
-      bono: "321",
       solicitudAdicional: null,
     }));
     const body: any = {
