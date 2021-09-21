@@ -86,6 +86,7 @@ export class AutorizacionController {
         atributosEntradas
       ))
     );
+    arrayValues.push(data.diagnostico);
     let autorizacion;
     switch (validate.description) {
       case "Swiss Medical":
