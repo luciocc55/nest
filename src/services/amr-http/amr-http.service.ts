@@ -117,7 +117,7 @@ export class AmrHttpService {
 
   getAutorizacionAmrSalud(arrayValues, origen): any {
     return new Promise(async (resolve) => {
-      (await this.autorizar(arrayValues, 1)).subscribe(async (data) => {
+      (await this.autorizar(arrayValues, 2)).subscribe(async (data) => {
         let estatus;
         let resultados = [];
         let error;
