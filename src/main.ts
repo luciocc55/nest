@@ -1,43 +1,59 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import environment from 'src/env';
-import { ValidationPipe } from '@nestjs/common';
-import * as helmet from 'helmet';
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+import environment from "src/env";
+import { ValidationPipe } from "@nestjs/common";
+import * as helmet from "helmet";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('autorizador');
+  app.setGlobalPrefix("autorizador");
   app.enableCors();
   app.use(helmet());
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   const options = new DocumentBuilder()
-  .setTitle('Autorizador')
-  .setDescription('Autorizador')
-  .setVersion('1.0')
-  .addTag('Autorizador')
-  .build();
+    .setTitle("Autorizador")
+    .setDescription("Autorizador")
+    .setVersion("1.0")
+    .addTag("Autorizador")
+    .build();
   const document = SwaggerModule.createDocument(app, options);
   const routes = document.paths;
   const keys = Object.keys(routes);
   const permissions = [];
   const orignesPermissions = [];
-  keys.forEach(element => {
+  keys.forEach((element) => {
     const keysElement = Object.keys(routes[element]);
-    keysElement.forEach(element2 => {
-      const description = routes[element][element2]['tags'].toString().split(',');
-      if (description.length > 1) {
-        description.slice(1).forEach(atributosElement => {
-          const atributos = atributosElement.split(':');
+    keysElement.forEach((element2) => {
+      const description = routes[element][element2]["tags"]
+        ?.toString()
+        .split(",");
+      if (description?.length > 1) {
+        description.slice(1).forEach((atributosElement) => {
+          const atributos = atributosElement.split(":");
           const atributosParsed = [];
-          atributos.slice(1).forEach(atr => {
-            const tipo = atr.split('/');
-            atributosParsed.push({atributo: tipo[0], isEntry: tipo[1] ? tipo[1] : false, isOptional: tipo[2] ? tipo[2] : false});
+          atributos.slice(1).forEach((atr) => {
+            const tipo = atr.split("/");
+            atributosParsed.push({
+              atributo: tipo[0],
+              isEntry: tipo[1] ? tipo[1] : false,
+              isOptional: tipo[2] ? tipo[2] : false,
+            });
           });
-          orignesPermissions.push({path: element + ':' + element2, origen: atributos[0] , atributos: atributosParsed });
+          orignesPermissions.push({
+            path: element + ":" + element2,
+            origen: atributos[0],
+            atributos: atributosParsed,
+          });
         });
+      } else {
+        if (description) {
+          permissions.push({
+            path: element + ":" + element2,
+            description: description[0],
+          });
+        }
       }
-      permissions.push({path: element + ':' + element2, description: description[0]});
     });
   });
   environment.orignesPermissions = orignesPermissions;

@@ -43,5 +43,5 @@ export class Autorizar {
   @IsISO8601()
   fechaPrestacion: string;
   @IsArray()
-  atributosAdicionales: [];
+  atributosAdicionales: any[];
 }

@@ -38,8 +38,8 @@ export class AmrHttpService {
     const body: any = {
       efector: { codigoProfesion: arrayValues[4], matricula: arrayValues[3], libro: " ", folio: " " },
       prescriptor: {
-        codigoProfesion: arrayValues[2],
-        matricula: arrayValues[0],
+        codigoProfesion: arrayValues[4],
+        matricula: arrayValues[3],
         libro: " ",
         folio: " ",
       },
@@ -49,11 +49,11 @@ export class AmrHttpService {
       codigoConvenio: codigoConvenio,
       codigoDelegacion: 1,
       codigoMedioDePago: 0,
-      diagnostico: "",
+      diagnostico: arrayValues[7],
       prestacionSolicitadas: prestaciones,
     };
     return this.httpService
-      .post(url, body, {
+      .put(url, body, {
         headers: this.headers,
       })
       .pipe(
@@ -65,7 +65,6 @@ export class AmrHttpService {
           envio: body,
         })),
         catchError((e) => {
-          console.log(e)
           return of({
             data: e,
             envio: body,
@@ -118,7 +117,6 @@ export class AmrHttpService {
   }
 
   getAutorizacionAmrSalud(arrayValues, origen): any {
-    console.log(arrayValues)
     return new Promise(async (resolve) => {
       (await this.autorizar(arrayValues, 2)).subscribe(async (data) => {
         let estatus;
@@ -132,18 +130,30 @@ export class AmrHttpService {
           Estado: false,
         };
         if (dataHttp) {
-          if (dataHttp.Estado === 0) {
+          if (dataHttp.respuestaAutorizarLista?.respuestaBase.tiposRespuestaValidacion !== "ERROR") {
             estatus = 1;
             datosTasy.Estado = true;
-            datosTasy.NroAtención = dataHttp.NumeroOrden;
-            numeroTransaccion = dataHttp.NumeroOrden;
+            datosTasy.NroAtención = dataHttp.respuestaComunicacion?.idTransaccion;
+            numeroTransaccion = dataHttp.respuestaComunicacion?.idTransaccion;
+            resultados = arrayValues[0].map((item) => ({
+              prestación: item.codigoPrestacion,
+              CodigoPrestacion: item.codigoPrestacion,
+              Cantidad: item.cantidad,
+              mensaje: dataHttp.respuestaAutorizarLista?.respuestaBase?.mensaje,
+              transaccion: dataHttp.respuestaComunicacion?.idTransaccion,
+              cantidad: item.cantidad,
+              copago: dataHttp.ValorOrden,
+              Copago: dataHttp.ValorOrden,
+              Estado: estatus === 1? 'A': 'R',
+              estado: estatus,
+            }));
           } else {
             const err = await this.erroresService.findOne({
-              "values.value": dataHttp?.Mensaje?.toString(),
+              "values.value": dataHttp.respuestaAutorizarLista?.respuestaBase?.mensaje.toString(),
               "values.origen": origen,
             });
             datosTasy.Error = 0;
-            datosTasy.MotivoRechazo = dataHttp.Mensaje;
+            datosTasy.MotivoRechazo = dataHttp.respuestaAutorizarLista?.respuestaBase?.mensaje;
             if (err) {
               errorEstandarizado = err.description;
               errorEstandarizadoCodigo = err.valueStandard;
@@ -151,7 +161,7 @@ export class AmrHttpService {
               datosTasy.MotivoRechazo = err.description;
             }
             estatus = 0;
-            error = dataHttp.Mensaje;
+            error = dataHttp.respuestaAutorizarLista?.respuestaBase?.mensaje;
           }
         } else {
           estatus = 0;
