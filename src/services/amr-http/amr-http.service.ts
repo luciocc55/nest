@@ -230,7 +230,7 @@ export class AmrHttpService {
     });
   }
   getElegibilidadAmrSalud(arrayValues): any {
-    const afiliado = arrayValues[2];
+    const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, afiliado, 2)).subscribe(
         async (data) => {

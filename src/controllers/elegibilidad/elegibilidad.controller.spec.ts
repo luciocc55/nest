@@ -151,7 +151,6 @@ describe("ElegibilidadController", () => {
         "",
         IdTransaccion
       );
-      console.log(response)
       expect(response.ElegibilidadRespuesta.IdTransaccion).toEqual(
         IdTransaccion
       );
