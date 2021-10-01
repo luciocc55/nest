@@ -134,7 +134,8 @@ export class AutorizacionController {
     "Permite cancelar autorizaciones de practicas contra los servicios habilitados",
     "Swiss Medical:Cuit Swiss Medical: Nro de afiliado Swiss/true",
     "OS Patrones de Cabotaje (Activia):Cuit Prestador OSPTC:Licencia Prestador",
-    "Mutual Acindar:Token Acindar"
+    "Mutual Acindar:Token Acindar",
+    "AMR Salud",
   )
   // , separa los origenes permitidos en el service
   // : separa los atributos necesarios para ese origen
