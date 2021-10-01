@@ -10,6 +10,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { Token } from "src/decorators/token.decorator";
 import { RolesGuard } from "src/guards/role/role.guard";
 import { LoggingInterceptor } from "src/interceptors/logger/logger.interceptor";
+import { AcaHttpService } from "src/services/aca-http/aca-http.service";
 import { AcindarHttpService } from "src/services/acindar-http/acindar-http.service";
 import { ActiviaHttpService } from "src/services/activia-http/activia-http.service";
 import { AmrHttpService } from "src/services/amr-http/amr-http.service";
@@ -35,6 +36,7 @@ export class AutorizacionController {
     private activiaService: ActiviaHttpService,
     private acindarService: AcindarHttpService,
     private amrService: AmrHttpService,
+    private acaSalud: AcaHttpService
   ) {}
 
   @ApiTags(
@@ -43,6 +45,7 @@ export class AutorizacionController {
     "OS Patrones de Cabotaje (Activia):Cuit Prestador OSPTC:Licencia Prestador:Nro de afiliado OSPTC/true",
     "Mutual Acindar:Token Acindar:Nro de afiliado Acindar/true",
     "AMR Salud:Matricula de Efector:Codigo de Profesion:Codigo afiliado AMR/true:Token AMR/true/true",
+    "Aca Salud:Codigo de Prestador ACA Salud:Codigo afiliado ACA/true:Token ACA/true/true"
   )
   // , separa los origenes permitidos en el service
   // : separa los atributos necesarios para ese origen
@@ -107,12 +110,18 @@ export class AutorizacionController {
           data.origen
         );
         break;
-        case "AMR Salud":
-          autorizacion = await this.amrService.getAutorizacionAmrSalud(
-            arrayValues,
-            data.origen
-          );
-          break;
+      case "AMR Salud":
+        autorizacion = await this.amrService.getAutorizacionAmrSalud(
+          arrayValues,
+          data.origen
+        );
+        break;
+      case "Aca Salud":
+        autorizacion = await this.acaSalud.getAutorizacion(
+          arrayValues,
+          data.origen
+        );
+        break;
     }
 
     const autorizacionResp = { ...autorizacion, IdTransaccion };
@@ -184,14 +193,14 @@ export class AutorizacionController {
 
       case "Mutual Acindar":
         cancelacion = await this.acindarService.getCancelarAutorizacion(
-          arrayValues,
+          arrayValues
         );
         break;
-        case "AMR Salud":
-          cancelacion = await this.amrService.getCancelarAutorizacion(
-            arrayValues
-          );
-          break;
+      case "AMR Salud":
+        cancelacion = await this.amrService.getCancelarAutorizacion(
+          arrayValues
+        );
+        break;
     }
 
     const cancelacionResp = { ...cancelacion, IdTransaccion };
