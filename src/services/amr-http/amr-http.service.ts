@@ -74,6 +74,36 @@ export class AmrHttpService {
         })
       );
   }
+  async cancelarAutorizacion(arrayValues): Promise<Observable<RespuestaHttp>> {
+    const url = this.url + "anular/realizada";
+    const params = {
+      codigoAutorizacion: arrayValues[0],
+      motivoAnulacion: ' '
+    };
+    return this.httpService
+      .delete(this.url, {
+        headers: this.headers,
+        params: params,
+      })
+      .pipe(
+        map((res) => ({
+          url: url,
+          envio: {},
+          params: params,
+          headers: this.headers,
+          data: res.data,
+        })),
+        catchError((e) => {
+          return of({
+            data: e,
+            envio: {},
+            params: params,
+            headers: this.headers,
+            url: url,
+          });
+        })
+      );
+  }
   async elegibilidad(
     arrayValues,
     afiliado,
@@ -114,7 +144,43 @@ export class AmrHttpService {
         })
       );
   }
-
+  getCancelarAutorizacion(arrayValues): any {
+    return new Promise(async (resolve) => {
+      (await this.cancelarAutorizacion(arrayValues)).subscribe(async (data) => {
+        let estatus;
+        let error;
+        let numeroTransaccion = null;
+        let errorEstandarizado = null;
+        let errorEstandarizadoCodigo = null;
+        let dataHttp = data.data;
+        let datosTasy: any = {
+          Estado: false,
+        }
+        if (data['tiposRespuestaValidacion'] !== 'ERROR') {
+          estatus = 1;
+        } else {
+          estatus = 0;
+          datosTasy.MotivoRechazo = "Por favor, intente nuevamente";
+          error = "Por favor, intente nuevamente";
+        }
+        resolve({
+          data: dataHttp,
+          envio: data.envio,
+          params: data.params,
+          url: data.url,
+          headers: data.headers,
+          ...datosTasy,
+          resultado: {
+            estatus,
+            errorEstandarizado,
+            numeroTransaccion,
+            errorEstandarizadoCodigo,
+            error,
+          },
+        });
+      });
+    });
+  }
   getAutorizacionAmrSalud(arrayValues, origen): any {
     return new Promise(async (resolve) => {
       (await this.autorizar(arrayValues, 2)).subscribe(async (data) => {
@@ -188,6 +254,7 @@ export class AmrHttpService {
       });
     });
   }
+
   getElegibilidadIapos(arrayValues): any {
     const afiliado = arrayValues[3];
     return new Promise(async (resolve) => {

@@ -184,9 +184,14 @@ export class AutorizacionController {
 
       case "Mutual Acindar":
         cancelacion = await this.acindarService.getCancelarAutorizacion(
-          arrayValues
+          arrayValues,
         );
         break;
+        case "AMR Salud":
+          cancelacion = await this.amrService.getCancelarAutorizacion(
+            arrayValues
+          );
+          break;
     }
 
     const cancelacionResp = { ...cancelacion, IdTransaccion };
