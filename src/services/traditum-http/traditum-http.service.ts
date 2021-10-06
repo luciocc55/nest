@@ -133,6 +133,69 @@ export class TraditumHttpService {
       });
     });
   }
+  hl7Autorizacion(
+    arrayValues: any[],
+    emisor,
+    sitioEmisor,
+    idSitioReceptor,
+    sitioReceptor,
+    version,
+    autoridad,
+    identificacion,
+    tipoPaciente
+  ) {
+    const date = moment(new Date()).format("yyyymmddhhmmss");
+    const number = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+    const prestaciones = arrayValues[0].map((item) => {
+      return (
+        `
+        PR1|`+item.cantidad +`||`+item.codigoPrestacion +`
+        AUT||||||||1
+        ZAU||||||0{$
+      `
+      );
+    });
+    const text =
+      `MSH|^~\&|` +
+      emisor +
+      `|` +
+      sitioEmisor +
+      `|` +
+      idSitioReceptor +
+      `|` +
+      sitioReceptor +
+      `|` +
+      date +
+      `||ZQI^Z01^ZQI_Z01|` +
+      date +
+      number.toString() +
+      `|P|` +
+      version +
+      `|||NE|AL|ARG
+        PRD|PS^` +
+      arrayValues[6] +
+      `||^^^` +
+      arrayValues[3] +
+      `||||` +
+      arrayValues[4] +
+      `^` +
+      arrayValues[5] +
+      `
+        PID|||` +
+      arrayValues[7] +
+      `^^^` +
+      autoridad +
+      `^` +
+      identificacion +
+      `~` +
+      arrayValues[7] +
+      `||UNKNOWN^UNKNOWN`+ prestaciones +`
+        PV1||` +
+      tipoPaciente +
+      `||P|||||||||||||||||||||||||||||||||||||||||||||||V`;
+    return text;
+  }
+
   hl7Elegibilidad(
     arrayValues: any[],
     emisor,
@@ -186,8 +249,7 @@ export class TraditumHttpService {
       `||P|||||||||||||||||||||||||||||||||||||||||||||||V`;
     return text;
   }
-
-  returnXmlGaleno() {
+  returnXmlGaleno(arrayValues: any[]) {
     const emisor = "TRIA0100M";
     const sitioEmisor = "TRIA00000001";
     const idSitioReceptor = "SERV";
@@ -196,6 +258,18 @@ export class TraditumHttpService {
     const autoridad = "GALENO";
     const identificacion = "HC";
     const tipoPaciente = "O";
+    const hl7 = this.hl7Elegibilidad(
+      arrayValues,
+      emisor,
+      sitioEmisor,
+      idSitioReceptor,
+      sitioReceptor,
+      version,
+      autoridad,
+      identificacion,
+      tipoPaciente
+    );
+    return this.getElegibilidad(hl7);
   }
   returnXmlMedife(arrayValues: any[]) {
     const emisor = "TRIA0100M";

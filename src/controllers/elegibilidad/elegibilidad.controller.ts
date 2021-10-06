@@ -74,6 +74,7 @@ export class ElegibilidadController {
     "Demi Salud (Red-I)",
     "Proapro (Red-I)",
     "Medife (Traditum):Codigo de Provincia:Numero de Prestador:Tipo de identificador:Descripción de prestador",
+    "Galeno (Traditum):Codigo de Provincia:Numero de Prestador:Tipo de identificador:Descripción de prestador",
     "OS Patrones de Cabotaje (Activia):Cuit Prestador OSPTC:Licencia Prestador",
     "Mutual Acindar:Token Acindar"
   )
@@ -205,6 +206,9 @@ export class ElegibilidadController {
       case "Medife (Traditum)":
         elegibilidad = await this.traditumService.returnXmlMedife(arrayValues);
         break;
+        case "Galeno (Traditum)":
+          elegibilidad = await this.traditumService.returnXmlGaleno(arrayValues);
+          break;
       case "OS Patrones de Cabotaje (Activia)":
         elegibilidad = await this.activiaService.getElegibilidadOSPDC(
           arrayValues
