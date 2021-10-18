@@ -117,7 +117,7 @@ export class AutorizacionController {
           data.origen
         );
         break;
-      case "Aca Salud":
+      case "ACA Salud":
         autorizacion = await this.acaSalud.getAutorizacion(
           arrayValues,
           data.origen
@@ -198,6 +198,9 @@ export class AutorizacionController {
         cancelacion = await this.acindarService.getCancelarAutorizacion(
           arrayValues
         );
+        break;
+      case "ACA Salud":
+        cancelacion = await this.acaSalud.getCancelarAutorizacion(arrayValues);
         break;
       case "AMR Salud":
         cancelacion = await this.amrService.getCancelarAutorizacion(
