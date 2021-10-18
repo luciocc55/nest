@@ -137,6 +137,7 @@ export class AutorizacionController {
     "OS Patrones de Cabotaje (Activia):Cuit Prestador OSPTC:Licencia Prestador",
     "Mutual Acindar:Token Acindar",
     "AMR Salud",
+    "ACA Salud:Codigo de Prestador ACA Salud"
   )
   // , separa los origenes permitidos en el service
   // : separa los atributos necesarios para ese origen
