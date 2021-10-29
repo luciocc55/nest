@@ -223,11 +223,11 @@ export class AcaHttpService {
               }));
             } else {
               const err = await this.erroresService.findOne({
-                "values.value": dataHttp?.Mensaje?.toString(),
+                "values.value": datosParseados?.datosParseados?.toString(),
                 "values.origen": origen,
               });
               datosTasy.Error = 0;
-              datosTasy.MotivoRechazo = dataHttp.Mensaje;
+              datosTasy.MotivoRechazo = datosParseados.datosParseados;
               if (err) {
                 errorEstandarizado = err.description;
                 errorEstandarizadoCodigo = err.valueStandard;
@@ -235,7 +235,7 @@ export class AcaHttpService {
                 datosTasy.MotivoRechazo = err.description;
               }
               estatus = 0;
-              error = dataHttp.Mensaje;
+              error = datosParseados.datosParseados;
             }
           } else {
             estatus = 0;
