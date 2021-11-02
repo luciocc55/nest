@@ -15,7 +15,7 @@ export class AcaHttpService {
       this.url = "https://cauat.acasalud.com.ar:443/cawsProd/Servicios";
     } else {
       this.url =
-        "https://cauat.acasalud.com.ar:443/SSCaws/Servicios";
+        "https://cauat.acasalud.com.ar:443/cawsTest/Servicios";
     }
   }
   async autorizacion(arrayValues): Promise<Observable<RespuestaHttp>> {
