@@ -1,6 +1,7 @@
 import { HttpService, Injectable } from "@nestjs/common";
 import { Observable, of } from "rxjs";
 import { map, catchError } from "rxjs/operators";
+import { DatosElegibilidad } from "src/interfaces/datos-elegibilidad";
 import { RespuestaHttp } from "src/interfaces/respuesta-http";
 import xmlParser = require("xml2json");
 import { ErroresService } from "../errores/errores.service";
@@ -335,6 +336,7 @@ export class AcaHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues)).subscribe((data) => {
         process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = null;
+        let datos: DatosElegibilidad = new DatosElegibilidad();
         let estatus = 0;
         let datosTasy: any = {
           "NroAfiliado" : arrayValues[3], 
@@ -352,6 +354,7 @@ export class AcaHttpService {
             datosTasy.NroAfiliado = datosParseados.RESPUESTA.AFICODIGO;
             datosTasy.NombreApellido = datosParseados.RESPUESTA.AFIAPE + ' ' + datosParseados.RESPUESTA.AFINOM;
             datosTasy.EstadoIntegrante = 'A';
+            datos.voluntario = datosParseados.RESPUESTA.AFIAFIL === 'NO GRAVADO' ? false: true
           }
           resolve({
             data: datosParseados,
@@ -368,6 +371,7 @@ export class AcaHttpService {
         }
         resolve({
           data: data.data,
+          datosFinales: datos,
           ...datosTasy,
           estatus,
           envio: data.envio,

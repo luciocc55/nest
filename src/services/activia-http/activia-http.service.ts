@@ -5,6 +5,7 @@ import xmlParser = require("xml2json");
 import moment = require("moment");
 import { ErroresService } from "../errores/errores.service";
 import { RespuestaHttp } from "src/interfaces/respuesta-http";
+import { DatosElegibilidad } from "src/interfaces/datos-elegibilidad";
 @Injectable()
 export class ActiviaHttpService {
   url;
@@ -79,6 +80,7 @@ export class ActiviaHttpService {
           ]["ExecuteFileTransactionSLResult"],
           { object: true }
         );
+        let datos: DatosElegibilidad = new DatosElegibilidad();
         let datosTasy: any = {
           NroAfiliado: arrayValues[3],
           MotivoRechazo: "",
@@ -94,6 +96,7 @@ export class ActiviaHttpService {
             datosTasy.EstadoIntegrante = "A";
             datosTasy.NombreApellido =
               datosParseados.Mensaje?.EncabezadoAtencion?.Beneficiario?.NombreBeneficiario;
+            datos.voluntario = datosParseados.Mensaje?.EncabezadoAtencion?.Credencial?.CondicionIVA === 'G' ? true: false
           } else {
             estatus = 0;
           }
@@ -102,6 +105,7 @@ export class ActiviaHttpService {
         }
         resolve({
           data: datosParseados,
+          datosFinales: datos,
           ...datosTasy,
           estatus,
           envio: data.envio,
