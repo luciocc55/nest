@@ -8,9 +8,16 @@ import { ErroresService } from "../errores/errores.service";
 import { FunctionsService } from "../functions";
 @Injectable()
 export class AcaHttpService {
-  url = "https://cauat.acasalud.com.ar:443/SSCaws/Servicios";
+  url;
   headers = { "Content-Type": "text/xml" };
-  constructor(private readonly httpService: HttpService, private functionService: FunctionsService, private erroresService: ErroresService) {}
+  constructor(private readonly httpService: HttpService, private functionService: FunctionsService, private erroresService: ErroresService) {
+    if (process.env.Production === "true") {
+      this.url = "https://cauat.acasalud.com.ar:443/cawsProd/Servicios";
+    } else {
+      this.url =
+        "https://cauat.acasalud.com.ar:443/SSCaws/Servicios";
+    }
+  }
   async autorizacion(arrayValues): Promise<Observable<RespuestaHttp>> {
     process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
     const usuario = "5092071";
