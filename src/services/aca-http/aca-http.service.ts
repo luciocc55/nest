@@ -12,10 +12,10 @@ export class AcaHttpService {
   headers = { "Content-Type": "text/xml" };
   constructor(private readonly httpService: HttpService, private functionService: FunctionsService, private erroresService: ErroresService) {
     if (process.env.Production === "true") {
-      this.url = "https://cauat.acasalud.com.ar:443/cawsProd/Servicios";
+      this.url = "https://ca.acasalud.com.ar/SSCawsProd/ServiciosProd?wsdl";
     } else {
       this.url =
-        "https://cauat.acasalud.com.ar:443/cawsTest/Servicios";
+        "https://cauat.acasalud.com.ar/SSCaws/Servicios?WSDL";
     }
   }
   async autorizacion(arrayValues): Promise<Observable<RespuestaHttp>> {
