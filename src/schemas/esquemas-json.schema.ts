@@ -39,7 +39,7 @@ const auto = new mongoose.Schema(
   { timestamps: {} }
 );
 auto.index(
-  { origen: 1, user: 1, servicios: 1, sinonimoOrigen: 1 },
+  { origen: 1, user: 1, servicio: 1, sinonimoOrigen: 1 },
   { unique: true }
 );
 export const Esquemas = auto;
