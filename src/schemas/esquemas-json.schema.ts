@@ -29,7 +29,7 @@ const auto = new mongoose.Schema(
       required: true,
     },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
-    servicio: { type: mongoose.Schema.Types.ObjectId, ref: "Servicios" },
+    servicios: { type: mongoose.Schema.Types.ObjectId, ref: "Servicios" },
     keys: [Keys],
     json: {
       type: String,
