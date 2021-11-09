@@ -1,6 +1,7 @@
 import { Injectable, HttpService } from "@nestjs/common";
 import { Observable, of } from "rxjs";
 import { map, catchError } from "rxjs/operators";
+import { DatosElegibilidad } from "src/interfaces/datos-elegibilidad";
 import { RespuestaHttp } from "src/interfaces/respuesta-http";
 
 @Injectable()
@@ -46,11 +47,33 @@ export class RediHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(arrayValues, os)).subscribe((data) => {
         let estatus;
+        let datos: DatosElegibilidad = new DatosElegibilidad();
         let datosTasy: any = {
           "MotivoRechazo" : "",
           EstadoIntegrante : 'I'
         }
         if (data.data.estado) {
+          const datosService = data.data.resultados;
+          datos = {
+            nroAfiliado: datosService.nro_afiliado,
+            nroDocumento: datosService.nro_identif,
+            estadoAfiliado: datosService.estado,
+            // tslint:disable-next-line: radix
+            edad: null,
+            voluntario: datosService.condicion_iva === "GRAVADO" ? true : false,
+            fechaNac: datosService.f_nacimiento,
+            plan: datosService.plan_nombre,
+            planDescripcion: datosService.plan_nombre,
+            genero: datosService.genero === "M" ? "Masculino" : "Femenino",
+            codigoPostal: datosService.cod_postal,
+            localidad: datosService.localidad,
+            nombreApellido: datosService.nombre,
+            servicio: null,
+            tipoDocumento: datosService.tipo_doc,
+            tipoDocumentoDescripcion: "",
+            recupero: datosService.recupero === 1 ? true : false,
+          };
+          datosTasy.NombreApellido = datosService.nombre;
           estatus = 1;
           datosTasy.EstadoIntegrante = 'A'
         } else {
@@ -59,6 +82,7 @@ export class RediHttpService {
         resolve({
           data: data.data,
           ...datosTasy,
+          datosFinales: datos,
           estatus,
           envio: data.envio,
           params: data.params,
