@@ -342,7 +342,7 @@ export class AcaHttpService {
         let datos: DatosElegibilidad = new DatosElegibilidad();
         let estatus = 0;
         let datosTasy: any = {
-          "NroAfiliado" : arrayValues[3], 
+          "NroAfiliado" : arrayValues[5], 
           "MotivoRechazo" : ""
         }
         try {
@@ -355,7 +355,7 @@ export class AcaHttpService {
           if (!datosParseados.RSPMSGGADIC) {
             estatus = 1;
             datos = {
-              nroAfiliado: arrayValues[3],
+              nroAfiliado: arrayValues[5], 
               nroDocumento: datosParseados.AFIDNI.slice(1),
               estadoAfiliado: datosParseados.STATUS === 'OK' ? true : false,
               // tslint:disable-next-line: radix
@@ -373,7 +373,6 @@ export class AcaHttpService {
               tipoDocumentoDescripcion: "",
               recupero: datosParseados.AFIAFIL === "NO GRAVADO" ? true : false ,
             };
-            datosTasy.NroAfiliado = datosParseados.AFICODIGO;
             datosTasy.NombreApellido = datosParseados.AFIAPE + ' ' + datosParseados.AFINOM;
             datosTasy.EstadoIntegrante = 'A';
             datos.voluntario = datosParseados.AFIAFIL === 'NO GRAVADO' ? false: true
