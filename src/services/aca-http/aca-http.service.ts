@@ -351,9 +351,28 @@ export class AcaHttpService {
               "return"
             ],
             { object: true }
-          );
-          if (!datosParseados.RESPUESTA.RSPMSGGADIC) {
+          )?.RESPUESTA;
+          if (!datosParseados.RSPMSGGADIC) {
             estatus = 1;
+            datos = {
+              nroAfiliado: arrayValues[3],
+              nroDocumento: datosParseados.AFIDNI.slice(1),
+              estadoAfiliado: datosParseados.STATUS === 'OK' ? true : false,
+              // tslint:disable-next-line: radix
+              edad: null,
+              voluntario: datosParseados.AFIAFIL === "NO GRAVADO" ? false : true,
+              fechaNac: datosParseados.AFINAC,
+              plan: datosParseados.AFIPLAN,
+              planDescripcion: datosParseados.AFIPLANADIC,
+              genero: datosParseados.AFISEXO === "M" ? "Masculino" : "Femenino",
+              codigoPostal: null,
+              localidad: "",
+              nombreApellido: datosParseados.AFINOM + ' ' + datosParseados.AFIAPE,
+              servicio: null,
+              tipoDocumento: "",
+              tipoDocumentoDescripcion: "",
+              recupero: datosParseados.AFIAFIL === "NO GRAVADO" ? true : false ,
+            };
             datosTasy.NroAfiliado = datosParseados.RESPUESTA.AFICODIGO;
             datosTasy.NombreApellido = datosParseados.RESPUESTA.AFIAPE + ' ' + datosParseados.RESPUESTA.AFINOM;
             datosTasy.EstadoIntegrante = 'A';
