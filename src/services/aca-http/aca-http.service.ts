@@ -373,10 +373,10 @@ export class AcaHttpService {
               tipoDocumentoDescripcion: "",
               recupero: datosParseados.AFIAFIL === "NO GRAVADO" ? true : false ,
             };
-            datosTasy.NroAfiliado = datosParseados.RESPUESTA.AFICODIGO;
-            datosTasy.NombreApellido = datosParseados.RESPUESTA.AFIAPE + ' ' + datosParseados.RESPUESTA.AFINOM;
+            datosTasy.NroAfiliado = datosParseados.AFICODIGO;
+            datosTasy.NombreApellido = datosParseados.AFIAPE + ' ' + datosParseados.AFINOM;
             datosTasy.EstadoIntegrante = 'A';
-            datos.voluntario = datosParseados.RESPUESTA.AFIAFIL === 'NO GRAVADO' ? false: true
+            datos.voluntario = datosParseados.AFIAFIL === 'NO GRAVADO' ? false: true
           }
           resolve({
             data: datosParseados,
