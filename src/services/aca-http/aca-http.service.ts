@@ -20,8 +20,6 @@ export class AcaHttpService {
   }
   async autorizacion(arrayValues): Promise<Observable<RespuestaHttp>> {
     process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
-    const usuario = "5092071";
-    const password = "DAT_MGR";
     const prestaciones = arrayValues[0].map((item) => {
       return (
         `
@@ -58,10 +56,10 @@ export class AcaHttpService {
             <TIPOAUT>U</TIPOAUT>
             <TIPOCON>PRES</TIPOCON>
             <USRID>` +
-      usuario +
+            arrayValues[4] +
       `</USRID>
             <USRPASS>` +
-      password +
+            arrayValues[5] +
       `</USRPASS>
         </SEGURIDAD>
         <OPER>
@@ -75,7 +73,7 @@ export class AcaHttpService {
         <PID>
             <TIPOID>CODIGO</TIPOID>
             <ID>` +
-      arrayValues[4] + arrayValues[5] +
+      arrayValues[6] + arrayValues[7] +
       `</ID>
             <VERIFID>MANUAL</VERIFID>
         </PID>
@@ -113,8 +111,6 @@ export class AcaHttpService {
   }
   async elegibilidad(arrayValues): Promise<Observable<RespuestaHttp>> {
     process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
-    const usuario = "5092071";
-    const password = "DAT_MGR";
     if (!arrayValues[1]) {
       arrayValues[1] = "?";
     }
@@ -139,10 +135,10 @@ export class AcaHttpService {
             <TIPOAUT>U</TIPOAUT>
             <TIPOCON>PRES</TIPOCON>
             <USRID>` +
-      usuario +
+            arrayValues[1] +
       `</USRID>
             <USRPASS>` +
-      password +
+            arrayValues[2] +
       `</USRPASS>
         </SEGURIDAD>
         <OPER>
@@ -156,7 +152,7 @@ export class AcaHttpService {
         <PID>
             <TIPOID>CODIGO</TIPOID>
             <ID>` +
-      arrayValues[2] +
+      arrayValues[4] +
       `</ID>
             <VERIFID>MANUAL</VERIFID>
         </PID>
