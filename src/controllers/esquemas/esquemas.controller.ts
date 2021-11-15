@@ -205,17 +205,19 @@ export class EsquemasController {
   }
   keysFromArray(key, keyRelacionada, data, definiciones) {
     let body = {};
+    let flattenBody = {};
     const splittedKey = key.split(".");
     const firstXRelacion = keyRelacionada.indexOf("x");
     let primerRelacion = keyRelacionada;
     let ultimaRelacion = keyRelacionada;
     if (firstXRelacion !== -1) {
-      primerRelacion = keyRelacionada.slice(0, [firstXRelacion - 2]);
+      primerRelacion = keyRelacionada.slice(0, [firstXRelacion - 1]);
       ultimaRelacion = keyRelacionada.slice(
         [firstXRelacion + 2],
         keyRelacionada.length
       );
     }
+    body[primerRelacion] = []
     const firstXKey = splittedKey.findIndex((item) => item === "x");
     const flatted = flatten({ ...data[splittedKey[firstXKey - 1]] });
     const keysFlatted = Object.keys(flatted);
@@ -226,13 +228,14 @@ export class EsquemasController {
       .filter((item) => item.slice(2, item.length) === existe)
       .forEach((element) => {
         const existDef = this.returnExistDef(definiciones, flatted[element]);
-        body[primerRelacion] = {
-          ...body[primerRelacion],
-          [firstXRelacion !== -1 ? ultimaRelacion : element]: existDef
-            ? existDef.valorSalida
-            : flatted[element],
-        };
+        const indice = element.slice(0,1);
+
+        body[primerRelacion][indice] = {}
+        body[primerRelacion][indice][ultimaRelacion] =existDef
+        ? existDef.valorSalida
+        : flatted[element]
+        flattenBody = flatten.flatten({ ...body  });
       });
-    return body;
+    return flattenBody;
   }
 }
