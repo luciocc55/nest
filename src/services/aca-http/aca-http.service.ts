@@ -408,8 +408,6 @@ export class AcaHttpService {
 
   async cancelarAutorizacion(arrayValues): Promise<Observable<RespuestaHttp>> {
     process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
-    const usuario = "5092071";
-    const password = "DAT_MGR";
     const date = this.functionService.returnDate(new Date());
     const xml =
     `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://caws/Servicios.wsdl">
@@ -431,10 +429,10 @@ export class AcaHttpService {
             <TIPOAUT>U</TIPOAUT>
             <TIPOCON>PRES</TIPOCON>
             <USRID>` +
-      usuario +
+            arrayValues[2] +
       `</USRID>
             <USRPASS>` +
-      password +
+            arrayValues[3] +
       `</USRPASS>
         </SEGURIDAD>
         <OPER>
