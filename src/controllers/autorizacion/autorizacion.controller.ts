@@ -19,6 +19,7 @@ import { AtributosUserService } from "src/services/atributos-user/atributos-user
 import { AuthService } from "src/services/auth/auth.service";
 import { OrigenesService } from "src/services/origenes/origenes.service";
 import { SwissMedicalHttpService } from "src/services/swiss-medical-http/swiss-medical-http.service";
+import { TraditumHttpService } from "src/services/traditum-http/traditum-http.service";
 import { UsersService } from "src/services/users/users.service";
 import { Autorizar } from "src/validators/autorizacion/autorizaciones.validator";
 import { CancelarAutorizacion } from "src/validators/autorizacion/cancelarAutorizacion.validator";
@@ -36,7 +37,8 @@ export class AutorizacionController {
     private activiaService: ActiviaHttpService,
     private acindarService: AcindarHttpService,
     private amrService: AmrHttpService,
-    private acaSalud: AcaHttpService
+    private acaSalud: AcaHttpService,
+    private traditumService: TraditumHttpService
   ) {}
 
   @ApiTags(
@@ -121,6 +123,11 @@ export class AutorizacionController {
         autorizacion = await this.acaSalud.getAutorizacion(
           arrayValues,
           data.origen
+        );
+        break;
+      case "Galeno (Traditum)":
+        autorizacion = await this.traditumService.returnXmlGalenoAutorizacion(
+          arrayValues
         );
         break;
     }

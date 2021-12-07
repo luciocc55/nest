@@ -6,12 +6,13 @@ import { catchError, map } from "rxjs/operators";
 import { DatosElegibilidad } from "src/interfaces/datos-elegibilidad";
 import { RespuestaHttp } from "src/interfaces/respuesta-http";
 import { ErroresService } from "../errores/errores.service";
-const crypto = require("crypto");
+import { hl7Elegibilidad } from "./hl7-elegibilidad";
+const parser = require('@rimiti/hl7-object-parser')
 @Injectable()
 export class TraditumHttpService {
   url;
-  user = "IA000001";
-  password = "IA000001";
+  user = "IA010163";
+  password = "IA010163";
   constructor(
     private readonly httpService: HttpService,
     private erroresService: ErroresService
@@ -21,22 +22,6 @@ export class TraditumHttpService {
     } else {
       this.url = "https://traditumcanalws-testing.azurewebsites.net/";
     }
-  }
-  md5 = (text) => {
-    return crypto
-      .createHash("md5")
-      .update(text)
-      .digest();
-  };
-  decrypt(text) {
-    const decipher = crypto.createDecipheriv(
-      "des-ede3",
-      "1234567890123456ABCDEFGH",
-      ""
-    );
-    let decrypt = decipher.update(text, "base64", "utf8");
-    decrypt += decipher.final();
-    return decrypt;
   }
   getToken(): any {
     return new Promise(async (resolve) => {
@@ -72,14 +57,39 @@ export class TraditumHttpService {
     };
     return headers;
   }
-
+  async autorizacion(htl7): Promise<Observable<RespuestaHttp>> {
+    const headers = await this.getSessionHeaders();
+    const body = {
+      Msg: htl7,
+      MsgType: "SI",
+    };
+    const url = this.url + "api/EnviarFlat/";
+    return this.httpService.post(url, body, { headers }).pipe(
+      map((res) => ({
+        url: url,
+        envio: body,
+        params: {},
+        headers: headers,
+        data: res.data,
+      })),
+      catchError((e) => {
+        return of({
+          data: e,
+          envio: body,
+          params: {},
+          headers: headers,
+          url: url,
+        });
+      })
+    );
+  }
   async elegibilidad(htl7): Promise<Observable<RespuestaHttp>> {
     const headers = await this.getSessionHeaders();
     const body = {
       Msg: htl7,
       MsgType: "SI",
     };
-    const url = this.url + "api/Enviar/";
+    const url = this.url + "api/EnviarFlat/";
     return this.httpService.post(url, body, { headers }).pipe(
       map((res) => ({
         url: this.url,
@@ -99,6 +109,21 @@ export class TraditumHttpService {
       })
     );
   }
+  getAutorizacion(hl7): any {
+    return new Promise(async (resolve) => {
+      (await this.autorizacion(hl7)).subscribe((data) => {
+        console.log(data.data)
+        resolve({
+          data: data.data,
+          datosFinales: data,
+          envio: data.envio,
+          params: data.params,
+          url: data.url,
+          headers: data.headers,
+        });
+      });
+    });
+  }
   getElegibilidad(hl7): any {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(hl7)).subscribe((data) => {
@@ -108,6 +133,9 @@ export class TraditumHttpService {
           "MotivoRechazo" : "",
           EstadoIntegrante : 'I'
         }
+        console.log(data)
+        const obj = parser.decode(data.data, hl7Elegibilidad)
+        console.log(obj)
         if (data.data.rechaCabecera === 0) {
           estatus = 1;
           datosTasy.EstadoIntegrante = 'A'
@@ -115,11 +143,7 @@ export class TraditumHttpService {
           estatus = 0;
         }
         let response = {}
-        try {
-          response = this.decrypt(data.data)
-        } catch (error) {
-          datosTasy.EstadoIntegrante = 'E'
-        }
+        
         resolve({
           data: response,
           datosFinales: datos,
@@ -144,8 +168,7 @@ export class TraditumHttpService {
     identificacion,
     tipoPaciente
   ) {
-    const date = moment(new Date()).format("yyyymmddhhmmss");
-    const number = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+    const date = moment(new Date()).format("YYYYMMDDhhmmss");
     const prestaciones = arrayValues[0].map((item) => {
       return (
         `
@@ -155,44 +178,7 @@ export class TraditumHttpService {
       `
       );
     });
-    const text =
-      `MSH|^~\&|` +
-      emisor +
-      `|` +
-      sitioEmisor +
-      `|` +
-      idSitioReceptor +
-      `|` +
-      sitioReceptor +
-      `|` +
-      date +
-      `||ZQI^Z01^ZQI_Z01|` +
-      date +
-      number.toString() +
-      `|P|` +
-      version +
-      `|||NE|AL|ARG
-        PRD|PS^` +
-      arrayValues[6] +
-      `||^^^` +
-      arrayValues[3] +
-      `||||` +
-      arrayValues[4] +
-      `^` +
-      arrayValues[5] +
-      `
-        PID|||` +
-      arrayValues[7] +
-      `^^^` +
-      autoridad +
-      `^` +
-      identificacion +
-      `~` +
-      arrayValues[7] +
-      `||UNKNOWN^UNKNOWN`+ prestaciones +`
-        PV1||` +
-      tipoPaciente +
-      `||P|||||||||||||||||||||||||||||||||||||||||||||||V`;
+    const text = 'MSH|^~\\{|TRIA0100M|TRIA00000002|SERV|GALENO^610142^IIN|20110527105446||ZQI^Z01^ZQI_Z01|11052710544688244601|P|2.4|||NE|AL|ARG\r\nPRD|PS^Prestador Solicitante||^^^C||||33502^PR\r\nPID|||10186602^^^GALENO^HC||UNKNOWN\r\nPV1||O||P|||||||||||||||||||||||||||||||||||||||||||||||V'
     return text;
   }
 
@@ -207,51 +193,37 @@ export class TraditumHttpService {
     identificacion,
     tipoPaciente
   ) {
-    const date = moment(new Date()).format("yyyymmddhhmmss");
-    const number = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
-    const text =
-      `MSH|^~\&|` +
-      emisor +
-      `|` +
-      sitioEmisor +
-      `|` +
-      idSitioReceptor +
-      `|` +
-      sitioReceptor +
-      `|` +
-      date +
-      `||ZQI^Z01^ZQI_Z01|` +
-      date +
-      number.toString() +
-      `|P|` +
-      version +
-      `|||NE|AL|ARG
-        PRD|PS^` +
-      arrayValues[3] +
-      `||^^^` +
-      arrayValues[0] +
-      `||||` +
-      arrayValues[1] +
-      `^` +
-      arrayValues[2] +
-      `
-        PID|||` +
-      arrayValues[5] +
-      `^^^` +
-      autoridad +
-      `^` +
-      identificacion +
-      `~` +
-      arrayValues[4] +
-      `||UNKNOWN^UNKNOWN
-        PV1||` +
-      tipoPaciente +
-      `||P|||||||||||||||||||||||||||||||||||||||||||||||V`;
+    const date = moment(new Date()).format("YYYYMMDDhhmmss");
+    console.log(arrayValues)
+    const text = `MSH|^~\\{|` +emisor +`|` +sitioEmisor +`|` +idSitioReceptor +`|` +sitioReceptor +`|` +date +`||ZQI^Z01^ZQI_Z01|11052710544688244601|P|` +version +`|||NE|AL|ARG\r\nPRD|PS^` +arrayValues[3] +`||^^^`+arrayValues[0]+`||||`+arrayValues[1]+`^`+arrayValues[2]+`\r\nPID|||`+arrayValues[5]+`^^^` +autoridad +`^`+identificacion+`||UNKNOWN\r\nPV1||`+tipoPaciente+`||P|||||||||||||||||||||||||||||||||||||||||||||||V`
+    console.log(text)
     return text;
+  }
+  returnXmlGalenoAutorizacion(arrayValues: any[]) {
+    const emisor = "TRIA0100M";
+    const sitioEmisor = "TRIA00000002";
+    const idSitioReceptor = "SERV";
+    const sitioReceptor = "GALENO^610142^IIN";
+    const version = "2.4";
+    const autoridad = "GALENO";
+    const identificacion = "HC";
+    const tipoPaciente = "O";
+    const hl7 = this.hl7Autorizacion(
+      arrayValues,
+      emisor,
+      sitioEmisor,
+      idSitioReceptor,
+      sitioReceptor,
+      version,
+      autoridad,
+      identificacion,
+      tipoPaciente
+    );
+    return this.getAutorizacion(hl7);
   }
   returnXmlGaleno(arrayValues: any[]) {
     const emisor = "TRIA0100M";
-    const sitioEmisor = "TRIA00000001";
+    const sitioEmisor = "TRIA00000002";
     const idSitioReceptor = "SERV";
     const sitioReceptor = "GALENO^610142^IIN";
     const version = "2.4";
