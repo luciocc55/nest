@@ -74,7 +74,7 @@ export class ElegibilidadController {
     "Demi Salud (Red-I)",
     "Proapro (Red-I)",
     "Medife (Traditum):Codigo de Provincia:Numero de Prestador:Tipo de identificador:Descripción de prestador",
-    "Galeno (Traditum):Codigo de Provincia:Numero de Prestador:Tipo de identificador:Descripción de prestador",
+    "Galeno (Traditum):Usuario Galeno Salud:Password Galeno Salud:Codigo de Provincia:Numero de Prestador:Tipo de identificador:Descripción de prestador",
     "OS Patrones de Cabotaje (Activia):Cuit Prestador OSPTC:Licencia Prestador",
     "Mutual Acindar:Token Acindar"
   )

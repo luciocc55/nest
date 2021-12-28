@@ -11,8 +11,6 @@ const parser = require('@rimiti/hl7-object-parser')
 @Injectable()
 export class TraditumHttpService {
   url;
-  user = "IA010163";
-  password = "IA010163";
   constructor(
     private readonly httpService: HttpService,
     private erroresService: ErroresService
@@ -23,14 +21,14 @@ export class TraditumHttpService {
       this.url = "https://traditumcanalws-testing.azurewebsites.net/";
     }
   }
-  getToken(): any {
+  getToken(user, password): any {
     return new Promise(async (resolve) => {
-      (await this.login()).subscribe((data) => {
+      (await this.login(user,password)).subscribe((data) => {
         resolve(data);
       });
     });
   }
-  async login(): Promise<Observable<any>> {
+  async login(user, password): Promise<Observable<any>> {
     return this.httpService
       .post(
         this.url + "api/login",
@@ -39,7 +37,7 @@ export class TraditumHttpService {
           headers: {
             Authorization:
               "Basic " +
-              Buffer.from(this.user + ":" + this.password).toString("base64"),
+              Buffer.from(user + ":" + password).toString("base64"),
           },
         }
       )
@@ -50,15 +48,15 @@ export class TraditumHttpService {
         })
       );
   }
-  async getSessionHeaders() {
-    const token = await this.getToken();
+  async getSessionHeaders(user,password) {
+    const token = await this.getToken(user,password);
     const headers = {
       Authorization: `Bearer ${token}`,
     };
     return headers;
   }
-  async autorizacion(htl7): Promise<Observable<RespuestaHttp>> {
-    const headers = await this.getSessionHeaders();
+  async autorizacion(htl7, usuario, password): Promise<Observable<RespuestaHttp>> {
+    const headers = await this.getSessionHeaders(usuario, password);
     const body = {
       Msg: htl7,
       MsgType: "SI",
@@ -83,8 +81,8 @@ export class TraditumHttpService {
       })
     );
   }
-  async elegibilidad(htl7): Promise<Observable<RespuestaHttp>> {
-    const headers = await this.getSessionHeaders();
+  async elegibilidad(htl7, usuario, password): Promise<Observable<RespuestaHttp>> {
+    const headers = await this.getSessionHeaders(usuario, password);
     const body = {
       Msg: htl7,
       MsgType: "SI",
@@ -109,9 +107,9 @@ export class TraditumHttpService {
       })
     );
   }
-  getAutorizacion(hl7): any {
+  getAutorizacion(hl7, usuario, password): any {
     return new Promise(async (resolve) => {
-      (await this.autorizacion(hl7)).subscribe((data) => {
+      (await this.autorizacion(hl7, usuario, password)).subscribe((data) => {
         console.log(data.data)
         resolve({
           data: data.data,
@@ -124,9 +122,9 @@ export class TraditumHttpService {
       });
     });
   }
-  getElegibilidad(hl7): any {
+  getElegibilidad(hl7, usuario, password): any {
     return new Promise(async (resolve) => {
-      (await this.elegibilidad(hl7)).subscribe((data) => {
+      (await this.elegibilidad(hl7, usuario, password)).subscribe((data) => {
         let estatus;
         let datos: DatosElegibilidad;
         let datosTasy: any = {
@@ -178,7 +176,8 @@ export class TraditumHttpService {
       `
       );
     });
-    const text = 'MSH|^~\\{|TRIA0100M|TRIA00000002|SERV|GALENO^610142^IIN|20110527105446||ZQI^Z01^ZQI_Z01|11052710544688244601|P|2.4|||NE|AL|ARG\r\nPRD|PS^Prestador Solicitante||^^^C||||33502^PR\r\nPID|||10186602^^^GALENO^HC||UNKNOWN\r\nPV1||O||P|||||||||||||||||||||||||||||||||||||||||||||||V'
+    console.log(arrayValues)
+    const text = 'MSH|^~\\{|'+emisor+'|'+sitioEmisor+'|'+idSitioReceptor+'|'+sitioReceptor+'|'+date+'||ZQI^Z01^ZQI_Z01|11052710544688244601|P|'+version+'|||NE|AL|ARG\r\nPRD|PS^Prestador Solicitante||^^^C||||33502^PR\r\nPID|||10186602^^^'+autoridad+'^'+identificacion+'||UNKNOWN\r\nPV1||'+tipoPaciente+'||P|||||||||||||||||||||||||||||||||||||||||||||||V'
     return text;
   }
 
@@ -195,7 +194,7 @@ export class TraditumHttpService {
   ) {
     const date = moment(new Date()).format("YYYYMMDDhhmmss");
     console.log(arrayValues)
-    const text = `MSH|^~\\{|` +emisor +`|` +sitioEmisor +`|` +idSitioReceptor +`|` +sitioReceptor +`|` +date +`||ZQI^Z01^ZQI_Z01|11052710544688244601|P|` +version +`|||NE|AL|ARG\r\nPRD|PS^` +arrayValues[3] +`||^^^`+arrayValues[0]+`||||`+arrayValues[1]+`^`+arrayValues[2]+`\r\nPID|||`+arrayValues[5]+`^^^` +autoridad +`^`+identificacion+`||UNKNOWN\r\nPV1||`+tipoPaciente+`||P|||||||||||||||||||||||||||||||||||||||||||||||V`
+    const text = `MSH|^~\\{|` +emisor +`|` +sitioEmisor +`|` +idSitioReceptor +`|` +sitioReceptor +`|` +date +`||ZQI^Z01^ZQI_Z01|11052710544688244601|P|` +version +`|||NE|AL|ARG\r\nPRD|PS^` +arrayValues[5] +`||^^^`+arrayValues[2]+`||||`+arrayValues[3]+`^`+arrayValues[4]+`\r\nPID|||`+arrayValues[7]+`^^^` +autoridad +`^`+identificacion+`||UNKNOWN\r\nPV1||`+tipoPaciente+`||P|||||||||||||||||||||||||||||||||||||||||||||||V`
     console.log(text)
     return text;
   }
@@ -219,7 +218,7 @@ export class TraditumHttpService {
       identificacion,
       tipoPaciente
     );
-    return this.getAutorizacion(hl7);
+    return this.getAutorizacion(hl7, arrayValues[4], arrayValues[5]);
   }
   returnXmlGaleno(arrayValues: any[]) {
     const emisor = "TRIA0100M";
@@ -241,7 +240,7 @@ export class TraditumHttpService {
       identificacion,
       tipoPaciente
     );
-    return this.getElegibilidad(hl7);
+    return this.getElegibilidad(hl7, arrayValues[0], arrayValues[1]);
   }
   returnXmlMedife(arrayValues: any[]) {
     const emisor = "TRIA0100M";
@@ -263,6 +262,6 @@ export class TraditumHttpService {
       identificacion,
       tipoPaciente
     );
-    return this.getElegibilidad(hl7);
+    return this.getElegibilidad(hl7, arrayValues[0], arrayValues[1]);
   }
 }
