@@ -194,7 +194,7 @@ export class TraditumHttpService {
   ) {
     const date = moment(new Date()).format("YYYYMMDDhhmmss");
     console.log(arrayValues)
-    const text = `MSH|^~\\{|` +emisor +`|` +sitioEmisor +`|` +idSitioReceptor +`|` +sitioReceptor +`|` +date +`||ZQI^Z01^ZQI_Z01|11052710544688244601|P|` +version +`|||NE|AL|ARG\r\nPRD|PS^` +arrayValues[5] +`||^^^`+arrayValues[2]+`||||`+arrayValues[3]+`^`+arrayValues[4]+`\r\nPID|||`+arrayValues[7]+`^^^` +autoridad +`^`+identificacion+`||UNKNOWN\r\nPV1||`+tipoPaciente+`||P|||||||||||||||||||||||||||||||||||||||||||||||V`
+    const text = `MSH|^~\\{|` +emisor +`|` +sitioEmisor +`|` +idSitioReceptor +`|` +sitioReceptor +`|` +date +`||ZQI^Z01^ZQI_Z01|11052710544688244601|P|` +version +`|||NE|AL|ARG\r\nPRD|PS^` +arrayValues[6] +`||^^^`+arrayValues[3]+`||||`+arrayValues[4]+`^`+arrayValues[5]+`\r\nPID|||`+arrayValues[8]+`^^^` +autoridad +`^`+identificacion+`||UNKNOWN\r\nPV1||`+tipoPaciente+`||P|||||||||||||||||||||||||||||||||||||||||||||||V`
     console.log(text)
     return text;
   }
@@ -218,7 +218,7 @@ export class TraditumHttpService {
       identificacion,
       tipoPaciente
     );
-    return this.getAutorizacion(hl7, arrayValues[4], arrayValues[5]);
+    return this.getAutorizacion(hl7, arrayValues[5], arrayValues[6]);
   }
   returnXmlGaleno(arrayValues: any[]) {
     const emisor = "TRIA0100M";
@@ -240,7 +240,7 @@ export class TraditumHttpService {
       identificacion,
       tipoPaciente
     );
-    return this.getElegibilidad(hl7, arrayValues[0], arrayValues[1]);
+    return this.getElegibilidad(hl7, arrayValues[1], arrayValues[2]);
   }
   returnXmlMedife(arrayValues: any[]) {
     const emisor = "TRIA0100M";
@@ -262,6 +262,6 @@ export class TraditumHttpService {
       identificacion,
       tipoPaciente
     );
-    return this.getElegibilidad(hl7, arrayValues[0], arrayValues[1]);
+    return this.getElegibilidad(hl7, arrayValues[1], arrayValues[2]);
   }
 }
