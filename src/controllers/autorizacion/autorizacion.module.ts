@@ -16,6 +16,7 @@ import { AcindarttpModule } from 'src/services/acindar-http/acindar-http.module'
 import { AmrHttpModule } from 'src/services/amr-http/amr-http.module';
 import { AcaHttpModule } from 'src/services/aca-http/aca-http.module';
 import { TraditumHttpModule } from 'src/services/traditum-http/traditum-http.module';
+import { FederadaHttpModule } from 'src/services/federada-http/federada-http.module';
 
 @Module({
   controllers: [AutorizacionController],
@@ -34,7 +35,8 @@ import { TraditumHttpModule } from 'src/services/traditum-http/traditum-http.mod
     AcindarttpModule,
     AmrHttpModule,
     AcaHttpModule,
-    TraditumHttpModule
+    TraditumHttpModule,
+    FederadaHttpModule
   ],
 })
 export class AutorizacionModule {}
