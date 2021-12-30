@@ -7,6 +7,8 @@ import { DatosElegibilidad } from "src/interfaces/datos-elegibilidad";
 import { RespuestaHttp } from "src/interfaces/respuesta-http";
 import { ErroresService } from "../errores/errores.service";
 import { hl7Elegibilidad } from "./hl7-elegibilidad";
+import { hl7Autorizacion } from "./hl7-autorizacion";
+
 const parser = require('@rimiti/hl7-object-parser')
 @Injectable()
 export class TraditumHttpService {
@@ -23,7 +25,7 @@ export class TraditumHttpService {
   }
   getToken(user, password): any {
     return new Promise(async (resolve) => {
-      (await this.login(user,password)).subscribe((data) => {
+      (await this.login(user, password)).subscribe((data) => {
         resolve(data);
       });
     });
@@ -48,8 +50,8 @@ export class TraditumHttpService {
         })
       );
   }
-  async getSessionHeaders(user,password) {
-    const token = await this.getToken(user,password);
+  async getSessionHeaders(user, password) {
+    const token = await this.getToken(user, password);
     const headers = {
       Authorization: `Bearer ${token}`,
     };
@@ -110,10 +112,76 @@ export class TraditumHttpService {
   getAutorizacion(hl7, usuario, password): any {
     return new Promise(async (resolve) => {
       (await this.autorizacion(hl7, usuario, password)).subscribe((data) => {
-        console.log(data.data)
+        const obj = parser.decode(data.data, hl7Autorizacion)
+        let estatus;
+        let resultados = [];
+        let error;
+        let numeroTransaccion = null;
+        let errorEstandarizado = null;
+        let errorEstandarizadoCodigo = null;
+        const dataHttp = data.data;
+        let datosTasy: any = {
+          Estado: false
+        }
+        if (obj.msa.codigoEstado === 'B000') {
+          if (obj.zau[0].codigoEstado === 'B000') {
+            estatus = 1;
+            datosTasy.Estado = true;
+            const zauPrestaciones = obj.zau.slice(1,obj.zau.length)
+            const prestaciones = obj.pr1;
+            prestaciones.forEach((element,index) => {
+              const find = resultados.findIndex((findElem) => findElem.prestación === element.prestacion)
+              const cantidad = zauPrestaciones[index].codigoEstado === 'B000'? 1: 0;
+              const recha = zauPrestaciones[index].codigoEstado !== 'B000'? 1: 0;
+              if (find > -1) {
+                resultados[find].cantidad = resultados[find].cantidad + cantidad;
+                resultados[find].Cantidad = resultados[find].Cantidad + cantidad;
+                resultados[find].Rechazadas = resultados[find].Rechazadas + recha;
+                resultados[find].rechazadas = resultados[find].rechazadas + recha;
+              } else {
+                resultados.push({
+                prestación: element.prestacion,
+                CodigoPrestacion:element.prestacion,
+                transaccion: obj.zau[0].id,
+                mensaje: zauPrestaciones[index].estado,
+                cantidad: cantidad,
+                Cantidad: cantidad,
+                Rechazadas: recha,
+                rechazadas: recha,
+                copago: zauPrestaciones[index].copago,
+                Copago: zauPrestaciones[index].copago,
+                Estado: zauPrestaciones[index].codigoEstado === 'B000'? 'A': 'R',
+                estado: zauPrestaciones[index].codigoEstado,
+                })
+              }
+            });
+            datosTasy.Prestaciones = resultados;
+            datosTasy.NroAtención = obj.zau[0].id;
+            numeroTransaccion = obj.zau[0].id;
+          } else {
+            datosTasy.Error = 0;
+            datosTasy.MotivoRechazo = obj.zau[0].estado;
+            estatus = 0;
+            error = obj.zau[0].estado;
+          }
+        } else {
+          estatus = 0;
+          datosTasy.MotivoRechazo = "Por favor, intente nuevamente";
+          error = "Por favor, intente nuevamente";
+        }
+        const datos = {
+          estatus,
+          error,
+          errorEstandarizado,
+          numeroTransaccion,
+          errorEstandarizadoCodigo,
+          resultados,
+        };
         resolve({
-          data: data.data,
-          datosFinales: data,
+          resultado: datos,
+          datosFinales: datos,
+          ...datosTasy,
+          data: dataHttp,
           envio: data.envio,
           params: data.params,
           url: data.url,
@@ -128,10 +196,9 @@ export class TraditumHttpService {
         let estatus;
         let datos: DatosElegibilidad;
         let datosTasy: any = {
-          "MotivoRechazo" : "",
-          EstadoIntegrante : 'I'
+          "MotivoRechazo": "",
+          EstadoIntegrante: 'I'
         }
-        console.log(data)
         const obj = parser.decode(data.data, hl7Elegibilidad)
         console.log(obj)
         if (data.data.rechaCabecera === 0) {
@@ -141,7 +208,7 @@ export class TraditumHttpService {
           estatus = 0;
         }
         let response = {}
-        
+
         resolve({
           data: response,
           datosFinales: datos,
@@ -167,17 +234,18 @@ export class TraditumHttpService {
     tipoPaciente
   ) {
     const date = moment(new Date()).format("YYYYMMDDhhmmss");
+    let ocurrencia = 1;
     const prestaciones = arrayValues[0].map((item) => {
+      let msg = ''
+      for (let cantidad = 0; cantidad < item.cantidad; cantidad++) {
+        msg = `${msg}PR1|${ocurrencia}||${item.codigoPrestacion}\rAUT||||||||1\rZAU||||||0&$\r`
+        ocurrencia++
+      }
       return (
-        `
-        PR1|`+item.cantidad +`||`+item.codigoPrestacion +`
-        AUT||||||||1
-        ZAU||||||0{$
-      `
+        msg
       );
     });
-    console.log(arrayValues)
-    const text = 'MSH|^~\\{|'+emisor+'|'+sitioEmisor+'|'+idSitioReceptor+'|'+sitioReceptor+'|'+date+'||ZQI^Z01^ZQI_Z01|11052710544688244601|P|'+version+'|||NE|AL|ARG\r\nPRD|PS^Prestador Solicitante||^^^C||||33502^PR\r\nPID|||10186602^^^'+autoridad+'^'+identificacion+'||UNKNOWN\r\nPV1||'+tipoPaciente+'||P|||||||||||||||||||||||||||||||||||||||||||||||V'
+    const text = `MSH|^~\\{|${emisor}|${sitioEmisor}|${idSitioReceptor}|${sitioReceptor}|${date}||ZQA^Z02^ZQA_Z02|11052710544688244601|P|${version}|||NE|AL|ARG\rPRD|PS^${arrayValues[9]}||^^^${arrayValues[6]}||||${arrayValues[7]}^${arrayValues[8]}\rPID|||${arrayValues[10]}^^^${autoridad}^${identificacion}||UNKNOWN\r${prestaciones}PV1||${tipoPaciente}||P|||||||||||||||||||||||||||||||||||||||||||||||V`
     return text;
   }
 
@@ -193,14 +261,12 @@ export class TraditumHttpService {
     tipoPaciente
   ) {
     const date = moment(new Date()).format("YYYYMMDDhhmmss");
-    console.log(arrayValues)
-    const text = `MSH|^~\\{|` +emisor +`|` +sitioEmisor +`|` +idSitioReceptor +`|` +sitioReceptor +`|` +date +`||ZQI^Z01^ZQI_Z01|11052710544688244601|P|` +version +`|||NE|AL|ARG\r\nPRD|PS^` +arrayValues[6] +`||^^^`+arrayValues[3]+`||||`+arrayValues[4]+`^`+arrayValues[5]+`\r\nPID|||`+arrayValues[8]+`^^^` +autoridad +`^`+identificacion+`||UNKNOWN\r\nPV1||`+tipoPaciente+`||P|||||||||||||||||||||||||||||||||||||||||||||||V`
-    console.log(text)
+    const text = `MSH|^~\\{|` + emisor + `|` + sitioEmisor + `|` + idSitioReceptor + `|` + sitioReceptor + `|` + date + `||ZQI^Z01^ZQI_Z01|11052710544688244601|P|` + version + `|||NE|AL|ARG\rPRD|PS^` + arrayValues[6] + `||^^^` + arrayValues[3] + `||||` + arrayValues[4] + `^` + arrayValues[5] + `\rPID|||` + arrayValues[8] + `^^^` + autoridad + `^` + identificacion + `||UNKNOWN\rPV1||` + tipoPaciente + `||P|||||||||||||||||||||||||||||||||||||||||||||||V`
     return text;
   }
   returnXmlGalenoAutorizacion(arrayValues: any[]) {
     const emisor = "TRIA0100M";
-    const sitioEmisor = "TRIA00000002";
+    const sitioEmisor = arrayValues[3];
     const idSitioReceptor = "SERV";
     const sitioReceptor = "GALENO^610142^IIN";
     const version = "2.4";
@@ -218,11 +284,11 @@ export class TraditumHttpService {
       identificacion,
       tipoPaciente
     );
-    return this.getAutorizacion(hl7, arrayValues[5], arrayValues[6]);
+    return this.getAutorizacion(hl7, arrayValues[4], arrayValues[5]);
   }
   returnXmlGaleno(arrayValues: any[]) {
     const emisor = "TRIA0100M";
-    const sitioEmisor = "TRIA00000002";
+    const sitioEmisor = arrayValues[0];
     const idSitioReceptor = "SERV";
     const sitioReceptor = "GALENO^610142^IIN";
     const version = "2.4";
