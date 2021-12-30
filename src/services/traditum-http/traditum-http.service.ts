@@ -148,8 +148,8 @@ export class TraditumHttpService {
                 Cantidad: cantidad,
                 Rechazadas: recha,
                 rechazadas: recha,
-                copago: zauPrestaciones[index].copago,
-                Copago: zauPrestaciones[index].copago,
+                copago: parseFloat(zauPrestaciones[index].copago.replace('&$','')),
+                Copago: parseFloat(zauPrestaciones[index].copago.replace('&$','')),
                 Estado: zauPrestaciones[index].codigoEstado === 'B000'? 'A': 'R',
                 estado: zauPrestaciones[index].codigoEstado,
                 })
