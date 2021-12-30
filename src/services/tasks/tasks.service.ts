@@ -117,6 +117,29 @@ export class TasksService {
       this.erroresService.pushValue("4", "35", origen._id),
     ]);
   }
+
+  @Timeout(5000)
+  async createErroresFederada() {
+    const origen = await this.origenesService.findOneSearch({
+      description: "Federada",
+    });
+    const err = await Promise.all([
+      this.erroresService.getOrCreate("1", "La autorización requiere token"),
+      this.erroresService.getOrCreate("2", "El token es incorrecto"),
+      this.erroresService.getOrCreate("3", "Hubo un error en la transaccion"),
+      this.erroresService.getOrCreate('4', 'Afiliado inexistente')
+    ]);
+    const values = await Promise.all([
+      this.erroresService.pushValue("1", "228", origen._id),
+      this.erroresService.pushValue("2", "226", origen._id),
+      this.erroresService.pushValue("2", "229", origen._id),
+      this.erroresService.pushValue("2", "230", origen._id),
+      this.erroresService.pushValue("4", "215", origen._id),
+      this.erroresService.pushValue("4", "212", origen._id),
+    ]);
+  }
+
+
   @Timeout(5000)
   async createExtras() {
     for (const extra of this.extras) {

@@ -23,6 +23,7 @@ import { TraditumHttpService } from "src/services/traditum-http/traditum-http.se
 import { UsersService } from "src/services/users/users.service";
 import { Autorizar } from "src/validators/autorizacion/autorizaciones.validator";
 import { CancelarAutorizacion } from "src/validators/autorizacion/cancelarAutorizacion.validator";
+import { FederadaHttpService } from "src/services/federada-http/federada-http.service";
 
 @Controller("autorizacion")
 @UseGuards(RolesGuard)
@@ -38,9 +39,11 @@ export class AutorizacionController {
     private acindarService: AcindarHttpService,
     private amrService: AmrHttpService,
     private acaSalud: AcaHttpService,
-    private traditumService: TraditumHttpService
+    private traditumService: TraditumHttpService,
+    private federadaService: FederadaHttpService
   ) {}
-
+  
+  // las api_tags empiezan en arrayValues[3]
   @ApiTags(
     "Permite autorizar practicas contra los servicios habilitados",
     "Swiss Medical:Cuit Swiss Medical:Cuit de Prescriptor Swiss/true/true:Codigo de seguridad Swiss/true/true: Nro de afiliado Swiss/true:Codigo de Auditoria Swiss/true/true:Tipo de matricula Swiss/true/true:Profesion Swiss/true/true:Provincia Swiss/true/true:CUIT Efector/true/true",
@@ -48,6 +51,7 @@ export class AutorizacionController {
     "Mutual Acindar:Token Acindar:Nro de afiliado Acindar/true",
     "AMR Salud:Matricula de Efector:Codigo de Profesion:Codigo afiliado AMR/true:Token AMR/true/true",
     "ACA Salud:Codigo de Prestador ACA Salud:Usuario ACA Salud:Password ACA Salud:Codigo afiliado ACA/true:Token ACA/true/true",
+    "Federada:Cuit Prestador Federada:Cuit Efector Federada/true/true:Modo Federada/true/true:Tipo Doc Federada/true:Nro Doc Federada/true:Matricula Prescriptor Letra Federada/true/true:Fecha Prescripcion/true/true:Token Federada/true/true",
     "Galeno (Traditum):Sitio Emisor Galeno:Usuario Galeno:Password Galeno:Codigo de Provincia:Numero de Prestador:Tipo de identificador:Descripción de prestador:Codigo afiliado Galeno/true",
   )
   // , separa los origenes permitidos en el service
@@ -130,6 +134,12 @@ export class AutorizacionController {
           arrayValues
         );
         break;
+      case "Federada":
+          autorizacion = await this.federadaService.getAutorizacion(
+            arrayValues,
+            data.origen
+          );
+          break;
     }
 
     const autorizacionResp = { ...autorizacion, IdTransaccion };
@@ -144,7 +154,8 @@ export class AutorizacionController {
     "OS Patrones de Cabotaje (Activia):Cuit Prestador OSPTC:Licencia Prestador",
     "Mutual Acindar:Token Acindar",
     "AMR Salud",
-    "ACA Salud:Codigo de Prestador ACA Salud:Usuario ACA Salud:Password ACA Salud"
+    "ACA Salud:Codigo de Prestador ACA Salud:Usuario ACA Salud:Password ACA Salud",
+    "Federada:Cuit Prestador Federada:Cuit Efector Federada/true/true",
   )
   // , separa los origenes permitidos en el service
   // : separa los atributos necesarios para ese origen
@@ -213,6 +224,12 @@ export class AutorizacionController {
         cancelacion = await this.amrService.getCancelarAutorizacion(
           arrayValues
         );
+        break;
+        case "Federada":
+          cancelacion = await this.federadaService.getCancelarAutorizacion(
+            arrayValues,
+            data.origen
+          );
         break;
     }
 
