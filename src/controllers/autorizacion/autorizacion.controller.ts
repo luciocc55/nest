@@ -51,8 +51,8 @@ export class AutorizacionController {
     "Mutual Acindar:Token Acindar:Nro de afiliado Acindar/true",
     "AMR Salud:Matricula de Efector:Codigo de Profesion:Codigo afiliado AMR/true:Token AMR/true/true",
     "ACA Salud:Codigo de Prestador ACA Salud:Usuario ACA Salud:Password ACA Salud:Codigo afiliado ACA/true:Token ACA/true/true",
-    "Galeno (Traditum):Codigo de Provincia:Numero de Prestador:Tipo de identificador:Descripción de prestador:Codigo afiliado Galeno/true",
     "Federada:Cuit Prestador Federada:Cuit Efector Federada/true/true:Modo Federada/true/true:Tipo Doc Federada/true:Nro Doc Federada/true:Matricula Prescriptor Letra Federada/true/true:Fecha Prescripcion/true/true:Token Federada/true/true",
+    "Galeno (Traditum):Sitio Emisor Galeno:Usuario Galeno:Password Galeno:Codigo de Provincia:Numero de Prestador:Tipo de identificador:Descripción de prestador:Codigo afiliado Galeno/true",
   )
   // , separa los origenes permitidos en el service
   // : separa los atributos necesarios para ese origen
