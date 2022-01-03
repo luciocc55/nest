@@ -291,6 +291,7 @@ export class FederadaHttpService {
             estatus = 1;
             numeroTransaccion = dataHttp.envio.p_NroSolicitud;
             datosTasy.NroAtención = dataHttp.envio.p_NroSolicitud;
+            datosTasy.Estado = true;
           } else {
             const err = await this.erroresService.findOne({
               "values.value": dataHttp.o_Status,

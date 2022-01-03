@@ -77,6 +77,7 @@ export class SwissMedicalHttpService {
             estatus = 1;
             numeroTransaccion = dataHttp.cabecera.transac;
             datosTasy.NroAtención = dataHttp.cabecera.transac;
+            datosTasy.Estado = true;
           } else {
             const err = await this.erroresService.findOne({
               "values.value": dataHttp.cabecera.rechaCabecera.toString(),
