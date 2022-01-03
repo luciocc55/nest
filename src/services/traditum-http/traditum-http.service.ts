@@ -83,6 +83,80 @@ export class TraditumHttpService {
       })
     );
   }
+  async cancelarAutorizacion(htl7, usuario, password): Promise<Observable<RespuestaHttp>> {
+    const headers = await this.getSessionHeaders(usuario, password);
+    const body = {
+      Msg: htl7,
+      MsgType: "SI",
+    };
+    const url = this.url + "api/EnviarFlat/";
+    return this.httpService.post(url, body, { headers }).pipe(
+      map((res) => ({
+        url: this.url,
+        envio: body,
+        params: {},
+        headers: headers,
+        data: res.data,
+      })),
+      catchError((e) => {
+        return of({
+          data: e,
+          envio: body,
+          params: {},
+          headers: headers,
+          url: url,
+        });
+      })
+    );
+  }
+  getCancelarAutorizacion(hl7, usuario, password): any {
+    return new Promise(async (resolve) => {
+      (await this.cancelarAutorizacion(hl7, usuario, password)).subscribe(async (data) => {
+        console.log(data.data)
+        resolve({})
+        // let estatus;
+        // let error;
+        // let numeroTransaccion = null;
+        // let errorEstandarizado = null;
+        // let errorEstandarizadoCodigo = null;
+        // let dataHttp = data.data;
+        // let datosTasy: any = {
+        //   Estado: false,
+        // }
+        // if (dataHttp.cabecera) {
+        //   if (dataHttp.cabecera.rechaCabecera === 0) {
+        //     estatus = 1;
+        //     numeroTransaccion = dataHttp.cabecera.transac;
+        //     datosTasy.NroAtención = dataHttp.cabecera.transac;
+        //   } else {
+        //     datosTasy.MotivoRechazo = dataHttp.cabecera.rechaCabeDeno;
+        //     estatus = 0;
+        //     error = dataHttp.cabecera.rechaCabeDeno;
+        //   }
+        // } else {
+        //   estatus = 0;
+        //   datosTasy.MotivoRechazo = "Por favor, intente nuevamente";
+        //   error = "Por favor, intente nuevamente";
+        // }
+
+        // resolve({
+        //   data: dataHttp,
+        //   envio: data.envio,
+        //   params: data.params,
+        //   url: data.url,
+        //   headers: data.headers,
+        //   ...datosTasy,
+        //   resultado: {
+        //     estatus,
+        //     errorEstandarizado,
+        //     numeroTransaccion,
+        //     errorEstandarizadoCodigo,
+        //     error,
+        //   },
+        // });
+      });
+    });
+  }
   async elegibilidad(htl7, usuario, password): Promise<Observable<RespuestaHttp>> {
     const headers = await this.getSessionHeaders(usuario, password);
     const body = {
@@ -261,7 +335,21 @@ export class TraditumHttpService {
     tipoPaciente
   ) {
     const date = moment(new Date()).format("YYYYMMDDhhmmss");
-    const text = `MSH|^~\\{|` + emisor + `|` + sitioEmisor + `|` + idSitioReceptor + `|` + sitioReceptor + `|` + date + `||ZQI^Z01^ZQI_Z01|11052710544688244601|P|` + version + `|||NE|AL|ARG\rPRD|PS^` + arrayValues[6] + `||^^^` + arrayValues[3] + `||||` + arrayValues[4] + `^` + arrayValues[5] + `\rPID|||` + arrayValues[8] + `^^^` + autoridad + `^` + identificacion + `||UNKNOWN\rPV1||` + tipoPaciente + `||P|||||||||||||||||||||||||||||||||||||||||||||||V`
+    const text = `MSH|^~\\{|${emisor}|${sitioEmisor}|${idSitioReceptor}|${sitioReceptor}|${date}||ZQI^Z01^ZQI_Z01|11052710544688244601|P|${version}|||NE|AL|ARG\rPRD|PS^${arrayValues[6]}||^^^${arrayValues[3]}||||${arrayValues[4]}^${arrayValues[5]}\rPID|||${arrayValues[8]}^^^${autoridad}^${identificacion}||UNKNOWN\rPV1||${tipoPaciente}||P|||||||||||||||||||||||||||||||||||||||||||||||V`
+    return text;
+  }
+  hl7Cancelacion(
+    arrayValues: any[],
+    emisor,
+    sitioEmisor,
+    idSitioReceptor,
+    sitioReceptor,
+    version,
+    autoridad,
+    identificacion,
+  ) {
+    const date = moment(new Date()).format("YYYYMMDDhhmmss");
+    const text = `MSH|^~\\{|${emisor}|${sitioEmisor}|${idSitioReceptor}|${sitioReceptor}|${date}||ZQA^Z04^ZQA_Z02|11052710544688244607|P|${version}|||NE|AL|ARG\rZAU||${arrayValues[0]}\rPRD|PS^${arrayValues[6]}||^^^${arrayValues[3]}||||${arrayValues[4]}^${arrayValues[5]}\rPID|||${arrayValues[7]}^^^${autoridad}^${identificacion}||UNKNOWN`
     return text;
   }
   returnXmlGalenoAutorizacion(arrayValues: any[]) {
@@ -285,6 +373,26 @@ export class TraditumHttpService {
       tipoPaciente
     );
     return this.getAutorizacion(hl7, arrayValues[4], arrayValues[5]);
+  }
+  returnXmlGalenoCancelarAutorizacion(arrayValues: any[]) {
+    const emisor = "TRIA0100M";
+    const sitioEmisor = arrayValues[3];
+    const idSitioReceptor = "SERV";
+    const sitioReceptor = "GALENO^610142^IIN";
+    const version = "2.4";
+    const autoridad = "GALENO";
+    const identificacion = "HC";
+    const hl7 = this.hl7Cancelacion(
+      arrayValues,
+      emisor,
+      sitioEmisor,
+      idSitioReceptor,
+      sitioReceptor,
+      version,
+      autoridad,
+      identificacion,
+    );
+    return this.getCancelarAutorizacion(hl7, arrayValues[1], arrayValues[2]);
   }
   returnXmlGaleno(arrayValues: any[]) {
     const emisor = "TRIA0100M";

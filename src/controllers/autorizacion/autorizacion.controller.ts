@@ -156,6 +156,7 @@ export class AutorizacionController {
     "AMR Salud",
     "ACA Salud:Codigo de Prestador ACA Salud:Usuario ACA Salud:Password ACA Salud",
     "Federada:Cuit Prestador Federada:Cuit Efector Federada/true/true",
+    "Galeno (Traditum):Sitio Emisor Galeno:Usuario Galeno:Password Galeno:Codigo de Provincia:Numero de Prestador:Tipo de identificador:Descripción de prestador:Codigo afiliado Galeno/true",
   )
   // , separa los origenes permitidos en el service
   // : separa los atributos necesarios para ese origen
@@ -229,6 +230,11 @@ export class AutorizacionController {
           cancelacion = await this.federadaService.getCancelarAutorizacion(
             arrayValues,
             data.origen
+          );
+        break;
+        case "Galeno (Traditum)":
+          cancelacion = await this.traditumService.returnXmlGalenoCancelarAutorizacion(
+            arrayValues,
           );
         break;
     }
