@@ -8,6 +8,7 @@ import { RespuestaHttp } from "src/interfaces/respuesta-http";
 import { ErroresService } from "../errores/errores.service";
 import { hl7Elegibilidad } from "./hl7-elegibilidad";
 import { hl7Autorizacion } from "./hl7-autorizacion";
+import { hl7Cancelacion } from "./hl7-cancelacion";
 
 const parser = require('@rimiti/hl7-object-parser')
 @Injectable()
@@ -112,48 +113,42 @@ export class TraditumHttpService {
   getCancelarAutorizacion(hl7, usuario, password): any {
     return new Promise(async (resolve) => {
       (await this.cancelarAutorizacion(hl7, usuario, password)).subscribe(async (data) => {
-        console.log(data.data)
-        resolve({})
-        // let estatus;
-        // let error;
-        // let numeroTransaccion = null;
-        // let errorEstandarizado = null;
-        // let errorEstandarizadoCodigo = null;
-        // let dataHttp = data.data;
-        // let datosTasy: any = {
-        //   Estado: false,
-        // }
-        // if (dataHttp.cabecera) {
-        //   if (dataHttp.cabecera.rechaCabecera === 0) {
-        //     estatus = 1;
-        //     numeroTransaccion = dataHttp.cabecera.transac;
-        //     datosTasy.NroAtención = dataHttp.cabecera.transac;
-        //   } else {
-        //     datosTasy.MotivoRechazo = dataHttp.cabecera.rechaCabeDeno;
-        //     estatus = 0;
-        //     error = dataHttp.cabecera.rechaCabeDeno;
-        //   }
-        // } else {
-        //   estatus = 0;
-        //   datosTasy.MotivoRechazo = "Por favor, intente nuevamente";
-        //   error = "Por favor, intente nuevamente";
-        // }
-
-        // resolve({
-        //   data: dataHttp,
-        //   envio: data.envio,
-        //   params: data.params,
-        //   url: data.url,
-        //   headers: data.headers,
-        //   ...datosTasy,
-        //   resultado: {
-        //     estatus,
-        //     errorEstandarizado,
-        //     numeroTransaccion,
-        //     errorEstandarizadoCodigo,
-        //     error,
-        //   },
-        // });
+        const obj = parser.decode(data.data, hl7Cancelacion)
+        let estatus;
+        let error;
+        let numeroTransaccion = null;
+        let errorEstandarizado = null;
+        let errorEstandarizadoCodigo = null;
+        let dataHttp = data.data;
+        let datosTasy: any = {
+          Estado: false,
+        }
+        if (obj.msa.codigoEstado === 'B000') {
+            estatus = 1;
+            numeroTransaccion = obj.msa.transaccion;
+            datosTasy.NroAtención = obj.msa.transaccion;
+            datosTasy.Estado = true;
+          } else {
+            datosTasy.Error = 0;
+            datosTasy.MotivoRechazo = obj.msa.estado;
+            estatus = 0;
+            error = obj.msa.estado;
+          }
+        resolve({
+          data: dataHttp,
+          envio: data.envio,
+          params: data.params,
+          url: data.url,
+          headers: data.headers,
+          ...datosTasy,
+          resultado: {
+            estatus,
+            errorEstandarizado,
+            numeroTransaccion,
+            errorEstandarizadoCodigo,
+            error,
+          },
+        });
       });
     });
   }
@@ -349,7 +344,7 @@ export class TraditumHttpService {
     identificacion,
   ) {
     const date = moment(new Date()).format("YYYYMMDDhhmmss");
-    const text = `MSH|^~\\{|${emisor}|${sitioEmisor}|${idSitioReceptor}|${sitioReceptor}|${date}||ZQA^Z04^ZQA_Z02|11052710544688244607|P|${version}|||NE|AL|ARG\rZAU||${arrayValues[0]}\rPRD|PS^${arrayValues[6]}||^^^${arrayValues[3]}||||${arrayValues[4]}^${arrayValues[5]}\rPID|||${arrayValues[7]}^^^${autoridad}^${identificacion}||UNKNOWN`
+    const text = `MSH|^~\\{|${emisor}|${sitioEmisor}|${idSitioReceptor}|${sitioReceptor}|${date}||ZQA^Z04^ZQA_Z02|11052710544688244607|P|${version}|||NE|AL|ARG\rZAU||${arrayValues[0]}\rPRD|PS^${arrayValues[7]}||^^^${arrayValues[4]}||||${arrayValues[5]}^${arrayValues[6]}\rPID|||${arrayValues[8]}^^^${autoridad}^${identificacion}||UNKNOWN`
     return text;
   }
   returnXmlGalenoAutorizacion(arrayValues: any[]) {
@@ -376,7 +371,7 @@ export class TraditumHttpService {
   }
   returnXmlGalenoCancelarAutorizacion(arrayValues: any[]) {
     const emisor = "TRIA0100M";
-    const sitioEmisor = arrayValues[3];
+    const sitioEmisor = arrayValues[1];
     const idSitioReceptor = "SERV";
     const sitioReceptor = "GALENO^610142^IIN";
     const version = "2.4";
@@ -392,7 +387,8 @@ export class TraditumHttpService {
       autoridad,
       identificacion,
     );
-    return this.getCancelarAutorizacion(hl7, arrayValues[1], arrayValues[2]);
+    console.log(arrayValues)
+    return this.getCancelarAutorizacion(hl7, arrayValues[2], arrayValues[3]);
   }
   returnXmlGaleno(arrayValues: any[]) {
     const emisor = "TRIA0100M";
