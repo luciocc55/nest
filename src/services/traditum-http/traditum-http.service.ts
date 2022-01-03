@@ -269,17 +269,15 @@ export class TraditumHttpService {
           EstadoIntegrante: 'I'
         }
         const obj = parser.decode(data.data, hl7Elegibilidad)
-        console.log(obj)
-        if (data.data.rechaCabecera === 0) {
+        if (!obj.nte?.codigoRespuesta) {
           estatus = 1;
           datosTasy.EstadoIntegrante = 'A'
         } else {
           estatus = 0;
+          datosTasy.MotivoRechazo = obj.nte?.MotivoRechazo;
         }
-        let response = {}
-
         resolve({
-          data: response,
+          data: obj,
           datosFinales: datos,
           ...datosTasy,
           estatus,
