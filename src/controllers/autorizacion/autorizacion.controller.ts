@@ -24,6 +24,7 @@ import { UsersService } from "src/services/users/users.service";
 import { Autorizar } from "src/validators/autorizacion/autorizaciones.validator";
 import { CancelarAutorizacion } from "src/validators/autorizacion/cancelarAutorizacion.validator";
 import { FederadaHttpService } from "src/services/federada-http/federada-http.service";
+import { EsencialHttpService } from 'src/services/esencial-http/esencial-http.service';
 
 @Controller("autorizacion")
 @UseGuards(RolesGuard)
@@ -40,7 +41,8 @@ export class AutorizacionController {
     private amrService: AmrHttpService,
     private acaSalud: AcaHttpService,
     private traditumService: TraditumHttpService,
-    private federadaService: FederadaHttpService
+    private federadaService: FederadaHttpService,
+    private esencialService: EsencialHttpService,
   ) {}
   
   // las api_tags empiezan en arrayValues[3]
@@ -53,6 +55,7 @@ export class AutorizacionController {
     "ACA Salud:Codigo de Prestador ACA Salud:Usuario ACA Salud:Password ACA Salud:Codigo afiliado ACA/true:Token ACA/true/true",
     "Federada:Cuit Prestador Federada:Cuit Efector Federada/true/true:Modo Federada/true/true:Tipo Doc Federada/true:Nro Doc Federada/true:Matricula Prescriptor Letra Federada/true/true:Fecha Prescripcion/true/true:Token Federada/true/true",
     "Galeno (Traditum):Sitio Emisor Galeno:Usuario Galeno:Password Galeno:Codigo de Provincia:Numero de Prestador:Tipo de identificador:Descripción de prestador:Codigo afiliado Galeno/true",
+    'Esencial:Codigo de Proveedor Esencial:Codigo de prestador/true:Codigo de Socio + Credencial/true/true:Nro. de documento/true/true:Matricula de efector/true/true:Matricula de solicitante/true/true',
   )
   // , separa los origenes permitidos en el service
   // : separa los atributos necesarios para ese origen
@@ -140,6 +143,8 @@ export class AutorizacionController {
             data.origen
           );
           break;
+      case 'Esencial':
+          autorizacion = await this.esencialService.getAutorizacion(arrayValues, data.origen);
     }
 
     const autorizacionResp = { ...autorizacion, IdTransaccion };
