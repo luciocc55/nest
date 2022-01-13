@@ -263,15 +263,24 @@ export class TraditumHttpService {
     return new Promise(async (resolve) => {
       (await this.elegibilidad(hl7, usuario, password)).subscribe((data) => {
         let estatus;
-        let datos: DatosElegibilidad;
+        let datos: DatosElegibilidad = new DatosElegibilidad();
         let datosTasy: any = {
           "MotivoRechazo": "",
           EstadoIntegrante: 'I'
         }
         const obj = parser.decode(data.data, hl7Elegibilidad)
-        if (!obj.nte?.codigoRespuesta) {
+        if (obj.zau.codigoEstado=='B000') {
           estatus = 1;
-          datosTasy.EstadoIntegrante = 'A'
+          datosTasy.EstadoIntegrante = 'A';
+          datosTasy.NroAfiliado=obj.pid.nroAfiliado;
+          datosTasy.NombreApellido=obj.pid.apellidoAfiliado + ','+obj.pid.nombreAfiliado;
+
+          datos.nombreApellido=obj.pid.apellidoAfiliado + ','+obj.pid.nombreAfiliado;
+          datos.voluntario=obj.zin.gravado=='Grav'? 1:0;
+          datos.recupero=obj.zin.gravado=='Grav'? 1:0;
+          datos.nroAfiliado=obj.pid.nroAfiliado;
+          datos.planDescripcion=obj.in1.plan;
+
         } else {
           estatus = 0;
           datosTasy.MotivoRechazo = obj.nte?.MotivoRechazo;
