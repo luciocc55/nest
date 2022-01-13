@@ -192,7 +192,7 @@ export class TraditumHttpService {
         let datosTasy: any = {
           Estado: false
         }
-        if (obj.msa.codigoEstado === 'B000') {
+        if (obj.msa.procesado === 'AA') {
           if (obj.zau[0].codigoEstado === 'B000') {
             estatus = 1;
             datosTasy.Estado = true;
@@ -233,9 +233,19 @@ export class TraditumHttpService {
             numeroTransaccion = obj.zau[0].id;
           } else {
             datosTasy.Error = 0;
-            datosTasy.MotivoRechazo = obj.zau[0].estado;
+            let mensajeRechazo="";
+            if (Array.isArray(obj.nte)){
+              let arrayRechazo=obj.nte.map(function(x){
+                return x.mensajeRespuesta;
+             });
+             mensajeRechazo=arrayRechazo.join("");
+            }else{
+              mensajeRechazo=obj.nte.mensajeRespuesta;
+            }
+            
+            datosTasy.MotivoRechazo = [obj.zau[0].estado,mensajeRechazo].join(",");
             estatus = 0;
-            error = obj.zau[0].estado;
+            error = datosTasy.MotivoRechazo;
           }
         } else {
           estatus = 0;
@@ -316,15 +326,14 @@ export class TraditumHttpService {
     const date = moment(new Date()).format("YYYYMMDDhhmmss");
     let ocurrencia = 1;
     const prestaciones = arrayValues[0].map((item) => {
-      let msg = ''
+      let msg = '';
       for (let cantidad = 0; cantidad < item.cantidad; cantidad++) {
-        msg = `${msg}PR1|${ocurrencia}||${item.codigoPrestacion}\rAUT||||||||1\rZAU||||||0&$\r`
-        ocurrencia++
+        msg = `${msg}PR1|${ocurrencia}||${item.codigoPrestacion}\rAUT||||||||1\rZAU||||||0&$\r`;
+        ocurrencia++;
       }
-      return (
-        msg
-      );
-    });
+      return msg;
+    }).join("");
+
     const text = `MSH|^~\\{|${emisor}|${sitioEmisor}|${idSitioReceptor}|${sitioReceptor}|${date}||ZQA^Z02^ZQA_Z02|11052710544688244601|P|${version}|||NE|AL|ARG\rPRD|PS^${arrayValues[9]}||^^^${arrayValues[6]}||||${arrayValues[7]}^${arrayValues[8]}\rPID|||${arrayValues[10]}^^^${autoridad}^${identificacion}||UNKNOWN\r${prestaciones}PV1||${tipoPaciente}||P|||||||||||||||||||||||||||||||||||||||||||||||V`
     return text;
   }

@@ -39,6 +39,12 @@ export const hl7Autorizacion = {
         "values": [
           { "field": "pr1.prestacion", "component": [3,1] },
         ]
-      }
+      },
+      "nte": {
+        "values": [
+          { "field": "nte.codigoRespuesta", "component": [1,1] },
+          { "field": "nte.mensajeRespuesta", "component": [3,1] }
+        ]
+      },
     }
   }
