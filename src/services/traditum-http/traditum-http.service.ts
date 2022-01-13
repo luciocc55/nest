@@ -197,8 +197,12 @@ export class TraditumHttpService {
             estatus = 1;
             datosTasy.Estado = true;
             const zauPrestaciones = obj.zau.slice(1,obj.zau.length)
-            const prestaciones = obj.pr1;
-            prestaciones?.forEach((element,index) => {
+            let prestaciones = obj.pr1;
+            if (!Array.isArray(prestaciones)){
+              prestaciones=[prestaciones];
+            }
+
+            prestaciones.forEach((element,index) => {
               const find = resultados.findIndex((findElem) => findElem.prestación === element.prestacion)
               const cantidad = zauPrestaciones[index].codigoEstado === 'B000'? 1: 0;
               const recha = zauPrestaciones[index].codigoEstado !== 'B000'? 1: 0;
