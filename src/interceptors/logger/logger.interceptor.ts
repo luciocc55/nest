@@ -58,6 +58,7 @@ export class LoggingInterceptor<T> implements NestInterceptor<T, Response<T>> {
           );
         },
         (err) => {
+          console.log(err)
           this.logService.writeResponse(
             JSON.stringify(err),
             logRegistro["_id"]
